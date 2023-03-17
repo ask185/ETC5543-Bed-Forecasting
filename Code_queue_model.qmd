@@ -1,0 +1,26 @@
+---
+title: "Queue Model- Bed forecasting"
+format: html
+editor: visual
+---
+
+```{r}
+
+install.packages("utilities")
+
+
+library(tidyverse)
+lambda <- 5 # avg number of arrivals per day
+K <- 100 # users of the facility
+ARRIVE <- cumsum(rexp(K, rate = 1/lambda))
+
+mu <- 1440
+
+use_time <- mu * runif(K)
+
+library(utilities)
+QUEUE <- queue(arrive = ARRIVE, use.full = use_time,
+                n = 20)
+
+plot(QUEUE)
+```
