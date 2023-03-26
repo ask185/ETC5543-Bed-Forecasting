@@ -8,7 +8,7 @@ Here are the key assumptions about the stroke ward and below modeling:
 
 There are a total of 16 patients arriving at the ward for different levels of stroke severity. They are as follows:
 
--   5 patients per day arrive with the **very** **mild** level of stroke. Thus, the $\lambda$ = 5/day or 5/24
+-   5 patients per day arrive with the **very** **mild** level of stroke. Thus, the $\lambda$ = 5/day or 5/24 and their mean service time is 24 hours. The number of beds available are three (n=3).
 
 ```{r}
 
@@ -40,9 +40,9 @@ plot(QUEUE)
 summary(QUEUE)
 ```
 
-Patients with the mild level of stroke [typically stay for 5 to 7 days](https://www.hopkinsmedicine.org/health/conditions-and-diseases/stroke/stroke-recovery-timeline#:~:text=The%20typical%20length%20of%20a,will%20determine%20the%20rehabilitation%20plan.), however, some of the patients may get discharged early. Thus, I am making the assumption here that most of the patients stay for 5 to 7 beds. I have made up the following scenario:
+Patients with the mild level of stroke [typically stay for 5 to 7 days](https://www.hopkinsmedicine.org/health/conditions-and-diseases/stroke/stroke-recovery-timeline#:~:text=The%20typical%20length%20of%20a,will%20determine%20the%20rehabilitation%20plan.), however, some of the patients may get discharged early. Thus, I am making the assumption here that most of the patients stay for 5 to 7 days. I have made up the following scenario:
 
-A total of number of patients with the mild level of stroke are 11. Of these 5 patients stay for seven days, 2 for six days, 2 patients stay for 5 days, 1 patient stays for 4 days and 1 patient for 3 days. Let's make an assumptions these numbers are based on some past experiences, thus hospital wards allocate greater number of beds to patients who are likely to stay for seven days.
+A total number of patients with the mild level of stroke are 11. Of these 11 patients, 5 patients stay for seven days, 2 for six days, 2 patients for 5 days, 1 patient stays for 4 days and 1 patient for 3 days. Let's make an assumptions these numbers are based on some past experiences, thus hospital wards allocate greater number of beds to patients who are likely to stay for seven days.
 
 -   1 patient arriving per day with **mild** level of stroke is required to stay for 3 days -- $3 \times 24 = 72$ hours:
 
@@ -52,7 +52,7 @@ A total of number of patients with the mild level of stroke are 11. Of these 5 p
 
 -   2 patient is required to stay for 6 days $6 \times 24=144$ hours:
 
--   5 patient with the **mild** level of stroke is required to stay for 7 days in the ward.
+-   5 patient with the **mild** level of stroke is required to stay for 7 days in the ward. $7 \times 24 = 168$ hours.
 
 ```{r}
 
@@ -74,7 +74,7 @@ K1 <- 5 # users of the facility
 
 ARRIVE1 <- cumsum(rexp(K1, rate = 1/lambda1))
 
-mu1 <- 168 
+mu1 <- 168 # 7 x 24=168
 
 use_time1 <- mu1 * runif(K1)
 
@@ -151,6 +151,7 @@ summary(QUEUE3)
 # service mean time for these patients = 4 days (4*24)
 # k=5 users staying for seven days
 # number of beds allocated 4
+
 set.seed(2023)
 
 lambda4 <- 5/24 # avg number of arrivals per day ()
@@ -164,11 +165,11 @@ mu4 <- 96 # four days
 use_time4 <- mu4 * runif(K4)
 
 library(utilities)
-QUEUE <- queue(arrive = ARRIVE4, use.full = use_time4,
+QUEUE4 <- queue(arrive = ARRIVE4, use.full = use_time4,
                 n = 1)
 
-plot(QUEUE)
-summary(QUEUE)
+plot(QUEUE4)
+summary(QUEUE4)
 ```
 
 ```{r}
@@ -190,4 +191,8 @@ QUEUE5 <- queue(arrive = ARRIVE5, use.full = use_time5,
 
 plot(QUEUE5)
 summary(QUEUE5)
+```
+
+```{r}
+
 ```
