@@ -1,0 +1,65 @@
+---
+title: "Simulation of the data"
+author: "Aryan Sultan"
+date: "2023-03-29"
+output: html_document
+---
+
+
+### Data simulation
+
+
+Here I am not using any package to simulate the data.
+
+```{r}
+library(tidyverse)
+
+total_patients <- 1000
+arrival_rate <- 1/6  # average 6 patients per day
+
+# Bed occupation time (in days) for each stroke level
+
+bed_occupation_time <- list(
+  very_mild = 1,
+  mild = c(3, 7),
+  moderate = 0,  # patients sent to rehab center may stay up to 2 weeks in the ward
+  severe_nursing = 0,  # patients sent to nursing center may stay up to 2 weeks
+  severe = 14
+)
+
+# Probability of each stroke level
+stroke_level_prob <- c(0.1, 0.1, 0.1, 0.1, 0.6)
+
+# Number of beds in the stroke ward
+num_beds <- 25
+
+```
+
+```{r}
+
+# the function below is created to generate the inter-arrival times between the patients.
+
+generate_interarrival_times <- function(total_patients, arrival_rate) {
+  interarrival_times <- rexp(total_patients, rate = arrival_rate)
+  return(interarrival_times)
+}
+
+# the function is created to assign patients (from total_patients) randomly a stroke level. This assignment is based on the probabilities defined in the storke_level_prob. 
+
+assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+  stroke_levels <- sample(1:length(stroke_level_prob), 
+                          size = total_patients, replace = TRUE,
+                          prob = stroke_level_prob)
+  return(stroke_levels)
+}
+
+interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+
+arrivals_data <- data.frame(interarrival_times, stroke_levels)
+
+# view(arrivals_data)
+
+
+```
+
