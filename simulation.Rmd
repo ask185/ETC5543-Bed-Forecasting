@@ -22,8 +22,8 @@ arrival_rate <- 1/6  # average 6 patients per day
 bed_occupation_time <- list(
   very_mild = 1,
   mild = c(3, 7),
-  moderate = 0,  # patients sent to rehab center may stay up to 2 weeks in the ward
-  severe_nursing = 0,  # patients sent to nursing center may stay up to 2 weeks
+  moderate = 14,  # patients sent to rehab center may stay up to 2 weeks in the ward
+  severe_nursing = 14,  # patients sent to nursing center may stay up to 2 weeks
   severe = 14
 )
 
@@ -61,5 +61,17 @@ arrivals_data <- data.frame(interarrival_times, stroke_levels)
 # view(arrivals_data)
 
 
+```
+
+
+```{r}
+
+# Update bed occupation times for all beds
+update_bed_occupation_times <- function(beds, interarrival_time) {
+  beds <- pmax(beds - interarrival_time, 0)
+  return(beds)
+}
+
+# interarrival time is defined earlier in the code. This variable is based on the generate_interarrival_times function where we input the total number of patients and arrival rate.
 ```
 
