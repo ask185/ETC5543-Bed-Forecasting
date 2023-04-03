@@ -33,6 +33,10 @@ stroke_level_prob <- c(0.1, 0.1, 0.1, 0.1, 0.6)
 # Number of beds in the stroke ward
 num_beds <- 25
 
+# Initializing the queue 
+
+queue <- list()
+
 ```
 
 ```{r}
@@ -44,7 +48,7 @@ generate_interarrival_times <- function(total_patients, arrival_rate) {
   return(interarrival_times)
 }
 
-# the function is created to assign patients (from total_patients) randomly a stroke level. This assignment is based on the probabilities defined in the storke_level_prob. 
+# the function is created to assign patients (from total_patients) randomly a stroke level. This assignment is based on the probabilities defined in the stroke_level_prob. 
 
 assign_stroke_levels <- function(total_patients, stroke_level_prob) {
   stroke_levels <- sample(1:length(stroke_level_prob), 
@@ -52,6 +56,8 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
                           prob = stroke_level_prob)
   return(stroke_levels)
 }
+
+# if the probability of the severe stroke is really high, say 0.7, then the sample() function would generate random samples of 1000 patients wherein most patients would be assigned the severe stroke level category. I defined the total number of patients and the probabilities of the stroke level earlier.
 
 interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
@@ -73,5 +79,27 @@ update_bed_occupation_times <- function(beds, interarrival_time) {
 }
 
 # interarrival time is defined earlier in the code. This variable is based on the generate_interarrival_times function where we input the total number of patients and arrival rate.
+
+# pmax function makes sure that the occupation times do not become negative. 0 in this context means that the bed is available (the patients has used up the service, now it is available for the other users to use)
+```
+
+```{r}
+# Function to assign a bed to a patient
+assign_bed <- function(beds, occupation_time) {
+  available_beds <- which(beds == 0) # this finds the beds with occupation time equal to 0.
+  if (length(available_beds) > 0) {
+    beds[available_beds[1]] <- occupation_time
+  }
+  return(beds)
+}
+
+# this condition checks if there are beds available (if the length of the available beds vector is greater than zero then that means there are beds available for patients in the queue). If this condition is true then the first available bed in the vector will be set equal to the occupation time of the next patient
+
+# Function to add a patient to the queue
+add_to_queue <- function(queue, occupation_time) {
+  queue <- append(queue, occupation_time)
+  return(queue)
+}
+
 ```
 
