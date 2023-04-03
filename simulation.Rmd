@@ -33,6 +33,8 @@ stroke_level_prob <- c(0.1, 0.1, 0.1, 0.1, 0.6)
 # Number of beds in the stroke ward
 num_beds <- 25
 
+beds <- rep(0, num_beds)  # Initializing bed occupation times to 0 for each bed
+
 # Initializing the queue 
 
 queue <- list()
