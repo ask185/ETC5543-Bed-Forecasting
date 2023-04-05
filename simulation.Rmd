@@ -2,7 +2,10 @@
 title: "Simulation of the data"
 author: "Aryan Sultan"
 date: "2023-03-29"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+
 ---
 
 
@@ -11,46 +14,45 @@ output: html_document
 
 Here I am not using any package to simulate the data.
 
-```{r}
+```{r eval=T, echo=TRUE, message=F}
+
 library(tidyverse)
 
-total_patients <- 1000
-arrival_rate <- 1/6  # average 6 patients per day
+total_patients <- 1000 # assuming there are 1000 
+arrival_rate <- 6  # average 6 patients per day
 
 # Bed occupation time (in days) for each stroke level
 
 bed_occupation_time <- list(
   very_mild = 1,
   mild = c(3, 7),
-  moderate = 14,  # patients sent to rehab center may stay up to 2 weeks in the ward
-  severe_nursing = 14,  # patients sent to nursing center may stay up to 2 weeks
-  severe = 14
+  moderate = c(3,14),  # patients sent to rehab center may stay up to 2 weeks in the ward
+  severe_nursing = c(3,21),  # patients sent to nursing center may stay up to 2 weeks
+  severe = c(1,21) # die
 )
 
 # Probability of each stroke level
-stroke_level_prob <- c(0.1, 0.1, 0.1, 0.1, 0.6)
+stroke_level_prob <- c(0.2, 0.2, 0.35, 0.1, 0.15)
 
 # Number of beds in the stroke ward
 num_beds <- 25
-
-beds <- rep(0, num_beds)  # Initializing bed occupation times to 0 for each bed
-
-# Initializing the queue 
-
-queue <- list()
 
 ```
 
 ```{r}
 
 # the function below is created to generate the inter-arrival times between the patients.
+# the inter arrival follows an exponential distribution hence rexp(), arrival rate is
+# defined above
 
 generate_interarrival_times <- function(total_patients, arrival_rate) {
   interarrival_times <- rexp(total_patients, rate = arrival_rate)
   return(interarrival_times)
 }
 
-# the function is created to assign patients (from total_patients) randomly a stroke level. This assignment is based on the probabilities defined in the stroke_level_prob. 
+# the function is created to assign patients (from total_patients) randomly a stroke level.
+# This assignment is based on the probabilities defined in the stroke_level_prob. 
+# To achieve this we use sample()
 
 assign_stroke_levels <- function(total_patients, stroke_level_prob) {
   stroke_levels <- sample(1:length(stroke_level_prob), 
@@ -59,49 +61,149 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
   return(stroke_levels)
 }
 
-# if the probability of the severe stroke is really high, say 0.7, then the sample() function would generate random samples of 1000 patients wherein most patients would be assigned the severe stroke level category. I defined the total number of patients and the probabilities of the stroke level earlier.
-
-interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 
-arrivals_data <- data.frame(interarrival_times, stroke_levels)
+# if the probability of the severe stroke is really high, say 0.7, 
+# then the sample() function would generate random samples of 1000 patients 
+# wherein most patients would be assigned the severe stroke level category. 
 
-# view(arrivals_data)
+# Function to generate length of stay for each patient
+# this function takes in three arguments each of which has been defined earlier
 
-
-```
-
-
-```{r}
-
-# Update bed occupation times for all beds
-update_bed_occupation_times <- function(beds, interarrival_time) {
-  beds <- pmax(beds - interarrival_time, 0)
-  return(beds)
-}
-
-# interarrival time is defined earlier in the code. This variable is based on the generate_interarrival_times function where we input the total number of patients and arrival rate.
-
-# pmax function makes sure that the occupation times do not become negative. 0 in this context means that the bed is available (the patients has used up the service, now it is available for the other users to use)
-```
-
-```{r}
-# Function to assign a bed to a patient
-assign_bed <- function(beds, occupation_time) {
-  available_beds <- which(beds == 0) # this finds the beds with occupation time equal to 0.
-  if (length(available_beds) > 0) {
-    beds[available_beds[1]] <- occupation_time
+generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
+  length_of_stay <- numeric(total_patients)
+  # for every patient in total patients (1000)
+  for (i in 1:total_patients) {
+    # creating a variable stroke_level that stores the severity of the stroke 
+    # (levels/category) of the current (i the) patient in the iteration
+    stroke_level <- stroke_levels[i]
+    # if the stroke level is 1 (very mild) then set the length of the stay == bed occupation
+    # times of the patient with the level 1 stroke. This is done for every patient with level
+    # 1 stroke
+    if (stroke_level == 1) {
+      length_of_stay[i] <- bed_occupation_time[[stroke_level]]
+    } else {
+      # else if the stroke level is not 1 
+      # then set the length of stay of the patient equal to 
+      # random number of days between the lower and upper bound of the days 
+      # the patient with a certain level of severity would need to stay
+      # in the ward
+      # sample() is used here to take on random number of days
+      # between the lower bound and upper bound of the days
+      # [[1]] indicates the lower bound and [[2]] indicates the upper bound
+      length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)
+    }
   }
-  return(beds)
+  
+  return(length_of_stay)
 }
 
-# this condition checks if there are beds available (if the length of the available beds vector is greater than zero then that means there are beds available for patients in the queue). If this condition is true then the first available bed in the vector will be set equal to the occupation time of the next patient
 
-# Function to add a patient to the queue
-add_to_queue <- function(queue, occupation_time) {
-  queue <- append(queue, occupation_time)
-  return(queue)
-}
+
+# Generate length_of_stay for each patient
+length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+
+# Add number_of_patients and length_of_stay to arrivals_data
+
+interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+
+stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+
+length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+
+arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
+
+
+head(arrivals_data)
+
 
 ```
 
+
+
+```{r}
+
+stroke_simulation <- function(total_patients, arrival_rate, 
+                              bed_occupation_time, stroke_level_prob, 
+                              num_beds) {
+  
+  interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+  stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+  length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+  
+  # initializing the beds and queue 
+  beds <- rep(0, num_beds)
+  queue <- list()
+  
+
+# interarrival_time is an input parameter for this function, 
+# which represents the time between patient arrivals. 
+# This variable is based on the generate_interarrival_times function, 
+# where we input the total number of patients and arrival rate.
+
+# The pmax function ensures that the bed occupation times do not become negative. 
+# A value of 0 in this context means that the bed is available 
+# (i.e., the patient has completed their stay, 
+# and the bed is now available for other patients).
+  
+  update_bed_occupation_times <- function(beds, interarrival_time) {
+  beds <- pmax(beds - interarrival_time, 0)
+  
+  # 'beds' is a numeric vector that represents the current remaining 
+  # bed occupation time for each bed in the simulation.
+  # Each element in this vector corresponds to a bed in the hospital
+  # ward. A value of 0 means that the bed is available for use.
+  # Subtracting the interarrival_time from each element of 'beds' 
+  # updates the remaining bed occupation times, considering the 
+  # passage of time between patient arrivals.
+  # The pmax function is used to ensure that the resulting bed 
+  # occupation times do not become negative, meaning that a 
+  # bed with a remaining time less than or equal to the interarrival_time
+  # will be considered available (set to 0).
+  return(beds)
+}
+  
+  # for every patient in total patients (1000)
+  
+  for (i in 1:total_patients) {
+    
+    # update the beds variable with the bed occupation times 
+    # of all the patients arriving at the inter-arrival times
+    
+    beds <- update_bed_occupation_times(beds, interarrival_times[i])
+    # creating a new variable available beds to keep track 
+    # of the available beds the beds that are available will
+    # have the bed occupation time of 0 so in this variable 
+    # I store the beds that are available hence which(beds==0)
+    
+    available_beds <- which(beds == 0)
+    
+    # here if the length of the available beds vector 
+    # is greater than 0 which means that 
+    # there is at least one bed with bed occupation times ==0 
+    # then assign the first available bed to the patient 
+    # by setting this available bed (bed occupation times ==0) 
+    # to the length of the stay of the patient 
+    # (whatever the severity of that patient might be)
+    
+    if (length(available_beds) > 0) {
+      beds[available_beds[1]] <- length_of_stay[i]
+    } else {
+      # if there is no bed available then append the queue list
+      queue <- append(queue, length_of_stay[i])
+    }
+  }
+  
+  return(list(beds = beds, queue = queue))
+}
+
+stroke_simulation(total_patients = 2000,arrival_rate = 6, 
+                  bed_occupation_time = bed_occupation_time,
+                  stroke_level_prob = stroke_level_prob, 
+                  num_beds = 25) -> stroke_sim1
+
+# stroke_sim1 would show the list of the beds remaining occupation times 
+# (in number of days the bed would become available.)
+# the queue list show the patients in the queue and
+# their corresponding occupation times.
+```
