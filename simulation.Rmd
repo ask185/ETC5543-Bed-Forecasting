@@ -19,7 +19,8 @@ library(tidyverse)
 
 total_patients <- 2000 # assuming there are 2000 all around the year
 patients_per_month <- 2000/12 # patients per month
-arrival_rate <- 6  # average 6 patients per day
+days_per_month <- 30
+arrival_rate <- patients_per_month/days_per_month
 
 # Bed occupation time (in days) for each stroke level
 
@@ -64,7 +65,7 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 
 # if the probability of the severe stroke is really high, say 0.7, 
-# then the sample() function would generate random samples of 1000 patients 
+# then the sample() function would generate random samples of 2000 patients 
 # wherein most patients would be assigned the severe stroke level category. 
 
 # Function to generate length of stay for each patient
@@ -122,7 +123,7 @@ head(arrivals_data)
 
 
 ```{r}
-
+set.seed(2023)
 stroke_simulation <- function(total_patients, arrival_rate, 
                               bed_occupation_time, stroke_level_prob, 
                               num_beds) {
@@ -218,117 +219,191 @@ stroke_sim1_month <- stroke_simulation(total_patients = patients_per_month,
 ```
 
 
+
 ```{r}
-num_bed_range <- seq(20, 40, by = 1)
 
-performance_metrics_list <- lapply(num_bed_range, function(num_beds) {
-  stroke_sim_month <- stroke_simulation(total_patients = patients_per_month,
-                                        arrival_rate = 6,
-                                        bed_occupation_time = bed_occupation_time,
-                                        stroke_level_prob = stroke_level_prob,
-                                        num_beds = num_beds)
+set.seed(2023)
+run_simulation <- function(arrival_rate, bed_occupation_time, stroke_level_prob, total_patients, num_simulations) {
+  num_bed_range <- seq(20, 40, by = 1)
   
-  occupied_beds_month <- sum(stroke_sim_month$beds > 0)
-  total_beds_month <- length(stroke_sim_month$beds)
-  utilization_month <- occupied_beds_month / total_beds_month
+  performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    lapply(num_bed_range, function(num_beds) {
+      stroke_sim_month <- stroke_simulation(total_patients = total_patients,
+                                            arrival_rate = arrival_rate,
+                                            bed_occupation_time = bed_occupation_time,
+                                            stroke_level_prob = stroke_level_prob,
+                                            num_beds = num_beds)
+      
+      occupied_beds_month <- sum(stroke_sim_month$beds > 0)
+      total_beds_month <- length(stroke_sim_month$beds)
+      utilization_month <- occupied_beds_month / total_beds_month
+      
+      total_wait_times_month <- sum(unlist(stroke_sim_month$queue))
+      num_patients_queue_month <- length(stroke_sim_month$queue)
+      avg_wait_times_month <- total_wait_times_month / num_patients_queue_month
+      
+      average_time_in_queue_month = sum(unlist(stroke_sim_month$queue)) / num_patients_queue_month
+      average_queue_length_month = arrival_rate * average_time_in_queue_month
+      max_queue_length_month <- length(stroke_sim_month$queue)
+      
+      proportion_patients_waiting_month <- num_patients_queue_month / total_patients
+      percent_patients_waiting_month <- proportion_patients_waiting_month * 100
+      
+      avg_length_of_stay_month <- (sum(stroke_sim_month$length_of_stay)) / total_patients
+      
+      performance_metrics_month <- data.frame(num_beds = num_beds,
+                                              utilization_per_month = utilization_month,
+                                              avg_wait_times_month = avg_wait_times_month,
+                                              avg_queue_length_month = average_queue_length_month,
+                                              max_queue_length_month = max_queue_length_month,
+                                              proportion_patients_waiting_month = proportion_patients_waiting_month,
+                                              percent_patients_wait_month = percent_patients_waiting_month,
+                                              avg_length_of_stay_month = avg_length_of_stay_month)
+      return(performance_metrics_month)
+    })
+  })
   
-  total_wait_times_month <- sum(unlist(stroke_sim_month$queue))
-  num_patients_queue_month <- length(stroke_sim_month$queue)
-  avg_wait_times_month <- total_wait_times_month / num_patients_queue_month
-  
-  average_time_in_queue_month = sum(unlist(stroke_sim_month$queue)) / num_patients_queue_month
-  average_queue_length_month = arrival_rate * average_time_in_queue_month
-  max_queue_length_month <- length(stroke_sim_month$queue)
-  
-  proportion_patients_waiting_month <- num_patients_queue_month / patients_per_month
-  percent_patients_waiting_month <- proportion_patients_waiting_month * 100
-  
-  avg_length_of_stay_month <- (sum(stroke_sim_month$length_of_stay)) / patients_per_month
-  
-  performance_metrics_month <- data.frame(num_beds = num_beds,
-                                          utilization_per_month = utilization_month,
-                                          avg_wait_times_month = avg_wait_times_month,
-                                          avg_queue_length_month = average_queue_length_month,
-                                          max_queue_length_month = max_queue_length_month,
-                                          proportion_patients_waiting_month = proportion_patients_waiting_month,
-                                          percent_patients_wait_month = percent_patients_waiting_month,
-                                          avg_length_of_stay_month = avg_length_of_stay_month)
-  return(performance_metrics_month)
-})
+  return(performance_metrics_list)
+}
 
-performance_metrics_month <- do.call(rbind, performance_metrics_list)
-performance_metrics_month <- round(performance_metrics_month, 2)
-
-performance_metrics_month_long <- performance_metrics_month %>%
-  gather(key = "metric", value = "value", -num_beds)
-
-performance_metrics_month_long
+results <- run_simulation(arrival_rate = arrival_rate, 
+                          bed_occupation_time = bed_occupation_time, 
+                          stroke_level_prob = stroke_level_prob, 
+                          total_patients = patients_per_month, 
+                          num_simulations = 1000)
 
 ```
 
-```{r}
-ggplot(performance_metrics_month_long, aes(x = num_beds, y = value)) +
-  geom_line() +
-  facet_wrap(~ metric, scales = "free_y") +
-  labs(title = "Performance Metrics for Different Number of Beds",
-       x = "Number of Beds",
-       y = "Value") +
-  theme_minimal()
-
-ggplot(performance_metrics_month, aes(x=num_beds, y= utilization_per_month)) +
-  geom_line()+
-    labs(title = "Performance Metrics for Different Number of Beds",
-       x = "Number of Beds",
-       y = "Value") +
-  theme_minimal()
-
-
-ggplot(performance_metrics_month, aes(x=num_beds, y= avg_wait_times_month)) +
-  geom_line()+
-    labs(title = "Performance Metrics for Different Number of Beds",
-       x = "Number of Beds",
-       y = "average wait times") +
-  theme_minimal()
-
-
-```
 
 ```{r}
+summarize_simulation_results <- function(results) {
+  all_simulations <- do.call(rbind, lapply(results, do.call, what = rbind))
+  
+  summary_results <- aggregate(cbind(utilization_per_month, avg_wait_times_month, avg_queue_length_month,
+                                     max_queue_length_month, proportion_patients_waiting_month, percent_patients_wait_month,
+                                     avg_length_of_stay_month) ~ num_beds,
+                                data = all_simulations, FUN = function(x) c(mean = mean(x), sd = sd(x)))
+  
+  summary_results <- cbind(summary_results[, "num_beds"], as.data.frame(matrix(unlist(summary_results[, -1]), ncol = 14, byrow = FALSE)))
+  colnames(summary_results) <- c("num_beds", "utilization_per_month.mean", "utilization_per_month.sd",
+                                 "avg_wait_times_month.mean", "avg_wait_times_month.sd",
+                                 "avg_queue_length_month.mean", "avg_queue_length_month.sd",
+                                 "max_queue_length_month.mean", "max_queue_length_month.sd",
+                                 "proportion_patients_waiting_month.mean", "proportion_patients_waiting_month.sd",
+                                 "percent_patients_wait_month.mean", "percent_patients_wait_month.sd",
+                                 "avg_length_of_stay_month.mean", "avg_length_of_stay_month.sd")
+  
+  return(summary_results)
+}
+
+summary_results <- summarize_simulation_results(results)
+
+
 library(ggplot2)
 
-# Use a custom color palette
-custom_colors <- c("utilization_per_month" = "blue",
-                   "avg_wait_times_month" = "red",
-                   "avg_queue_length_month" = "green",
-                   "max_queue_length_month" = "purple",
-                   "proportion_patients_waiting_month" = "orange",
-                   "percent_patients_wait_month" = "brown",
-                   "avg_length_of_stay_month" = "magenta")
+# Plot Utilization per Month
+utilization_plot <- ggplot(summary_results, aes(x = num_beds, y = utilization_per_month.mean, ymin = utilization_per_month.mean - utilization_per_month.sd, ymax = utilization_per_month.mean + utilization_per_month.sd)) +
+  geom_line() +
+  geom_errorbar(width = 0.5) +
+  labs(title = "Utilization per Month vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Utilization per Month (mean ± sd)")
 
-# Creating a plot that has all the performance measures shown all in one
+# Plot Average Wait Times per Month
+avg_wait_times_plot <- ggplot(summary_results, aes(x = num_beds, y = avg_wait_times_month.mean, ymin = avg_wait_times_month.mean - avg_wait_times_month.sd, ymax = avg_wait_times_month.mean + avg_wait_times_month.sd)) +
+  geom_line() +
+  geom_errorbar(width = 0.5) +
+  labs(title = "Average Wait Times per Month vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Average Wait Times per Month (mean ± sd)")
+
+# Plot Average Queue Length per Month
+avg_queue_length_plot <- ggplot(summary_results, aes(x = num_beds, y = avg_queue_length_month.mean, ymin = avg_queue_length_month.mean - avg_queue_length_month.sd, ymax = avg_queue_length_month.mean + avg_queue_length_month.sd)) +
+  geom_line() +
+  geom_errorbar(width = 0.5) +
+  labs(title = "Average Queue Length per Month vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Average Queue Length per Month (mean ± sd)")
+
+# Plot Max Queue Length per Month
+max_queue_length_plot <- ggplot(summary_results, aes(x = num_beds, y = max_queue_length_month.mean, ymin = max_queue_length_month.mean - max_queue_length_month.sd, ymax = max_queue_length_month.mean + max_queue_length_month.sd)) +
+  geom_line() +
+  geom_errorbar(width = 0.5) +
+  labs(title = "Max Queue Length per Month vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Max Queue Length per Month (mean ± sd)")
+
+# Plot Proportion of Patients Waiting per Month
+proportion_patients_waiting_plot <- ggplot(summary_results, aes(x = num_beds, y = proportion_patients_waiting_month.mean, ymin = proportion_patients_waiting_month.mean - proportion_patients_waiting_month.sd, ymax = proportion_patients_waiting_month.mean + proportion_patients_waiting_month.sd)) +
+  geom_line() +
+  geom_errorbar(width = 0.5) +
+  labs(title = "Proportion of Patients Waiting per Month vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Proportion of Patients Waiting per Month (mean ± sd)")
+
+# Display the plots
+print(utilization_plot)
+print(avg_wait_times_plot)
+print(avg_queue_length_plot)
+print(max_queue_length_plot)
+print(proportion_patients_waiting_plot)
 
 
 
-joint_plot <- ggplot(performance_metrics_month_long, aes(x = num_beds, y = value, color = metric)) +
-  geom_line(size = 1) +
-  scale_color_manual(values = custom_colors) +
-  labs(title = "Stroke Ward Performance Metrics",
+```
+
+```{r}
+# Make sure to install the ggthemes library if you haven't already
+# install.packages("ggthemes")
+
+library(ggplot2)
+library(ggthemes)
+
+# Custom color palette
+custom_palette <- c("mean" = "#1c9099", "std" = "#f03b20")
+
+# Custom line types
+custom_line_types <- c("mean" = "solid", "std" = "dashed")
+
+# Custom facet labels
+custom_labels <- c("utilization_per_month" = "Utilization per Month",
+                   "avg_wait_times_month" = "Avg. Wait Times per Month",
+                   "avg_queue_length_month" = "Avg. Queue Length per Month",
+                   "max_queue_length_month" = "Max Queue Length per Month",
+                   "proportion_patients_waiting_month" = "Proportion of Patients Waiting per Month",
+                   "percent_patients_wait_month" = "Percentage of Patients Waiting per Month",
+                   "avg_length_of_stay_month" = "Avg. Length of Stay per Month")
+
+# Create the fancy faceted plot
+
+long_summary_results <- tidyr::pivot_longer(summary_results, -num_beds, names_to = c("metric", "stat"), names_sep = "\\.", values_to = "value")
+
+fancy_plot <- ggplot(long_summary_results, aes(x = num_beds, y = value, color = stat, linetype = stat)) +
+  geom_line(size = 1.2) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 2, labeller = labeller(metric = custom_labels)) +
+  labs(title = "Stroke Ward Simulation Performance Metrics",
        x = "Number of Beds",
        y = "Value",
-       color = "Metric") +
-  theme_minimal() +
-  theme(text = element_text(size = 12),
-        axis.text = element_text(size = 10),
+       color = "Statistic",
+       linetype = "Statistic") +
+  scale_color_manual(values = custom_palette) +
+  scale_linetype_manual(values = custom_line_types) +
+  theme_tufte() +
+  theme(legend.position = "bottom",
+        strip.text = element_text(size = 12),
+        plot.title = element_text(size = 16, hjust = 0.5, face = "bold"),
         axis.title = element_text(size = 12, face = "bold"),
         legend.title = element_text(size = 12, face = "bold"),
-        legend.text = element_text(size = 10),
-        plot.title = element_text(size = 14, face = "bold", hjust = 0.5))
+        legend.text = element_text(size = 10))
 
-# Display the fancy plot
 print(fancy_plot)
 
 
 ```
+
+
+
+
 
 
 
