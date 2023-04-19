@@ -35,8 +35,6 @@ bed_occupation_time <- list(
 # Probability of each stroke level
 stroke_level_prob <- c(0.2, 0.2, 0.35, 0.1, 0.15)
 
-# Number of beds in the stroke ward
-num_beds <- 25
 
 ```
 
@@ -198,16 +196,16 @@ stroke_simulation <- function(total_patients, arrival_rate,
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
 
-stroke_simulation(total_patients = total_patients,arrival_rate = 6, 
-                  bed_occupation_time = bed_occupation_time,
-                  stroke_level_prob = stroke_level_prob, 
-                  num_beds = 25) -> stroke_sim1
-
-stroke_sim1_month <- stroke_simulation(total_patients = patients_per_month, 
-                                       arrival_rate = 6,
-                                       bed_occupation_time = bed_occupation_time,
-                                       stroke_level_prob = stroke_level_prob,
-                                       num_beds = 25)
+# stroke_simulation(total_patients = total_patients,arrival_rate = 6, 
+#                   bed_occupation_time = bed_occupation_time,
+#                   stroke_level_prob = stroke_level_prob, 
+#                   num_beds = 25) -> stroke_sim1
+# 
+# stroke_sim1_month <- stroke_simulation(total_patients = patients_per_month, 
+#                                        arrival_rate = 6,
+#                                        bed_occupation_time = bed_occupation_time,
+#                                        stroke_level_prob = stroke_level_prob,
+#                                        num_beds = 25)
 
 
 # stroke_sim1 would show the list of the beds remaining occupation times 
@@ -224,7 +222,7 @@ stroke_sim1_month <- stroke_simulation(total_patients = patients_per_month,
 
 set.seed(2023)
 run_simulation <- function(arrival_rate, bed_occupation_time, stroke_level_prob, total_patients, num_simulations) {
-  num_bed_range <- seq(20, 40, by = 1)
+  num_bed_range <- seq(20, 80, by = 1)
   
   performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
     lapply(num_bed_range, function(num_beds) {
@@ -270,7 +268,7 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time, 
                           stroke_level_prob = stroke_level_prob, 
                           total_patients = patients_per_month, 
-                          num_simulations = 1000)
+                          num_simulations = 2000)
 
 ```
 
@@ -351,7 +349,7 @@ print(proportion_patients_waiting_plot)
 
 
 ```
-
+**80-85%** utilization is considered optimal in most healthcare settings <ref/>https://www.bmj.com/content/319/7203/155<ref>
 ```{r}
 # Make sure to install the ggthemes library if you haven't already
 # install.packages("ggthemes")
