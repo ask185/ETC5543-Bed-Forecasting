@@ -20,8 +20,10 @@ set.seed(2023)
 # Parameters
 
 total_patients <- 2000 # assuming there are 2000 all around the year
+total_patients_future <- 2500 # assuming the 2500 patients in the future 
 patients_per_month <- 2000/12 # patients per month
-arrival_rate <- total_patients/365.25  # average 6 patients per day
+arrival_rate <- total_patients/365  # average 6 patients per day
+arrival_rate_future <- total_patients_future/365 # average 7 patients per day
 
 # Bed occupation time (in days) for each stroke level
 
@@ -61,8 +63,6 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
   return(stroke_levels)
 }
 
-stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
-
 # if the probability of the severe stroke is really high, say 0.7, 
 # then the sample() function would generate random samples of 2000 patients 
 # wherein most patients would be assigned the severe stroke level category. 
@@ -88,9 +88,6 @@ generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_
       # random number of days between the lower and upper bound of the days 
       # the patient with a certain level of severity would need to stay
       # in the ward
-      # sample() is used here to take on random number of days
-      # between the lower bound and upper bound of the days
-      # [[1]] indicates the lower bound and [[2]] indicates the upper bound
       length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)
     }
   }
@@ -115,7 +112,15 @@ arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
 
 head(arrivals_data)
+# future
+interarrival_times_future <- generate_interarrival_times(total_patients = total_patients_future,
+                                                         arrival_rate_future)
+stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_future,
+                                             stroke_level_prob = stroke_level_prob)
+length_of_stay_future <- generate_length_of_stay(total_patients_future, bed_occupation_time, stroke_levels_future)
 
+arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_future,
+                                   length_of_stay_future)
 
 ```
 
@@ -196,17 +201,57 @@ stroke_simulation <- function(total_patients, arrival_rate,
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
 
-stroke_sim_50 <- stroke_simulation(total_patients= total_patients, arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, stroke_level_prob= stroke_level_prob, num_beds= 50)
+# stroke sim current
 
-stroke_sim_40 <- stroke_simulation(total_patients= total_patients, arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, stroke_level_prob= stroke_level_prob, num_beds= 40)
+stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 50)
 
-stroke_sim_30 <- stroke_simulation(total_patients= total_patients, arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, stroke_level_prob= stroke_level_prob, num_beds= 30)
+stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 40)
 
-stroke_sim_20 <- stroke_simulation(total_patients= total_patients, arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, stroke_level_prob= stroke_level_prob, num_beds= 20)
+stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob,
+                              num_beds= 30)
+
+stroke_sim_20 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 20)
+
+# stroke sim future
+
+stroke_sim_50_f <- stroke_simulation(total_patients= total_patients_future, 
+                                   arrival_rate= arrival_rate_future, 
+                                   bed_occupation_time = bed_occupation_time, 
+                                   stroke_level_prob= stroke_level_prob, 
+                                   num_beds= 50)
+
+stroke_sim_40_f <- stroke_simulation(total_patients= total_patients_future, 
+                                   arrival_rate= arrival_rate_future, 
+                                   bed_occupation_time = bed_occupation_time, 
+                                   stroke_level_prob= stroke_level_prob, 
+                                   num_beds= 40)
+
+stroke_sim_30_f <- stroke_simulation(total_patients= total_patients_future, 
+                                     arrival_rate= arrival_rate_future, 
+                                     bed_occupation_time = bed_occupation_time,
+                                     stroke_level_prob= stroke_level_prob, 
+                                     num_beds= 30)
+
+stroke_sim_20_f <- stroke_simulation(total_patients= total_patients_future, 
+                                     arrival_rate= arrival_rate_future, 
+                                     bed_occupation_time = bed_occupation_time,
+                                     stroke_level_prob= stroke_level_prob, 
+                                     num_beds= 20)
 ```
 
 
@@ -259,6 +304,12 @@ run_simulation <- function(arrival_rate, bed_occupation_time, stroke_level_prob,
 }
 
 results <- run_simulation(arrival_rate = arrival_rate, bed_occupation_time = bed_occupation_time, stroke_level_prob = stroke_level_prob, total_patients = total_patients, num_simulations = 120)
+
+results_future <- run_simulation(arrival_rate = arrival_rate_future, 
+                                 bed_occupation_time = bed_occupation_time,
+                                 stroke_level_prob = stroke_level_prob, 
+                                 total_patients = total_patients_future, 
+                                 num_simulations = 120)
 
 ```
 
@@ -314,6 +365,9 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
 ```
 
 
+```{r}
+# visualization for the future
+```
 
 
 
