@@ -1,18 +1,3 @@
----
-title: "Simulation of the data"
-author: "Aryan Sultan"
-date: "2023-03-29"
-output:
-  html_document: default
-  pdf_document: default
-
----
-
-
-### Data simulation
-
-
-```{r}
 library(tidyverse)
 library(ggplot2)
 
@@ -143,33 +128,33 @@ stroke_simulation <- function(total_patients, arrival_rate,
   beds <- rep(0, num_beds)
   queue <- list()
   
-
-# inter-arrival_time is an input parameter for this function, 
-# which represents the time between patient arrivals. 
-# This variable is based on the generate_interarrival_times function, 
-# where we input the total number of patients and arrival rate.
-
-# The pmax function ensures that the bed occupation times do not become negative. 
-# A value of 0 in this context means that the bed is available 
-# (i.e., the patient has completed their stay, 
-# and the bed is now available for other patients).
+  
+  # inter-arrival_time is an input parameter for this function, 
+  # which represents the time between patient arrivals. 
+  # This variable is based on the generate_interarrival_times function, 
+  # where we input the total number of patients and arrival rate.
+  
+  # The pmax function ensures that the bed occupation times do not become negative. 
+  # A value of 0 in this context means that the bed is available 
+  # (i.e., the patient has completed their stay, 
+  # and the bed is now available for other patients).
   
   update_bed_occupation_times <- function(beds, interarrival_time) {
-  beds <- pmax(beds - interarrival_time, 0)
-  
-  # 'beds' is a numeric vector that represents the current remaining 
-  # bed occupation time for each bed in the simulation.
-  # Each element in this vector corresponds to a bed in the hospital
-  # ward. A value of 0 means that the bed is available for use.
-  # Subtracting the interarrival_time from each element of 'beds' 
-  # updates the remaining bed occupation times, considering the 
-  # passage of time between patient arrivals.
-  # The pmax function is used to ensure that the resulting bed 
-  # occupation times do not become negative, meaning that a 
-  # bed with a remaining time less than or equal to the interarrival_time
-  # will be considered available (set to 0).
-  return(beds)
-}
+    beds <- pmax(beds - interarrival_time, 0)
+    
+    # 'beds' is a numeric vector that represents the current remaining 
+    # bed occupation time for each bed in the simulation.
+    # Each element in this vector corresponds to a bed in the hospital
+    # ward. A value of 0 means that the bed is available for use.
+    # Subtracting the interarrival_time from each element of 'beds' 
+    # updates the remaining bed occupation times, considering the 
+    # passage of time between patient arrivals.
+    # The pmax function is used to ensure that the resulting bed 
+    # occupation times do not become negative, meaning that a 
+    # bed with a remaining time less than or equal to the interarrival_time
+    # will be considered available (set to 0).
+    return(beds)
+  }
   
   # for every patient in total patients (1000)
   
@@ -209,41 +194,41 @@ stroke_simulation <- function(total_patients, arrival_rate,
 
 stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 50)
-
-stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 40)
-
-stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob,
-                              num_beds= 30)
-
-stroke_sim_20 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 20)
-
-# stroke sim future
-
-stroke_sim_50_f <- stroke_simulation(total_patients= total_patients_future, 
-                                   arrival_rate= arrival_rate_future, 
                                    bed_occupation_time = bed_occupation_time, 
                                    stroke_level_prob= stroke_level_prob, 
                                    num_beds= 50)
 
-stroke_sim_40_f <- stroke_simulation(total_patients= total_patients_future, 
-                                   arrival_rate= arrival_rate_future, 
+stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
                                    bed_occupation_time = bed_occupation_time, 
                                    stroke_level_prob= stroke_level_prob, 
                                    num_beds= 40)
+
+stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                                   bed_occupation_time = bed_occupation_time, 
+                                   stroke_level_prob= stroke_level_prob,
+                                   num_beds= 30)
+
+stroke_sim_20 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                                   bed_occupation_time = bed_occupation_time, 
+                                   stroke_level_prob= stroke_level_prob, 
+                                   num_beds= 20)
+
+# stroke sim future
+
+stroke_sim_50_f <- stroke_simulation(total_patients= total_patients_future, 
+                                     arrival_rate= arrival_rate_future, 
+                                     bed_occupation_time = bed_occupation_time, 
+                                     stroke_level_prob= stroke_level_prob, 
+                                     num_beds= 50)
+
+stroke_sim_40_f <- stroke_simulation(total_patients= total_patients_future, 
+                                     arrival_rate= arrival_rate_future, 
+                                     bed_occupation_time = bed_occupation_time, 
+                                     stroke_level_prob= stroke_level_prob, 
+                                     num_beds= 40)
 
 stroke_sim_30_f <- stroke_simulation(total_patients= total_patients_future, 
                                      arrival_rate= arrival_rate_future, 
@@ -268,8 +253,8 @@ run_simulation <- function(arrival_rate,
                            stroke_level_prob, 
                            total_patients, 
                            num_simulations) {
-    num_bed_range <- seq(25,50, by=1)
-
+  num_bed_range <- seq(25,50, by=1)
+  
   performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
     lapply(num_bed_range, function(num_beds) {
       stroke_sim <- stroke_simulation(total_patients =  total_patients,
@@ -277,7 +262,7 @@ run_simulation <- function(arrival_rate,
                                       bed_occupation_time = bed_occupation_time,
                                       stroke_level_prob = stroke_level_prob,
                                       num_beds = num_beds)
-                                      
+      
       num_beds <- length(stroke_sim$beds)
       total_patients <- total_patients
       
@@ -303,11 +288,11 @@ run_simulation <- function(arrival_rate,
                                               proportion_patients_waiting = proportion_patients_waiting,
                                               percent_patients_waiting = percent_patients_waiting,
                                               avg_length_of_stay = avg_length_of_stay)
-                                              
+      
       return(performance_metrics_month)
     })
   })
-
+  
   return(performance_metrics_list)
 }
 
@@ -328,7 +313,6 @@ results_future <- run_simulation(arrival_rate = arrival_rate_future,
 ```{r}
 # Combine all the data frames into one
 results_df <- do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
-
 
 # Load the ggplot2 library
 library(ggplot2)
@@ -376,58 +360,3 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
 
 
 ```
-
-
-```{r}
-# visualization for the future
-
-results_df_future <- do.call(rbind, lapply(results_future, function(x) do.call(rbind, x)))
-
-# Load the ggplot2 library
-library(ggplot2)
-
-# Plot average waiting times against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = avg_wait_times)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  labs(title = "Average Waiting Times vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Average Waiting Time (Days)")
-
-# Plot the proportion of patients waiting against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = percent_patients_waiting)) +
-  geom_point(size=0.7,
-             alpha= 0.5) +
-  geom_smooth(method = "loess") +
-  theme_minimal() +
-  labs(title = "Percent of Patients Waiting vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 10, linetype = "dashed", color = "red", size = 0.5)+
-  scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45)) +
-  scale_x_continuous(breaks = c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50))
-
-
-# Plot utilization against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = utilization)) +
-  geom_point(size=0.7) +
-  geom_smooth(method = "loess") +
-  theme_minimal()+
-  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
-  labs(title = "Utilization vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Utilization")
-
-# Plot max queue length against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = max_queue_length)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  theme_minimal() +
-  labs(title = "Maximum Queue Length vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Maximum Queue Length")
-```
-
-
-
-
