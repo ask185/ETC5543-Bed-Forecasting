@@ -148,12 +148,6 @@ length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, st
 
 arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
-ggplot(arrivals_data, aes(x = interarrival_times, y = length_of_stay)) +
-  geom_point(aes(color = factor(stroke_levels)), alpha = 0.5) +
-  theme_minimal() +
-  labs(title = "Scatterplot of Length of Stay vs. Interarrival Times", x = "Interarrival Time (days)", y = "Length of Stay (days)") +
-  scale_color_brewer(palette = "Dark2", name = "Stroke Level")
-
 
 # generating the arrival data for the future volume of patients
 
@@ -167,20 +161,6 @@ arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_futur
                                    length_of_stay_future)
 
 ```
-
-This visualization, a scatterplot of Length of Stay vs. Interarrival Times, helps explore the relationship between the time between patient arrivals (interarrival times) and the length of stay for each patient. The points in the plot are colored based on the stroke level (severity) of each patient.
-
-From this scatterplot, one can observe the following:
-
-Distribution of interarrival times: Are there any patterns in patient arrivals? Is there any clustering of arrivals?
-
-Distribution of length of stay: How do patients' length of stay vary? Are there any clusters or specific patterns?
-
-Relationship between interarrival times and length of stay: Is there any apparent correlation between the two variables? For example, do shorter interarrival times correspond to shorter or longer lengths of stay?
-
-Influence of stroke level on the relationship: Does the stroke level have any impact on the interarrival times or length of stay? For example, are patients with more severe strokes staying longer or shorter, and are their interarrival times different from those of patients with less severe strokes?
-
-By observing these aspects, you can gain insights into the patient flow in the stroke unit and identify any potential bottlenecks or areas for improvement in patient care and resource allocation.
 
 ```{r}
 
