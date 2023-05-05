@@ -27,21 +27,18 @@ arrival_rate_future <- total_patients_future/365 # average 7 patients per day
 
 # Bed occupation time (in days) for each stroke level
 
-bed_occupation_time <- list(
-  very_mild = 1,
-  mild = c(3, 7),
-  moderate = c(3,14),  # patients sent to rehab center may stay up to 2 weeks in the ward
-  severe_nursing = c(3,21),  # patients sent to nursing center may stay up to 3 weeks
-  severe = c(1,21) # die
-)
+bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29))
+
 
 # Probability of each stroke level
-stroke_level_prob <- c(0.2, 0.2, 0.35, 0.1, 0.15)
+stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 
 
 ```
 
 ```{r}
+# generating the inter-arrival times
+
 set.seed(2023)
 # the function below is created to generate the inter-arrival times between the patients.
 # the inter arrival follows an exponential distribution hence rexp(), arrival rate is
@@ -52,16 +49,25 @@ generate_interarrival_times <- function(total_patients, arrival_rate) {
   return(interarrival_times)
 }
 
+```
+
+```{r}
+# assigning the stroke levels to the patients
+
+set.seed(2023)
+
 # the function is created to assign patients (from total_patients) randomly a stroke level.
 # This assignment is based on the probabilities defined in the stroke_level_prob. 
 # To achieve this we use sample()
 
 assign_stroke_levels <- function(total_patients, stroke_level_prob) {
   stroke_levels <- sample(1:length(stroke_level_prob), 
-                          size = total_patients, replace = TRUE,
+                          size = total_patients, 
+                          replace = TRUE, 
                           prob = stroke_level_prob)
   return(stroke_levels)
 }
+
 
 # if the probability of the severe stroke is really high, say 0.7, 
 # then the sample() function would generate random samples of 2000 patients 
@@ -70,28 +76,28 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
 # Function to generate length of stay for each patient
 # this function takes in three arguments each of which has been defined earlier
 
+# stroke levels for the present number of patients
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+
+# future stroke levels for the future increased number of patients
+
 stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_future,
                                              stroke_level_prob = stroke_level_prob)
+```
+
+```{r}
+set.seed(2023)
+#generating length of stay
 
 generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
   length_of_stay <- numeric(total_patients)
-  # for every patient in total patients (2000)
+  
   for (i in 1:total_patients) {
-    # creating a variable stroke_level that stores the severity of the stroke 
-    # (levels/category) of the current (i the) patient in the iteration
     stroke_level <- stroke_levels[i]
-    # if the stroke level is 1 (very mild) then set the length of the stay == bed occupation
-    # times of the patient with the level 1 stroke. This is done for every patient with level
-    # 1 stroke
-    if (stroke_level == 1) {
-      length_of_stay[i] <- bed_occupation_time[[stroke_level]]
+    
+    if (length(bed_occupation_time[[stroke_level]]) == 1) {
+      length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]
     } else {
-      # else if the stroke level is not 1 
-      # then set the length of stay of the patient equal to 
-      # random number of days between the lower and upper bound of the days 
-      # the patient with a certain level of severity would need to stay
-      # in the ward
       length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)
     }
   }
@@ -100,9 +106,16 @@ generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_
 }
 
 
-
-# Generate length_of_stay for each patient
+# Generating length_of_stay for each patient
 length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+
+```
+
+```{r}
+
+set.seed(2023)
+
+# generating the arrival data for the current volume of patients
 
 # Add number_of_patients and length_of_stay to arrivals_data
 
@@ -115,8 +128,8 @@ length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, st
 arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
 
-head(arrivals_data)
-# future
+# generating the arrival data for the future volume of patients
+
 interarrival_times_future <- generate_interarrival_times(total_patients = total_patients_future,
                                                          arrival_rate_future)
 stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_future,
@@ -129,6 +142,9 @@ arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_futur
 ```
 
 ```{r}
+
+# created the stroke simulation function 
+
 set.seed(2023)
 
 stroke_simulation <- function(total_patients, arrival_rate, 
@@ -317,11 +333,12 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           total_patients = total_patients, 
                           num_simulations = 120)
 
-results_future <- run_simulation(arrival_rate = arrival_rate_future, 
+results_future <- run_simulation(arrival_rate = arrival_rate_future,
                                  bed_occupation_time = bed_occupation_time,
-                                 stroke_level_prob = stroke_level_prob, 
-                                 total_patients = total_patients_future, 
+                                 stroke_level_prob = stroke_level_prob,
+                                 total_patients = total_patients_future,
                                  num_simulations = 120)
+
 
 ```
 
@@ -350,7 +367,7 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
   labs(title = "Percent of Patients Waiting vs. Number of Beds",
        x = "Number of Beds",
        y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 10, linetype = "dashed", color = "red", size = 0.5)+
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
   scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45))
 
 
@@ -403,7 +420,7 @@ ggplot(results_df_future, aes(x = num_beds, y = percent_patients_waiting)) +
   labs(title = "Percent of Patients Waiting vs. Number of Beds",
        x = "Number of Beds",
        y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 10, linetype = "dashed", color = "red", size = 0.5)+
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
   scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45)) +
   scale_x_continuous(breaks = c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50))
 
