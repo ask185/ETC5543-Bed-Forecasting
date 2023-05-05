@@ -285,9 +285,9 @@ stroke_sim_20 <- stroke_simulation(total_patients= total_patients,
                               stroke_level_prob= stroke_level_prob, 
                               num_beds= 20)
 
-long_format_data <- stroke_sim_20 %>%
-  gather(key = "variable", value = "value", starts_with("queue"))
-
+# long_format_data <- stroke_sim_20 %>%
+#   gather(key = "variable", value = "value", starts_with("queue"))
+stroke_sim_20 <- data.frame(stroke_sim_20)
 library(ggplot2)
 stroke_sim_20$length_of_stay <- as.numeric(stroke_sim_20$length_of_stay)
 ggplot(stroke_sim_20, aes(x = length_of_stay)) +
@@ -297,6 +297,14 @@ ggplot(stroke_sim_20, aes(x = length_of_stay)) +
        x = "Length of Stay (days)",
        y = "Frequency")
 
+stroke_sim_40$length_of_stay <- as.numeric(stroke_sim_40$length_of_stay)
+stroke_sim_40 <- data.frame(stroke_sim_40)
+ggplot(stroke_sim_40, aes(x= length_of_stay)) +
+  geom_histogram(binwidh=0.5, fill="darkgreen", alpha=0.7 )+
+  theme_light()+
+  labs(title = "Length of Stay Distribution",
+       x = "Length of Stay (days)",
+       y = "Frequency")
 
 
 # stroke sim future
