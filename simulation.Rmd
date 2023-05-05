@@ -148,6 +148,19 @@ length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, st
 
 arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
+arrivals_data$stroke_categories <- factor(arrivals_data$stroke_levels,
+                                          levels = c(1, 2, 3, 4, 5, 6),
+                                          labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
+
+ggplot(arrivals_data, aes(x = stroke_categories, y = length_of_stay, fill = stroke_categories)) +
+  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  theme_minimal() +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
+  labs(title = "Mean Length of Stay by Stroke Category",
+       x = "Stroke Category",
+       y = "Mean Length of Stay (days)") +
+  scale_fill_discrete(name = "Stroke Category")
+
 
 # generating the arrival data for the future volume of patients
 
@@ -159,6 +172,7 @@ length_of_stay_future <- generate_length_of_stay(total_patients_future, bed_occu
 
 arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_future,
                                    length_of_stay_future)
+
 
 ```
 
@@ -241,7 +255,10 @@ stroke_simulation <- function(total_patients, arrival_rate,
   
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
+```
 
+```{r}
+options(scipen = 999)
 # stroke sim current
 
 stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
@@ -267,6 +284,20 @@ stroke_sim_20 <- stroke_simulation(total_patients= total_patients,
                               bed_occupation_time = bed_occupation_time, 
                               stroke_level_prob= stroke_level_prob, 
                               num_beds= 20)
+
+long_format_data <- stroke_sim_20 %>%
+  gather(key = "variable", value = "value", starts_with("queue"))
+
+library(ggplot2)
+stroke_sim_20$length_of_stay <- as.numeric(stroke_sim_20$length_of_stay)
+ggplot(stroke_sim_20, aes(x = length_of_stay)) +
+  geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "Length of Stay Distribution",
+       x = "Length of Stay (days)",
+       y = "Frequency")
+
+
 
 # stroke sim future
 
@@ -294,7 +325,7 @@ stroke_sim_20_f <- stroke_simulation(total_patients= total_patients_future,
                                      stroke_level_prob= stroke_level_prob, 
                                      num_beds= 20)
 ```
-
+Keep in mind that the length of stay is influenced by the stroke severity, and the distribution of patients across different stroke severity categories. A high frequency for a specific length of stay could indicate that a large number of patients have a similar stroke severity, leading to similar bed occupation times.
 
 
 ```{r}
