@@ -418,7 +418,7 @@ ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
        x = "Number of Beds",
        y = "Average Waiting Time (Days)")
 
-# Plot the proportion of patients waiting against the number of beds
+# Plot the percent of patients waiting against the number of beds
 ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
   geom_point(size=0.7,
              alpha= 0.5) +

@@ -71,7 +71,13 @@ set.seed(070523)
                             br(),
                             p("Below one can observe from plot the stroke categories, corresponding length of stay and probabilities.")
                             ),
-                          plotOutput("static_plot")
+                          plotOutput("static_plot"),
+                          br(),
+                          p("Out simulation analysis shows us that for annual patient load of 2000, 
+                            we require 40 beds in the stroke ward to ensure that at any given time there are 
+                            fewer than 5% of the stroke patients waiting to be admitted into the stroke, often there would be less than 5%
+                            of the patients waiting to be admitted since the simulation model assumes that there has to be
+                            on average 6 stroke patients.")
                           )
                         ),
               tabPanel("Stroke Simulation",
@@ -118,6 +124,19 @@ server <- function(input, output) {
       labs(title = "Bed Occupation Time vs. Stroke Category",
            x = "Stroke Category",
            y = "Bed Occupation Time (days)")
+  })
+  
+  output$my_simulation_results_plot <- renderPlot({
+    ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+      geom_point(size=0.7,
+                 alpha= 0.5) +
+      geom_smooth(method = "loess") +
+      theme_minimal() +
+      labs(title = "Percent of Patients Waiting vs. Number of Beds",
+           x = "Number of Beds",
+           y = "Percent of Patients Waiting") +
+      geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+      scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45))
   })
   
   
