@@ -1,4 +1,5 @@
-#install.packages(c("shiny", "ggplot2"))
+# install.packages(c("shiny", "ggplot2"))
+# install.packages("shinythemes")
 library(shiny)
 library(ggplot2)
 library(tidyverse)
@@ -15,7 +16,7 @@ set.seed(070523)
 
   stroke_level_prob <- c(0.0570, 0.342, 0.217, 0.136, 0.0971, 0.151)
   
-  shiny::addResourcePath("myimages", "/Users/seear/Downloads/ETC5543-Forecasting-Project/ETC5543-Bed-Forecasting/Shiny-app-simulation/images")
+  shiny::addResourcePath("myimages", "images")
   
 
   ui <- fluidPage(
@@ -95,6 +96,7 @@ server <- function(input, output) {
     bed_occupation_time = c(4.43,4.46,6.67,6.92,7.74,9.29),
     probability = c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
   )
+  
   output$static_plot <- renderPlot({
     ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)) +
       geom_col(fill = "steelblue", width = 0.5) +
@@ -107,21 +109,6 @@ server <- function(input, output) {
            y = "Bed Occupation Time (days)")
   })
   
-  # output$my_simulation_results_plot <- renderPlot({
-  #   ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-  #     geom_point(size=1,
-  #                alpha= 0.7) +
-  #     geom_smooth(method = "loess") +
-  #     theme_minimal() +
-  #     geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
-  #               position = position_stack(vjust = 0.8), color = "white", size = 6)+
-  #     labs(title = "Percent of Patients Waiting vs. Number of Beds",
-  #          x = "Number of Beds",
-  #          y = "Percent of Patients Waiting") +
-  #     geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-  #     scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45))
-  # })
-  
   
   # Run simulation when the button is clicked
   simulation_results <- eventReactive(input$run_simulation, {
@@ -133,23 +120,6 @@ server <- function(input, output) {
                       as.numeric(input$num_beds))
   })
   
-  # Patients waiting plot
-  # output$patients_waiting_plot <- renderPlot({
-  #   req(simulation_results())
-  #   data <- data.frame(
-  #     num_beds = input$num_beds,
-  #     percent_patients_waiting = simulation_results()$percent_patients_waiting
-  #   )
-  #   ggplot(data, aes(x = num_beds, y = percent_patients_waiting)) +
-  #     geom_point(size=1,
-  #                alpha=0.8) +
-  #     scale_y_continuous(labels = scales::label_number(accuracy = 0.01)) +
-  #     scale_x_continuous(breaks = seq(5, 50, by = 1)) +
-  #     labs(title = "Percent of Patients Waiting vs Number of Beds",
-  #          x = "Number of Beds",
-  #          y = "Percent of Patients Waiting") +
-  #     theme_minimal()
-  # })
   output$patients_waiting_plot <- renderPlot({
     req(simulation_results())
     data <- data.frame(
@@ -179,7 +149,7 @@ server <- function(input, output) {
     paste("Percent of patients waiting for a bed at", input$num_patients,"patients in total and" ,input$num_beds, "beds:", round(simulation_results()$percent_patients_waiting, 2), "%")
   })
   
-  # Utilization plot
+  #Utilization plot
   output$utilization_plot <- renderPlot({
     req(simulation_results())
     data <- data.frame(
@@ -199,10 +169,10 @@ server <- function(input, output) {
             axis.text.y = element_text(size = 20), # Increase the size of y axis text
             plot.title = element_text(size = 24), # Increase the size of plot title
             axis.title.x = element_text(size = 22), # Increase the size of x axis title
-            axis.title.y = element_text(size = 22)) # Increase the size of y axis title) 
-    
+            axis.title.y = element_text(size = 22)) # Increase the size of y axis title)
+
   })
-  
+
   # Utilization text
   output$utilization_text <- renderText({
     req(simulation_results())

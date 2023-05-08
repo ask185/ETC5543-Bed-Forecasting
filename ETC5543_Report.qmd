@@ -1,0 +1,30 @@
+---
+title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+---
+
+### ***Abstract***:
+
+**Introduction**:
+
+Geographical stroke units offer effective treatment for ischemic and hemorrhagic stroke patients. Optimal care is achieved when patients are allocated to these wards. Determining the optimal number of beds required is a complex task. This study/project leverages discrete-event simulation, grounded in queueing theory, to ascertain the ideal number of beds for optimal care given patient influx. The study utilized stroke unit data including arrival rates, bed occupation times, and stroke severity probabilities to generate realistic scenarios for the simulation model. The objective of this project was to evaluate the impact of varying bed capacities on the performance of stroke care units such as bed utilization, maximum queue length, proportion of patients waiting, and average queue length.
+
+**Method and Design**:
+
+The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 3-21 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
+
+**Discussion:**
+
+The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 25-bed provision was inadequate for the annual patient load of \~2000, leading to prolonged wait times and queues. The percent of patients queuing was around 33% for 25 beds, 45% for 20 beds, 23% for 30 beds, and 7% when 40 beds were available.
+
+### **Background and Motivation**
+
+Healthcare systems are under continual pressure to provide accessible and effective health services to provide adequate care to patients especially the most vulnerable patients. In this context, decisions regarding the adequate provision of services to the patients is vital for optimal care of utmost importance. Patients arriving into the hospital affected by a stroke need immediate and satisfactory level of care for stable and better chances of recovery.
+
+In order to come up with better policy designs for healthcare industry, researchers, policy makers and other professionals studying the healthcare systems have made use of the simulation based modeling to replicate the real life scenarios in the healthcare units and hospitals to improve the policy framework. In the context of estimating the number of beds for a stroke care unit, the simulation based modeling is has been extensively used by the researchers due to the ease with which simulation model can be developed and the many other external events can be incorporated into the model.
+
+Healthcare systems are riddled with delays and delays are the result of the mismatch between the demand for a service and the supply of the service. In context of the queue theory, the \'beds\' represent the servers and patients are the customers demanding the service.
