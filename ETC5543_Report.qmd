@@ -31,10 +31,26 @@ According to Storey et al. (2010) in their article "Hospital capacity planning: 
 
 **Simulation-based Modeling in Healthcare Policy**
 
-To develop better policy frameworks for healthcare industry, researchers, policy makers and other professionals studying the healthcare systems have employed simulation-based modeling to replicate the real life scenarios in the healthcare units and hospitals to improve the policy framework. For the purpose of this project at the *Monash Medical Research institute*, I have used the simulation modelling to represent a queuing system within a hospital setting. The main objective of this simulation was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
+To develop better policy frameworks for healthcare industry, researchers, policy makers and other professionals studying the healthcare systems have employed simulation-based modeling to replicate the real life scenarios in the healthcare units and hospitals to improve the policy framework.
 
 **The Monash Hospital Stroke Ward Case**
 
-Stroke is ranked as the second leading cause of death with an annual mortality rate of over 6.5 million worldwide and 143.23 million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022). In Australia in 2018, an estimated387,000 Australians aged 15 and over (1.3% of the population) had experienced a stroke at some time in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke).
+Stroke is ranked as the second leading cause of death with an annual mortality rate of over 6.5 million worldwide and 143.23 million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022). In Australia in 2018, an estimated 387,000 Australians aged 15 and over (1.3% of the population) had experienced a stroke at *some point* in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke). As per the same soruce, in 2020, there were an estimated **39,500 stroke events** in Australia--- more than 100 everyday. The rate of stroke events was 154 per 100,000 population. These stroke events include the new and recurrent stroke.[^1] In 2020, stroke was recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in Australia. Stroke was one of the 5 leading causes of death in Australia -- on average, 22 Australians died of stroke each day in 2020.[^2]
+
+[^1]: There are no direct national data sources on the annual number of strokes. However, a related measure can be used as an estimate---the number of stroke events---developed by the AIHW using unlinked hospital and deaths data (AIHW 2022)
+
+[^2]: These figures were obtained from the [Australian Institute of Health & Welfare (AIHW)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/summary-of-coronary-heart-disease-and-stroke/stroke)
+
+Since 1980 the death rates for stroke have fallen by three-quarters -- from *110 to 23* per **100,000** population for males, and from *99 to 24* per **100,000** population for females. Access to stroke care units has been attributed to as one of the leading factors for declining death rates in Australia[^3].
+
+\
+
+[^3]: See \'Chapter 4 Changing patterns of mortality in Australia since 1900\' in [*Australia\'s health 2022: data insight*](https://www.aihw.gov.au/reports/australias-health/australias-health-2022-data-insights).
+
+While, according to the *Victorian Population Health Survey* (2016) [^4], the prevalence of stroke among the adult Victorian population was 2.7% of the adult population.
+
+[^4]: 2.7% of the adult Victorian Population self-reported doctor diagnosed stroke [in the survey](https://www.health.vic.gov.au/population-health-systems/victorian-population-health-survey-2016).
 
 In the stroke ward at the Monash Hospital there are a total of 46 beds as used by the neurology, neurosurgery and stroke patients. The objective of this project was to determine the optimal number of beds specifically for the stroke patients at the Monash Hospital to ensure the optimum care for the stroke patients.
+
+For the purpose of this project at the *Monash Medical Research institute*, I have used the simulation modelling to represent a queuing system within a hospital setting. The main objective of this simulation was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
