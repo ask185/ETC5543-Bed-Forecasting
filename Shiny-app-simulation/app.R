@@ -50,43 +50,36 @@ set.seed(070523)
     it is probable that there would be less than 5%
     of the patients waiting to be admitted since the simulation model assumes that there has to be
     on average 6 stroke patients."),
-                        br(),
-                        tags$img(
-                          src = "myimages/percent_of_patients_waiting1.png",
-                          width = 1100,
-                          length = 500,
-                          alt = "figure of percent of patients waiting vs the number of beds",
-                          figcap = "figure of percent of patients waiting vs the number of beds"),
+                        # br(),
+                        # tags$img(
+                        #   src = "myimages/percent_of_patients_waiting1.png",
+                        #   width = 1100,
+                        #   length = 500,
+                        #   alt = "figure of percent of patients waiting vs the number of beds",
+                        #   figcap = "figure of percent of patients waiting vs the number of beds"),
                         
                         br(),
-                        p("Our analysis derived at these conclusions after running 10,000 replications of the simulation.")
-               ),
-               
-              tabPanel("Stroke Simulation",
-                       sidebarLayout(
-                         sidebarPanel( 
-                           helpText("Please enter an integer value between 500 and 2500 patients"),
-                           numericInput("num_patients", "Number of Patients:", value = 2500, min = 500),
-                           helpText( "Please enter an integer value between 5 and 50 beds"),
-                           numericInput("num_beds", "Number of Beds:", value = 25, min = 5),
-                           actionButton("run_simulation", "Run Simulation")
-                           ),
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Patients Waiting",
-                 plotOutput("patients_waiting_plot"),
-                 textOutput("patients_waiting_text")
-        ),
-        tabPanel("Utilization",
-                 plotOutput("utilization_plot"),
-                 textOutput("utilization_text")
-        )
-      )
-    )
-                       )
-              )
+                        p("Our analysis derived at these conclusions after running 10,000 replications of the simulation."),
+                        br(),
+                        helpText("Please enter an integer value between 500 and 2500 patients"),
+                        numericInput("num_patients", "Number of Patients:", value = 2500, min = 500),
+                        helpText("Please enter an integer value between 5 and 50 beds"),
+                        numericInput("num_beds", "Number of Beds:", value = 25, min = 5),
+                        actionButton("run_simulation", "Run Simulation"),
+                        tabsetPanel(
+                          tabPanel("Patients Waiting",
+                                   plotOutput("patients_waiting_plot"),
+                                   textOutput("patients_waiting_text")
+                          ),
+                          tabPanel("Utilization",
+                                   plotOutput("utilization_plot"),
+                                   textOutput("utilization_text")
+                          )
+                        )
+               )
     )
   )
+  
 
 server <- function(input, output) {
   set.seed(07052023)
@@ -111,36 +104,72 @@ server <- function(input, output) {
   
   
   # Run simulation when the button is clicked
-  simulation_results <- eventReactive(input$run_simulation, {
-    set.seed(070523)
-    stroke_simulation(as.numeric(input$num_patients),
-                      as.numeric(input$num_patients) / 365,
-                      bed_occupation_time,
-                      stroke_level_prob,
-                      as.numeric(input$num_beds))
-  })
+  # simulation_results <- eventReactive(input$run_simulation, {
+  #   set.seed(070523)
+  #   stroke_simulation(as.numeric(input$num_patients),
+  #                     as.numeric(input$num_patients) / 365,
+  #                     bed_occupation_time,
+  #                     stroke_level_prob,
+  #                     as.numeric(input$num_beds))
+  # })
+  # 
+  # output$patients_waiting_plot <- renderPlot({
+  #   req(simulation_results())
+  #   data <- data.frame(
+  #     num_beds = input$num_beds,
+  #     percent_patients_waiting = simulation_results()$percent_patients_waiting
+  #   )
+  #   ggplot(data, aes(x = num_beds, y = percent_patients_waiting)) +
+  #     geom_point(size=2.5,
+  #                alpha=2.5) +
+  #     scale_y_continuous(labels = scales::label_number(accuracy = 0.01)) +
+  #     scale_x_continuous(breaks = seq(5, 50, by = 1)) +
+  #     labs(title = "Percent of Patients Waiting vs Number of Beds",
+  #          x = "Number of Beds",
+  #          y = "Percent of Patients Waiting") +
+  #     theme_minimal() +
+  #     theme(axis.text.x = element_text(size = 20),
+  #           axis.text.y = element_text(size = 20),
+  #           plot.title = element_text(size = 24),
+  #           axis.title.x = element_text(size = 22),
+  #           axis.title.y = element_text(size = 22))
   
   output$patients_waiting_plot <- renderPlot({
-    req(simulation_results())
+    set.seed(07052023)
+    num_beds_range <- seq(5, 50, by = 1)
+    waiting_percents <- sapply(num_beds_range, function(num_beds) {
+      sim_results <- stroke_simulation(as.numeric(input$num_patients),
+                                       as.numeric(input$num_patients) / 365,
+                                       bed_occupation_time,
+                                       stroke_level_prob,
+                                       num_beds)
+      sim_results$percent_patients_waiting
+    })
+    
     data <- data.frame(
-      num_beds = input$num_beds,
-      percent_patients_waiting = simulation_results()$percent_patients_waiting
+      num_beds = num_beds_range,
+      percent_patients_waiting = waiting_percents,
+      selected = num_beds_range == input$num_beds
     )
-    ggplot(data, aes(x = num_beds, y = percent_patients_waiting)) +
-      geom_point(size=2.5,
-                 alpha=2.5) +
+    
+    ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
+      geom_col(width = 0.5) +
       scale_y_continuous(labels = scales::label_number(accuracy = 0.01)) +
       scale_x_continuous(breaks = seq(5, 50, by = 1)) +
+      scale_fill_manual(values = c("steelblue", "red")) +
       labs(title = "Percent of Patients Waiting vs Number of Beds",
            x = "Number of Beds",
            y = "Percent of Patients Waiting") +
       theme_minimal() +
-      theme(axis.text.x = element_text(size = 20), # Increase the size of x axis text
-            axis.text.y = element_text(size = 20), # Increase the size of y axis text
-            plot.title = element_text(size = 24), # Increase the size of plot title
-            axis.title.x = element_text(size = 22), # Increase the size of x axis title
-            axis.title.y = element_text(size = 22)) # Increase the size of y axis title
+      theme(axis.text.x = element_text(size = 20),
+            axis.text.y = element_text(size = 20),
+            plot.title = element_text(size = 24),
+            axis.title.x = element_text(size = 22),
+            axis.title.y = element_text(size = 22),
+            legend.position = "none")
   })
+  
+  
   
   
   # Patients waiting text
