@@ -41,11 +41,11 @@ Stroke is ranked as the second leading cause of death with an annual mortality r
 
 [^2]: These figures were obtained from the [Australian Institute of Health & Welfare (AIHW)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/summary-of-coronary-heart-disease-and-stroke/stroke)
 
-Since 1980 the death rates for stroke have fallen by three-quarters -- from *110 to 23* per **100,000** population for males, and from *99 to 24* per **100,000** population for females. Access to stroke care units has been attributed to as one of the leading factors for declining death rates in Australia[^3].
+Since 1980 the death rates for stroke have fallen by three-quarters -- from *110 to 23* per **100,000** population for males, and from *99 to 24* per **100,000** population for females. Access to stroke care units has been attributed to as one of the leading factors for declining death rates in Australia[^3]. Hence adequate access to the stroke care is crucial for the recovery and rehabilitation of the stroke patients as well as in reducing the stroke-related death rates.
+
+[^3]: See 'Chapter 4 Changing patterns of mortality in Australia since 1900' in [*Australia's health 2022: data insight*](https://www.aihw.gov.au/reports/australias-health/australias-health-2022-data-insights).
 
 \
-
-[^3]: See \'Chapter 4 Changing patterns of mortality in Australia since 1900\' in [*Australia\'s health 2022: data insight*](https://www.aihw.gov.au/reports/australias-health/australias-health-2022-data-insights).
 
 While, according to the *Victorian Population Health Survey* (2016) [^4], the prevalence of stroke among the adult Victorian population was 2.7% of the adult population.
 
