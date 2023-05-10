@@ -3,18 +3,34 @@ title: "Simulation of the data"
 author: "Aryan Sultan"
 date: "2023-03-29"
 output:
+  pdf_document: 
+    bookdown::pdf_document2
   html_document: default
-  pdf_document: default
-
 ---
 
 
-### Data simulation
+### Brief Introduction
 
+The simulation model based in the queue theory for MMRI stroke ward bed capacity forecast considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of ~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 3-21 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
 
-```{r}
+### Work flow
+
+In this section lets briefly explain the steps taken to create a stroke simulation model.
+
+* Set Parameters
+* Create functions for:
+                 - Generating the inter-arrival times
+                 - Assigning stroke categories to patients for simulation 
+                 - Generate length of stay for patients based on the stroke categories of patients
+                 - Create arrivals data that shows the inter-arrivals times of patients, their length 
+                 of stay and the associated category of stroke.
+* Create a simulation function that simulates the arrival and stay of 2000 patients with various stroke categories
+* Create yet another function that runs simulation a for few hundreds replicates and computes the performance metrics for each simulation and averages them over producing mean performance metrics across multiples replication of simulations. 
+
+```{r eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
+library(bookdown)
 
 set.seed(2023)
 # Parameters
@@ -34,7 +50,10 @@ bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29)
 stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 ```
 
-```{r}
+Below one can see the table \@ref(tab:bed_occupation_times_tab) as well as the plot (see: Fig \@ref(fig:bed_occupation_times_tab)) which display the stroke category, corresponding length of stay for patients and stroke probabilities.
+
+```{r bed_occupation_times_fig, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Bed Occupation Time vs. Stroke Category", fig.label="fig:bed_occupation_times_fig"}
+
 library(ggplot2)
 
 bed_occupation_time_df <- data.frame(
@@ -49,13 +68,31 @@ ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)
   geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
             position = position_stack(vjust = 0.5), color = "white", size = 4) +
   theme_minimal() +
-  labs(title = "Bed Occupation Time vs. Stroke Category",
+  labs(
        x = "Stroke Category",
        y = "Bed Occupation Time (days)")
 
+bed_occupation_time_df %>%
+  knitr::kable(caption = "The table displaying stroke categories and corresponding length of stay and probabilities", label = "tab:bed_occupation_times_tab")
 
+
+  
 
 ```
+
+The length of stay for the patients depends on the stroke category, as can be seen from the plot above, the patients in the severe stroke category need to spend 10 days in the stroke care unit. This information needs to be incorporated into the simulation function.
+
+Below are the functions I have created: 
+
+* `generate_interarrival_times`: This function generates the inter-arrival times for the patients. The inter-arrival times for patients are exponentially distributed. This function takes in two arguments: total number of patients and the arrival rate. 
+
+* `assign_stroke_levels`: This function assigns stroke categories to patients in this simulation model. This function takes in two arguments: total number of patients and the stroke level probabilities. The assignment of stroke category to patients is based on the probabilities of the stroke category. 
+
+* `generate_length_of_stay`: This function generates length of stay for the patients based on the category they belong to. This function takes in three arguments: bed occupation times, stroke level (assigned by the `assign_stroke_levels`) and total number of patients. 
+
+With these functions we can create a data frame for the patient arrivals. 
+
+There are two data frames: one of which contains the inter-arrival times, LOS and the stroke categories for 2000 annual load of patients and the other contains all the information for an annual load of 2500 patients. The patient load is expected to rise to 2500 in the coming few years. The two plots summarizes the arrival data sets for 2000 and 2500 patients respectively. 
 
 ```{r}
 # generating the inter-arrival times
@@ -94,9 +131,6 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
 # then the sample() function would generate random samples of 2000 patients 
 # wherein most patients would be assigned the severe stroke level category. 
 
-# Function to generate length of stay for each patient
-# this function takes in three arguments each of which has been defined earlier
-
 # stroke levels for the present number of patients
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 
@@ -132,7 +166,7 @@ length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, s
 
 ```
 
-```{r}
+```{r eval=TRUE, echo=FALSE, message=FALSE, include=TRUE}
 
 set.seed(2023)
 
@@ -161,7 +195,12 @@ ggplot(arrivals_data, aes(x = stroke_categories, y = length_of_stay, fill = stro
        y = "Mean Length of Stay (days)") +
   scale_fill_discrete(name = "Stroke Category")
 
+arrivals_data %>% head()
 
+```
+
+```{r eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+set.seed(2023)
 # generating the arrival data for the future volume of patients
 
 interarrival_times_future <- generate_interarrival_times(total_patients = total_patients_future,
@@ -173,9 +212,22 @@ length_of_stay_future <- generate_length_of_stay(total_patients_future, bed_occu
 arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_future,
                                    length_of_stay_future)
 
+arrivals_data_future$stroke_categories <- factor(arrivals_data_future$stroke_levels,
+                                          levels = c(1, 2, 3, 4, 5, 6),
+                                          labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
 
+ggplot(arrivals_data_future, aes(x = stroke_categories, y = length_of_stay_future, fill = stroke_categories)) +
+  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  theme_light() +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
+  labs(title = "Mean Length of Stay by Stroke Category",
+       x = "Stroke Category",
+       y = "Mean Length of Stay (days)") +
+  scale_fill_discrete(name = "Stroke Category")
+
+arrivals_data_future %>% head()
 ```
-
+The plots shows us the mean length of stay for each category of stroke in the arrival data sets.
 ```{r}
 
 # created the stroke simulation function 
