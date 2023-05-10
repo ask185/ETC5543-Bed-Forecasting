@@ -241,8 +241,10 @@ length_of_stay: This is a numeric vector containing the length of stay for each 
 
 In summary, the output of the stroke_simulation function provides information about the bed occupation times, the queue of waiting patients, and the length of stay for each patient at the end of the simulation.
 
+Below in the plot one can see the frequency of the number of days the 2000 patients stayed in the stroke ward in my simulation. 
 
-```{r}
+
+```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 
 # created the stroke simulation function 
 
@@ -268,8 +270,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
 
 # The pmax function ensures that the bed occupation times do not become negative. 
 # A value of 0 in this context means that the bed is available 
-# (i.e., the patient has completed their stay, 
-# and the bed is now available for other patients).
+# (i.e., the patient has completed their stay)
   
   update_bed_occupation_times <- function(beds, interarrival_time) {
   beds <- pmax(beds - interarrival_time, 0)
@@ -278,7 +279,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
   # bed occupation time for each bed in the simulation.
   # Each element in this vector corresponds to a bed in the hospital
   # ward. A value of 0 means that the bed is available for use.
-  # Subtracting the interarrival_time from each element of 'beds' 
+  # Subtracting the inter-arrival_time from each element of 'beds' 
   # updates the remaining bed occupation times, considering the 
   # passage of time between patient arrivals.
   # The pmax function is used to ensure that the resulting bed 
@@ -323,15 +324,16 @@ stroke_simulation <- function(total_patients, arrival_rate,
 }
 ```
 
-```{r}
-options(scipen = 999)
-# stroke sim current
+```{r eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+set.seed(2023)
 
-stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 50)
+options(scipen = 999)
+
+# stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
+#                                    arrival_rate= arrival_rate, 
+#                               bed_occupation_time = bed_occupation_time, 
+#                               stroke_level_prob= stroke_level_prob, 
+#                               num_beds= 50)
 
 stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
@@ -339,24 +341,34 @@ stroke_sim_40 <- stroke_simulation(total_patients= total_patients,
                               stroke_level_prob= stroke_level_prob, 
                               num_beds= 40)
 
-stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob,
-                              num_beds= 30)
+# stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
+#                                    arrival_rate= arrival_rate, 
+#                               bed_occupation_time = bed_occupation_time, 
+#                               stroke_level_prob= stroke_level_prob,
+#                               num_beds= 30)
 
-stroke_sim_20 <- stroke_simulation(total_patients= total_patients, 
+stroke_sim_25 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
                               bed_occupation_time = bed_occupation_time, 
                               stroke_level_prob= stroke_level_prob, 
-                              num_beds= 20)
+                              num_beds= 25)
 
 # long_format_data <- stroke_sim_20 %>%
 #   gather(key = "variable", value = "value", starts_with("queue"))
-stroke_sim_20 <- data.frame(stroke_sim_20)
+
+stroke_sim_25 <- data.frame(stroke_sim_25)
+
+stroke_sim_40 <- data.frame(stroke_sim_40)
+
+```
+
+
+```{r }
+
 library(ggplot2)
-stroke_sim_20$length_of_stay <- as.numeric(stroke_sim_20$length_of_stay)
-ggplot(stroke_sim_20, aes(x = length_of_stay)) +
+stroke_sim_25$length_of_stay <- as.numeric(stroke_sim_25$length_of_stay)
+
+ggplot(stroke_sim_25, aes(x = length_of_stay)) +
   geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
   theme_minimal() +
   labs(title = "Length of Stay Distribution",
