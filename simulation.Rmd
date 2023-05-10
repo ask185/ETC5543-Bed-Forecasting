@@ -227,7 +227,21 @@ ggplot(arrivals_data_future, aes(x = stroke_categories, y = length_of_stay_futur
 
 arrivals_data_future %>% head()
 ```
-The plots shows us the mean length of stay for each category of stroke in the arrival data sets.
+The plots shows us the mean length of stay for each category of stroke in the arrival data sets (2000 patient load as well as 2500 patient load).
+
+In the next step, I have created the stroke simulation function which simulates the patient arrival, keeps track of the available beds and the ones that are still in use, keeps track of the queue, and then assigns beds to the next patient in the queue when the bed is available.
+
+This function returns a list containing the following elements.
+
+beds: This is a numeric vector representing the remaining bed occupation time for each bed in the hospital ward at the end of the simulation. Each element corresponds to a bed, and a value of 0 indicates that the bed is available for use.
+
+queue: This is a list containing the length of stay for patients who couldn't find an available bed during the simulation and had to wait in the queue. The length of the queue list represents the number of patients who were waiting for a bed at the end of the simulation, and the values in the list represent their length of stay.
+
+length_of_stay: This is a numeric vector containing the length of stay for each patient in the simulation based on their assigned stroke level. The elements in this vector are generated using the generate_length_of_stay function, which takes into account the bed occupation times for different stroke levels and the assigned stroke levels for each patient.
+
+In summary, the output of the stroke_simulation function provides information about the bed occupation times, the queue of waiting patients, and the length of stay for each patient at the end of the simulation.
+
+
 ```{r}
 
 # created the stroke simulation function 
