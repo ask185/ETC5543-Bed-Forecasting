@@ -124,6 +124,10 @@ set.seed(070523)
   ui <- fluidPage(
     titlePanel("Stroke Simulation App"),
     
+    tags$p("This app simulates the percentage of stroke patients waiting for a bed and
+    bed utilization in a stroke unit based on the number of patients and the number of 
+           available beds."),
+    
     fluidRow(
       column(3,
              wellPanel(
