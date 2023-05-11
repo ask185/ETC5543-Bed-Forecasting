@@ -215,11 +215,11 @@ server <- function(input, output) {
     )
     
    p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
-      geom_point(size=2) +
+      geom_point(size=2, stroke=0) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
                   color = "steelblue")+
      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5),
-                        labels = scales::percent_format(accuracy = 1))+
+                        labels = function(x) paste0(x, "%"))+
       scale_x_continuous(breaks = seq(5, 50, by = 1), expand = c(0, 0.5)) +
       scale_fill_manual(values = c("steelblue", "red")) +
       labs(title = "Percent of Patients Waiting vs Number of Beds",
