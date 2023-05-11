@@ -146,7 +146,7 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 2000, step = 50),
+                           min = 500, max = 2500, value = 2000, step = 500),
                sliderInput("num_beds", "Number of beds:",
                            min = 5, max = 50, value = 20, step = 1)
              )
@@ -214,7 +214,10 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
-   p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
+  p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected, 
+                                      tooltip = paste("Number of Beds:", num_beds, 
+                                                      "<br>Percent of Patients Waiting:", 
+                                                      percent_patients_waiting))) +
       geom_point(size=2, stroke=0) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
                   color = "steelblue")+
