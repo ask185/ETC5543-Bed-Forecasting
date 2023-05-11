@@ -430,6 +430,9 @@ This function computes the following metrics for each combination of simulation 
 `utilization`: The proportion of beds occupied by patients.
 `avg_wait_times`: The average waiting time for patients in the queue.
 `max_queue_length`: The maximum length of the patient queue.
+
+This is the maximum number of patients waiting in the queue for a bed at any given time during the simulation. In our example, for 40 beds, the max queue length of 103 patients means that at some point during the simulation, there were 103 patients waiting for a bed simultaneously. (This however, does not mean that there are necessarily going to be 103 patients waiting to be admitted into the ward in the actual scenario.)
+
 `proportion_patients_waiting`: The proportion of patients who had to wait for a bed.
 `percent_patients_waiting`: The percentage of patients who had to wait for a bed.
 `avg_length_of_stay`: The average length of stay for patients in the hospital.
@@ -475,6 +478,7 @@ run_simulation <- function(arrival_rate,
                                               utilization = utilization,
                                               avg_wait_times = avg_wait_times,
                                               max_queue_length = max_queue_length,
+                                              # min_queue_length = stroke_sim$min_queue_length,
                                               proportion_patients_waiting = proportion_patients_waiting,
                                               percent_patients_waiting = percent_patients_waiting,
                                               avg_length_of_stay = avg_length_of_stay)
