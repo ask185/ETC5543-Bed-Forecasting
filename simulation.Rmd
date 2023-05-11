@@ -3,9 +3,9 @@ title: "Simulation of the data"
 author: "Aryan Sultan"
 date: "2023-03-29"
 output:
+  html_document: default
   pdf_document: 
     bookdown::pdf_document2
-  html_document: default
 ---
 
 
@@ -424,6 +424,16 @@ Keep in mind that the length of stay is influenced by the stroke severity, and t
 
 In the next step I created a run simulation function; this function takes the arrival rate, bed_occupation_times, stroke level probabilities and the number of simulation that need to be performed. The purpose of this function is to run multiple simulation and for each simulation run, it calculates various performance metrics for different numbers of beds in the hospital, using the `stroke_simulation function`.
 
+This function computes the following metrics for each combination of simulation run and bed count:
+
+`num_beds`: The number of beds in the hospital.
+`utilization`: The proportion of beds occupied by patients.
+`avg_wait_times`: The average waiting time for patients in the queue.
+`max_queue_length`: The maximum length of the patient queue.
+`proportion_patients_waiting`: The proportion of patients who had to wait for a bed.
+`percent_patients_waiting`: The percentage of patients who had to wait for a bed.
+`avg_length_of_stay`: The average length of stay for patients in the hospital.
+
 
 ```{r}
 set.seed(2023)
@@ -482,11 +492,11 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           total_patients = total_patients, 
                           num_simulations = 120)
 
-results_future <- run_simulation(arrival_rate = arrival_rate_future,
-                                 bed_occupation_time = bed_occupation_time,
-                                 stroke_level_prob = stroke_level_prob,
-                                 total_patients = total_patients_future,
-                                 num_simulations = 120)
+# results_future <- run_simulation(arrival_rate = arrival_rate_future,
+#                                  bed_occupation_time = bed_occupation_time,
+#                                  stroke_level_prob = stroke_level_prob,
+#                                  total_patients = total_patients_future,
+#                                  num_simulations = 120)
 
 
 ```
@@ -531,13 +541,20 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
        y = "Utilization")
 
 # Plot max queue length against the number of beds
+xintersection = 40
+yintersection = 103
 ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
   geom_point() +
   geom_smooth(method = "loess") +
+  scale_y_continuous(breaks = seq(5, 1000, by = 50))+
+  geom_vline(xintercept = 40, linetype="dashed", color = "steelblue", size = 0.5)+
+  geom_hline(yintercept = 105, linetype = "dashed", color = "red", size=0.5)+
+  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
   theme_minimal() +
   labs(title = "Maximum Queue Length vs. Number of Beds",
        x = "Number of Beds",
        y = "Maximum Queue Length")
+
 
 
 
