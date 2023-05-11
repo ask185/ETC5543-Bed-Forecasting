@@ -282,7 +282,8 @@ server <- function(input, output) {
       theme_minimal() +
       labs(
         x = "Stroke Category",
-        y = "Bed Occupation Time (days)")
+        y = "Bed Occupation Time (days)") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
     
     ggplotly(p)
   })
