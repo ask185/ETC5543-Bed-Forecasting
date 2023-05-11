@@ -146,7 +146,7 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 1000, step = 50),
+                           min = 500, max = 2500, value = 2000, step = 50),
                sliderInput("num_beds", "Number of beds:",
                            min = 5, max = 50, value = 20, step = 1)
              )
@@ -218,6 +218,7 @@ server <- function(input, output) {
       geom_point(size=2, stroke=0) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
                   color = "steelblue")+
+     geom_hline(yintercept = 5, color = "red", size = 0.3) +
      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5),
                         labels = function(x) paste0(x, "%"))+
       scale_x_continuous(breaks = seq(5, 50, by = 1), expand = c(0, 0.5)) +
