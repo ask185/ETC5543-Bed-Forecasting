@@ -126,9 +126,9 @@ set.seed(070523)
     
     tags$div(
       tags$p("Stroke is one of the leading causes to disability and death in the Australia. 
-      According to the Australian Institute of Health and Welfare, In 2020, stroke was 
+      According to the Australian Institute of Health and Welfare, in 2020, stroke was 
       recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in 
-      Australia. Stroke was one of the 5 leadingcauses of death in Australia – on average, 
+      Australia. Stroke was one of the 5 leading causes of death in Australia – on average, 
       22 Australians died of stroke each day in 2020. Hence the stroke care units are crucial
       in reducing the death rates and speedying up the recovery for stroke patients. 
       This app simulates the percentage of stroke patients waiting for a bed and 
