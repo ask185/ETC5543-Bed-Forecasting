@@ -231,36 +231,8 @@ server <- function(input, output) {
     utilization_percents
   })
   
-  # Utilization plot
-  # output$utilization_plot <- renderPlot({
-  #   req(simulation_results())
-  #   num_beds_range <- seq(5, 50, by = 1)
-  #   
-  #   utilization_percents <- utilization_percents_data()
-  #   
-  #   data <- data.frame(
-  #     num_beds = num_beds_range,
-  #     bed_utilization = utilization_percents,
-  #     selected = num_beds_range == input$num_beds
-  #   )
-  #   
-  #   ggplot(data, aes(x = num_beds, y = bed_utilization, fill = selected)) +
-  #     geom_col(width = 0.5) +
-  #     scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), labels = scales::label_number(accuracy = 0.01)) +
-  #     scale_x_continuous(breaks = seq(5, 50, by = 1)) +
-  #     scale_fill_manual(values = c("steelblue", "red")) +
-  #     labs(title = "Bed Utilization vs Number of Beds",
-  #          x = "Number of Beds",
-  #          y = "Bed Utilization (%)") +
-  #     theme_minimal() +
-  #     theme(axis.text.x = element_text(size = 10),
-  #           axis.text.y = element_text(size = 10),
-  #           plot.title = element_text(size = 12),
-  #           axis.title.x = element_text(size = 11),
-  #           axis.title.y = element_text(size = 11),
-  #           legend.position = "none")
-  # })
   output$utilization_plot <- renderPlot({
+    set.seed(07052023)
     req(simulation_results())
     num_beds_range <- seq(5, 50, by = 1)
     
@@ -275,7 +247,7 @@ server <- function(input, output) {
     ggplot(data, aes(x = num_beds, y = bed_utilization, color = selected)) +
       geom_point(size = 4) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = bed_utilization), color = "steelblue") +
-      scale_y_continuous(limits = c(0, 180), breaks = seq(0, 180, by = 5), labels = scales::label_number(accuracy = 0.01)) +
+      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), labels = scales::label_number(accuracy = 0.01)) +
       scale_x_continuous(breaks = seq(5, 50, by = 1)) +
       scale_color_manual(values = c("steelblue", "red")) +
       labs(title = "Bed Utilization vs Number of Beds",
@@ -304,6 +276,21 @@ server <- function(input, output) {
     bed_occupation_time = c(4.43,4.46,6.67,6.92,7.74,9.29),
     probability = c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
   )
+  
+  # Static plot
+  output$static_plot <- renderPlotly({
+    p <- ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)) +
+      geom_col(fill = "steelblue") +
+      theme_minimal()+
+      geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
+                position = position_stack(vjust = 0.5), color = "white", size = 4) +
+      theme_minimal() +
+      labs(
+        x = "Stroke Category",
+        y = "Bed Occupation Time (days)")
+    
+    ggplotly(p)
+  })
   
 }
 
