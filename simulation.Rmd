@@ -241,7 +241,7 @@ length_of_stay: This is a numeric vector containing the length of stay for each 
 
 In summary, the output of the stroke_simulation function provides information about the bed occupation times, the queue of waiting patients, and the length of stay for each patient at the end of the simulation.
 
-Below in the plot one can see the frequency of the number of days the 2000 patients stayed in the stroke ward in my simulation. 
+Below in the plot one can see the frequency (distribution) of the number of days the 2000 patients stayed in the stroke ward in my simulation for 25 beds as well as for  40 beds. One can see how this simulation computed the length of stay for different categories of stroke for 2000 patients based on the stroke probabilities. 
 
 
 ```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
@@ -384,6 +384,15 @@ ggplot(stroke_sim_40, aes(x= length_of_stay)) +
        x = "Length of Stay (days)",
        y = "Frequency")
 
+# ggplot(data.frame(queue_length_of_stay = unlist(stroke_sim_40$queue)), aes(x = queue_length_of_stay)) +
+#   geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
+#   theme_minimal() +
+#   labs(title = "Queue Length of Stay Distribution",
+#        x = "Length of Stay (days)",
+#        y = "Frequency")
+
+
+
 
 # stroke sim future
 
@@ -412,6 +421,8 @@ stroke_sim_20_f <- stroke_simulation(total_patients= total_patients_future,
                                      num_beds= 20)
 ```
 Keep in mind that the length of stay is influenced by the stroke severity, and the distribution of patients across different stroke severity categories. A high frequency for a specific length of stay could indicate that a large number of patients have a similar stroke severity, leading to similar bed occupation times.
+
+In the next step I created a run simulation function; this function takes the arrival rate, bed_occupation_times, stroke level probabilities and the number of simulation that need to be performed. The purpose of this function is to run multiple simulation and for each simulation run, it calculates various performance metrics for different numbers of beds in the hospital, using the `stroke_simulation function`.
 
 
 ```{r}
