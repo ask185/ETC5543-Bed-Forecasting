@@ -124,9 +124,22 @@ set.seed(070523)
   ui <- fluidPage(
     titlePanel("Stroke Simulation App"),
     
-    tags$p("This app simulates the percentage of stroke patients waiting for a bed and
-    bed utilization in a stroke unit based on the number of patients and the number of 
-           available beds."),
+    tags$div(
+      tags$p("Stroke is one of the leading causes to disability and death in the Australia. 
+      According to the Australian Institute of Health and Welfare, In 2020, stroke was 
+      recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in 
+      Australia. Stroke was one of the 5 leadingcauses of death in Australia – on average, 
+      22 Australians died of stroke each day in 2020. Hence the stroke care units are crucial
+      in reducing the death rates and speedying up the recovery for stroke patients. 
+      This app simulates the percentage of stroke patients waiting for a bed and 
+             bed utilization in a stroke unit at Monash Medical Center based on the number of 
+             patients and the number of available beds.
+             As per our analysis the optimal number of beds for the annual load of 2000 patients
+             should be 40 in the stroke care unit.
+             "),
+      style = "background-color: #f0f0f0; padding: 10px;"
+    ),
+    br(),
     
     fluidRow(
       column(3,
