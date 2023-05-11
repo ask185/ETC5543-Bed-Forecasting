@@ -5,6 +5,7 @@ library(ggplot2)
 library(tidyverse)
 library(shinydashboard)
 library(shinythemes)
+library(plotly)
 
 source("functions.R")
  
@@ -127,7 +128,7 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 100, step = 10),
+                           min = 500, max = 2500, value = 100, step = 50),
                sliderInput("num_beds", "Number of beds:",
                            min = 5, max = 50, value = 20, step = 1)
              )
@@ -136,28 +137,21 @@ set.seed(070523)
              tabsetPanel(
                tabPanel("Percent of Patients Waiting", plotOutput("patients_waiting_plot")),
                tabPanel("Bed Utilization", plotOutput("utilization_plot"))
-             )
-      ),
+             )),
       column(3,
-             wellPanel(
-               plotOutput("static_plot")
-             )
-      )
+             plotlyOutput("static_plot"))
     ),
     
     fluidRow(
-      column(6,
-             h4("Percent of patients waiting for a bed:"),
-             textOutput("patients_waiting_text")
-      ),
-      column(6,
-             h4("Bed utilization percent:"),
-             textOutput("utilization_text")
-      )
+      column(6, textOutput("patients_waiting_text")),
+      column(6, textOutput("utilization_text"))
     )
   )
+  
+  
 
 server <- function(input, output) {
+  set.seed(07052023)
   
   waiting_percents_data <- reactive({
     num_beds_range <- seq(5, 50, by = 1)
@@ -173,6 +167,7 @@ server <- function(input, output) {
   })
   
   simulation_results <- reactive({
+    set.seed(07052023)
     sim_results <- stroke_simulation(as.numeric(input$num_patients),
                                      as.numeric(input$num_patients) / 365,
                                      bed_occupation_time,
@@ -283,7 +278,7 @@ server <- function(input, output) {
       geom_col(fill = "steelblue") +
       theme_minimal()+
       geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
-                position = position_stack(vjust = 0.5), color = "white", size = 4) +
+                position = position_stack(vjust = 0.3), color = "white", size = 2.5) +
       theme_minimal() +
       labs(
         x = "Stroke Category",
