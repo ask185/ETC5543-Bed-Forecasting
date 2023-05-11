@@ -128,7 +128,7 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 100, step = 50),
+                           min = 500, max = 2500, value = 1000, step = 50),
                sliderInput("num_beds", "Number of beds:",
                            min = 5, max = 50, value = 20, step = 1)
              )
@@ -190,7 +190,8 @@ server <- function(input, output) {
     
     ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
       geom_col(width = 0.5) +
-      scale_y_continuous(labels = scales::label_number(accuracy = 0.01)) +
+      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), 
+                         labels = scales::label_number(accuracy = 0.01)) +
       scale_x_continuous(breaks = seq(5, 50, by = 1)) +
       scale_fill_manual(values = c("steelblue", "red")) +
       labs(title = "Percent of Patients Waiting vs Number of Beds",
