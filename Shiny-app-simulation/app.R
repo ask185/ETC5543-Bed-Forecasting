@@ -274,8 +274,8 @@ server <- function(input, output) {
     
     ggplot(data, aes(x = num_beds, y = bed_utilization, color = selected)) +
       geom_point(size = 4) +
-      geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = bed_utilization)) +
-      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), labels = scales::label_number(accuracy = 0.01)) +
+      geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = bed_utilization), color = "steelblue") +
+      scale_y_continuous(limits = c(0, 180), breaks = seq(0, 180, by = 5), labels = scales::label_number(accuracy = 0.01)) +
       scale_x_continuous(breaks = seq(5, 50, by = 1)) +
       scale_color_manual(values = c("steelblue", "red")) +
       labs(title = "Bed Utilization vs Number of Beds",
