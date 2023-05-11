@@ -122,6 +122,7 @@ set.seed(070523)
   # )
   
   ui <- fluidPage(
+    # theme = shinytheme("darkly"),
     titlePanel("Stroke Simulation App"),
     
     tags$div(
@@ -152,16 +153,24 @@ set.seed(070523)
       ),
       column(6,
              tabsetPanel(
-               tabPanel("Percent of Patients Waiting", plotOutput("patients_waiting_plot")),
+               tabPanel("Percent of Patients Waiting", plotlyOutput("patients_waiting_plot")),
                tabPanel("Bed Utilization", plotOutput("utilization_plot"))
              )),
       column(3,
              plotlyOutput("static_plot"))
     ),
-    
+    br(),
     fluidRow(
-      column(6, textOutput("patients_waiting_text")),
-      column(6, textOutput("utilization_text"))
+      column(6, align = "center",
+             tags$div(
+               textOutput("patients_waiting_text"),
+               style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
+             ),
+             tags$br(), # Add a line break between the text outputs
+             tags$div(
+               textOutput("utilization_text"),
+               style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
+             ))
     )
   )
   
@@ -193,7 +202,7 @@ server <- function(input, output) {
     return(sim_results)
   })
   
-  output$patients_waiting_plot <- renderPlot({
+  output$patients_waiting_plot <- renderPlotly({
     set.seed(07052023)
     num_beds_range <- seq(5, 50, by = 1)
     
@@ -205,29 +214,37 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
-    ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
-      geom_col(width = 0.5) +
-      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), 
-                         labels = scales::label_number(accuracy = 0.01)) +
-      scale_x_continuous(breaks = seq(5, 50, by = 1)) +
+   p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
+      geom_point(size=2) +
+      geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
+                  color = "steelblue")+
+     scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5),
+                        labels = scales::percent_format(accuracy = 1))+
+      scale_x_continuous(breaks = seq(5, 50, by = 1), expand = c(0, 0.5)) +
       scale_fill_manual(values = c("steelblue", "red")) +
       labs(title = "Percent of Patients Waiting vs Number of Beds",
            x = "Number of Beds",
            y = "Percent of Patients Waiting") +
       theme_minimal() +
+      theme(axis.text.x = element_text(angle = 90 ,hjust = 1),
+            legend.position = "none")+
       theme(axis.text.x = element_text(size = 10),
             axis.text.y = element_text(size = 10),
-            plot.title = element_text(size = 12),
-            axis.title.x = element_text(size = 11),
-            axis.title.y = element_text(size = 11),
+            plot.title = element_text(size = 14),
+            axis.title.x = element_text(size = 13),
+            axis.title.y = element_text(size = 13),
             legend.position = "none")
+   
+   ggplotly(p_one)
+ 
   })
   
   
   # Patients waiting text
   output$patients_waiting_text <- renderText({
     req(simulation_results())
-    paste("Percent of patients waiting for a bed at", input$num_patients,"patients in total and" ,input$num_beds, "beds:", round(simulation_results()$percent_patients_waiting, 2), "%")
+    paste("Percent of patients waiting for a bed at", input$num_patients,"patients in total and" ,
+          input$num_beds, "beds:", round(simulation_results()$percent_patients_waiting, 2), "%")
   })
   
   # Utilization plot
@@ -257,29 +274,35 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
-    ggplot(data, aes(x = num_beds, y = bed_utilization, color = selected)) +
+     ggplot(data, aes(x = num_beds, y = bed_utilization, color = selected)) +
       geom_point(size = 4) +
-      geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = bed_utilization), color = "steelblue") +
-      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), labels = scales::label_number(accuracy = 0.01)) +
-      scale_x_continuous(breaks = seq(5, 50, by = 1)) +
+      geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = bed_utilization), 
+                   color = "steelblue") +
+      scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5), 
+                         labels = scales::label_number(accuracy = 0.01)) +
+      scale_x_continuous(breaks = seq(5, 50, by = 1), expand = c(0, 0)) +
       scale_color_manual(values = c("steelblue", "red")) +
       labs(title = "Bed Utilization vs Number of Beds",
            x = "Number of Beds",
            y = "Bed Utilization (%)") +
       theme_minimal() +
+       theme(axis.text.x = element_text(angle=90, hjust = 1),
+             legend.position = "none") +
       theme(axis.text.x = element_text(size = 10),
             axis.text.y = element_text(size = 10),
             plot.title = element_text(size = 12),
             axis.title.x = element_text(size = 11),
             axis.title.y = element_text(size = 11),
             legend.position = "none")
+
   })
 
   # Utilization text
   output$utilization_text <- renderText({
     utilization_percents <- utilization_percents_data()
     selected_utilization_percent <- utilization_percents[input$num_beds - 4]
-    paste("Bed utilization percent for a total of", input$num_patients,"patients and", input$num_beds, "beds:", round(selected_utilization_percent, 2), "%")
+    paste("Bed utilization percent for a total of", input$num_patients,"patients and", 
+          input$num_beds, "beds:", round(selected_utilization_percent, 2), "%")
   })
   
   set.seed(07052023)
@@ -292,7 +315,7 @@ server <- function(input, output) {
   
   # Static plot
   output$static_plot <- renderPlotly({
-    p <- ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)) +
+    p_two <- ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)) +
       geom_col(fill = "steelblue") +
       theme_minimal()+
       geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
@@ -303,7 +326,7 @@ server <- function(input, output) {
         y = "Bed Occupation Time (days)") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
     
-    ggplotly(p)
+    ggplotly(p_two)
   })
   
 }
