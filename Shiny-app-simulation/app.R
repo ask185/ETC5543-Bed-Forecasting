@@ -155,27 +155,40 @@ set.seed(070523)
              tabsetPanel(
                tabPanel("Percent of Patients Waiting",
                         plotlyOutput("patients_waiting_plot"),
-                        verbatimTextOutput("subtitle_text") # Changed from textOutput to verbatimTextOutput
+                        tags$div(
+                          textOutput("subtitle_text"),
+                          style = "background-color: steelblue; color: white; padding: 8px; 
+                          border-radius: 3px; text-align: center;"),
+                        tags$div(
+                          textOutput("patients_waiting_text"),
+                          style = "background-color: #f0f0f0; color: black; padding: 
+                          8px; border-radius: 3px; text-align: center;"
+                        ),
+                        tags$div(
+                          textOutput("utilization_text"),
+                          style = "background-color: lightgreen; color: black; 
+                          padding: 8px; border-radius: 3px; text-align: center;"
+                        )
                ),
                tabPanel("Bed Utilization", plotOutput("utilization_plot"))
              )
       ),
       column(3,
              plotlyOutput("static_plot"))
-    ),
-    br(),
-    fluidRow(
-      column(6, align = "center",
-             tags$div(
-               textOutput("patients_waiting_text"),
-               style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
-             ),
-             tags$br(), # Add a line break between the text outputs
-             tags$div(
-               textOutput("utilization_text"),
-               style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
-             ))
     )
+    # br(),
+    # fluidRow(
+    #   column(6, align = "center",
+    #          tags$div(
+    #            textOutput("patients_waiting_text"),
+    #            style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
+    #          ),
+    #          tags$br(),
+    #          tags$div(
+    #            textOutput("utilization_text"),
+    #            style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
+    #          ))
+    # )
   )
  
 
@@ -204,26 +217,28 @@ server <- function(input, output) {
                                      as.numeric(input$num_beds))
     return(sim_results)
   })
-  
+
   optimal_beds <- function(num_patients) {
     if (num_patients == 500) {
-      return(12:13)
+      return(paste(12, 13, sep = "-"))
     } else if (num_patients == 1000) {
-      return(22:24)
+      return(paste(22, 24, sep = "-"))
     } else if (num_patients == 1500) {
-      return(31:33)
+      return(paste(31, 33, sep = "-"))
     } else if (num_patients == 2000) {
-      return(40:42)
+      return(paste(40, 42, sep = "-"))
     } else if (num_patients == 2500) {
-      return(49:50)
+      return(paste(49, 50, sep = "-"))
     }
   }
   
-    output$subtitle_text <- renderUI({
-      subtitle_text <- paste("Optimal number of beds for", input$num_patients, "patients:", optimal_beds(input$num_patients))
-      HTML(subtitle_text)
-    })
-
+  
+  output$subtitle_text <- renderText({
+    subtitle_text <- paste("Optimal number of beds for", input$num_patients, "patients:", 
+                           optimal_beds(input$num_patients), "\n")
+    return(subtitle_text)
+  })
+  
   output$patients_waiting_plot <- renderPlotly({
     set.seed(07052023)
     num_beds_range <- seq(5, 50, by = 1)
