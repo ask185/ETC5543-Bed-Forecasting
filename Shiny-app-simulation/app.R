@@ -122,7 +122,7 @@ set.seed(070523)
   # )
   
   ui <- fluidPage(
-    # theme = shinytheme("darkly"),
+    theme = shinytheme("superhero"),
     titlePanel("Stroke Simulation App"),
     
     tags$div(
@@ -138,7 +138,7 @@ set.seed(070523)
            As per our analysis the optimal number of beds for the annual load of 2000 patients
            should be 40 in the stroke care unit.
            "),
-      style = "background-color: #f0f0f0; padding: 10px;"
+      style = "background-color: #f0f0f0; color: black; padding: 10px;"
     ),
     br(),
     
@@ -170,26 +170,20 @@ set.seed(070523)
                           padding: 8px; border-radius: 3px; text-align: center;"
                         )
                ),
-               tabPanel("Bed Utilization", plotOutput("utilization_plot"))
-             )
+               tabPanel("Bed Utilization", 
+                        plotOutput("utilization_plot"),
+                        tags$div(
+                          "The optimal utilization rate is considered to be 80% or over.",
+                          style = "padding: 8px; text-align: center;"
+                        )
+               )
+             ) 
       ),
       column(3,
              plotlyOutput("static_plot"))
     )
-    # br(),
-    # fluidRow(
-    #   column(6, align = "center",
-    #          tags$div(
-    #            textOutput("patients_waiting_text"),
-    #            style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
-    #          ),
-    #          tags$br(),
-    #          tags$div(
-    #            textOutput("utilization_text"),
-    #            style = "background-color: #f0f0f0; color: black; padding: 8px; border-radius: 3px;"
-    #          ))
-    # )
   )
+  
  
 
 server <- function(input, output) {
