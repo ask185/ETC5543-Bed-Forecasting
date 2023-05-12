@@ -618,3 +618,4 @@ ggplot(results_df_future, aes(x = num_beds, y = max_queue_length)) +
 
 
 
+
