@@ -127,17 +127,17 @@ set.seed(070523)
     
     tags$div(
       tags$p("Stroke is one of the leading causes to disability and death in the Australia. 
-      According to the Australian Institute of Health and Welfare, in 2020, stroke was 
-      recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in 
-      Australia. Stroke was one of the 5 leading causes of death in Australia – on average, 
-      22 Australians died of stroke each day in 2020. Hence the stroke care units are crucial
-      in reducing the death rates and speedying up the recovery for stroke patients. 
-      This app simulates the percentage of stroke patients waiting for a bed and 
-             bed utilization in a stroke unit at Monash Medical Center based on the number of 
-             patients and the number of available beds.
-             As per our analysis the optimal number of beds for the annual load of 2000 patients
-             should be 40 in the stroke care unit.
-             "),
+    According to the Australian Institute of Health and Welfare, in 2020, stroke was 
+    recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in 
+    Australia. Stroke was one of the 5 leading causes of death in Australia – on average, 
+    22 Australians died of stroke each day in 2020. Hence the stroke care units are crucial
+    in reducing the death rates and speedying up the recovery for stroke patients. 
+    This app simulates the percentage of stroke patients waiting for a bed and 
+           bed utilization in a stroke unit at Monash Medical Center based on the number of 
+           patients and the number of available beds.
+           As per our analysis the optimal number of beds for the annual load of 2000 patients
+           should be 40 in the stroke care unit.
+           "),
       style = "background-color: #f0f0f0; padding: 10px;"
     ),
     br(),
@@ -146,16 +146,20 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 2000, step = 500),
+                           min = 500, max = 2500, value = 1000, step = 500),
                sliderInput("num_beds", "Number of beds:",
-                           min = 5, max = 50, value = 20, step = 1)
+                           min = 5, max = 50, value = 22, step = 1)
              )
       ),
       column(6,
              tabsetPanel(
-               tabPanel("Percent of Patients Waiting", plotlyOutput("patients_waiting_plot")),
+               tabPanel("Percent of Patients Waiting",
+                        plotlyOutput("patients_waiting_plot"),
+                        verbatimTextOutput("subtitle_text") # Changed from textOutput to verbatimTextOutput
+               ),
                tabPanel("Bed Utilization", plotOutput("utilization_plot"))
-             )),
+             )
+      ),
       column(3,
              plotlyOutput("static_plot"))
     ),
@@ -173,8 +177,7 @@ set.seed(070523)
              ))
     )
   )
-  
-  
+ 
 
 server <- function(input, output) {
   set.seed(07052023)
@@ -202,6 +205,25 @@ server <- function(input, output) {
     return(sim_results)
   })
   
+  optimal_beds <- function(num_patients) {
+    if (num_patients == 500) {
+      return(12:13)
+    } else if (num_patients == 1000) {
+      return(22:24)
+    } else if (num_patients == 1500) {
+      return(31:33)
+    } else if (num_patients == 2000) {
+      return(40:42)
+    } else if (num_patients == 2500) {
+      return(49:50)
+    }
+  }
+  
+    output$subtitle_text <- renderUI({
+      subtitle_text <- paste("Optimal number of beds for", input$num_patients, "patients:", optimal_beds(input$num_patients))
+      HTML(subtitle_text)
+    })
+
   output$patients_waiting_plot <- renderPlotly({
     set.seed(07052023)
     num_beds_range <- seq(5, 50, by = 1)
@@ -214,10 +236,8 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
-  p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected, 
-                                      tooltip = paste("Number of Beds:", num_beds, 
-                                                      "<br>Percent of Patients Waiting:", 
-                                                      percent_patients_waiting))) +
+    
+    p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
       geom_point(size=2, stroke=0) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
                   color = "steelblue")+
@@ -238,9 +258,11 @@ server <- function(input, output) {
             axis.title.x = element_text(size = 13),
             axis.title.y = element_text(size = 13),
             legend.position = "none")
-   
+      # geom_text(data = optimal_bed_data,
+      #           aes(x = num_patients, y = 0, label = label),
+      #           size = 3, hjust = 0, vjust = 1.5, angle = 90)
+
    ggplotly(p_one)
- 
   })
   
   
