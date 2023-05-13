@@ -19,107 +19,6 @@ set.seed(070523)
   
   shiny::addResourcePath("myimages", "images")
   
-
-  # ui <- fluidPage(
-  #   theme = shinytheme("darkly"),
-  #   navbarPage(title = "Stroke Simulation",
-  #              tabPanel("Analysis",
-  #                       fluidRow(
-  #                         column(
-  #                           12,
-  #                           h3("Preliminary Analysis"),
-  #                           p("For this analysis six Stroke categories were identified with corresponding probabilties, 
-  #       and occupation times.
-  #       While the patients with the mild-level stroke had the highest probability (0.34 or 34%), 
-  #       the patients with the severe level of stroke occupied the bed for the longest duration
-  #       of the time."),
-  #                           br(),
-  #                           
-  #                           p("The average arrival rate for the analysis was calculated in the following way: Total number of patients/365. The arrival rate is the average number of patients
-  #       arriving into the stroke ward. In this simulation the total number of patients were estimated to be 2000 across the year, hence the arrival was calculated as 2000/365: 5.47 ~ 6 patients/day.
-  #       Furthermore, the inter-arrival time of the patients follow an exponential distribution."),
-  #                           br(),
-  #                           p("In plot below one can observe from plot the stroke categories, corresponding length of stay and probabilities.")
-  #                         )
-  #                       ),
-  #                   
-  #                       br(),
-  #                       p("Our simulation analysis shows us that for annual patient load of 2000, 
-  #   we require 40 beds in the stroke ward to ensure that at any given time there are 
-  #   fewer than 5% of the stroke patients waiting to be admitted into the stroke, however,
-  #   it is probable that there would be less than 5%
-  #   of the patients waiting to be admitted since the simulation model assumes that there has to be
-  #   on average 6 stroke patients."),
-  #                       # br(),
-  #                       # tags$img(
-  #                       #   src = "myimages/percent_of_patients_waiting1.png",
-  #                       #   width = 1100,
-  #                       #   length = 500,
-  #                       #   alt = "figure of percent of patients waiting vs the number of beds",
-  #                       #   figcap = "figure of percent of patients waiting vs the number of beds"),
-  #                       
-  #                       br(),
-  #                       p("Our analysis derived at these conclusions after running 10,000 replications of the simulation."),
-  #                       br(),
-  #                       helpText("Please enter an integer value between 500 and 2500 patients"),
-  #                       numericInput("num_patients", "Number of Patients:", value = 2500, min = 500),
-  #                       helpText("Please enter an integer value between 5 and 50 beds"),
-  #                       numericInput("num_beds", "Number of Beds:", value = 25, min = 5),
-  #                       actionButton("run_simulation", "Run Simulation"),
-  #                       tabsetPanel(
-  #                         tabPanel("Patients Waiting",
-  #                                  plotOutput("patients_waiting_plot"),
-  #                                  textOutput("patients_waiting_text")
-  #                         ),
-  #                         tabPanel("Utilization",
-  #                                  plotOutput("utilization_plot"),
-  #                                  textOutput("utilization_text")
-  #                         )
-  #                         
-  #                       )
-  #              )
-  #   )
-  # )
-  
-  # ui <- fluidPage(
-  #   titlePanel("Stroke Simulation App"),
-  #   tags$hr(),
-  #   tags$div("Brief text goes here..."),
-  #   tags$hr(),
-  #   fluidRow(
-  #     column(3,
-  #            wellPanel(
-  #              sliderInput("num_patients",
-  #                          "Number of Patients (per year):",
-  #                          min = 100,
-  #                          max = 5000,
-  #                          value = 1000,
-  #                          step = 100),
-  #              sliderInput("num_beds",
-  #                          "Number of Beds:",
-  #                          min = 5,
-  #                          max = 50,
-  #                          value = 20,
-  #                          step = 1)
-  #            )
-  #     ),
-  #     column(9,
-  #            tabsetPanel(
-  #              tabPanel("Percent of Patients Waiting",
-  #                       plotOutput("patients_waiting_plot"),
-  #                       textOutput("patients_waiting_text")),
-  #              tabPanel("Bed Utilization",
-  #                       plotOutput("utilization_plot"),
-  #                       textOutput("utilization_text"))
-  #            )
-  #     )
-  #   ),
-  #   fluidRow(
-  #     column(12,
-  #            plotOutput("static_plot")
-  #     )
-  #   )
-  # )
   
   ui <- fluidPage(
     theme = shinytheme("superhero"),
@@ -245,7 +144,17 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
+    optimal_bed_data <- data.frame(
+      num_patients = c(500, 1000, 1500, 2000, 2500),
+      optimal_beds = c(12, 23, 32, 41, 49),
+      label = c("Optimal Beds (500 patients): 12-13",
+                "Optimal Beds (1000 patients): 22-24",
+                "Optimal Beds (1500 patients): 31-33",
+                "Optimal Beds (2000 patients): 40-42",
+                "Optimal Beds (2500 patients): 49-50")
+    )
     
+
     p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
       geom_point(size=2, stroke=0) +
       geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting), 
