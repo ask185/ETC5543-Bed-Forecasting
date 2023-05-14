@@ -173,10 +173,44 @@ With these input parameters, the stroke simulation model was developed to achiev
 
 #### Inter-arrival times
 
-The inter-arrival times in context of the hospital settings follow a Poisson process.
+In specifying a queuing model, we make assumptions about the probabilistic nature of the
+arrival and service processes. The most common assumption to make about arrivals is that they follow a *Poisson process. @green2011queueing*
+
+Assume $N(t)$ is the number of arrivals during a time period of duration $t$ and $N(t)$ has a
+Poisson distribution, then:
+
+Probability= $$\{N(t) = n\} = \frac {e-λt
+ (λt)n} {n!} $$
+where $\lambda$ is called the *rate* and is the expected number of arrivals per unit time. Another way to characterize the Poisson process is that the time between consecutive
+arrivals, called the *inter-arrival time*, has an exponential distribution.
+
+Mathematically, the inter-arrival time for our model was generated in the following way:
+
+-   Total number of patients = 2000, hence let $n=2000$
+
+-   Arrival rate = 6 patients, therefore, $\lambda =6$
+
+    For each patient "$i$" in the 2000 patients, we generate an inter-arrival time $T_i$ from an exponential distribution with the rate $(\lambda)$:
+
+    $$T_i \sim Exp(6)$$
+
+    This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{2000}$ that exponentially distributed with 6.
 
 ```{r message=FALSE, warning=FALSE}
 
+# You can represent the `generate_interarrival_times` function mathematically as follows:
+# 
+# Let `n` be the total number of patients and `λ` be the arrival rate. In your case, `n = 2000` and `λ = 6`.
+# 
+# For each patient `i` in the range `1` to `n`, we generate an interarrival time `T_i` from an exponential distribution with rate `λ`:
+# 
+# T_i ~ Exp(λ)
+# 
+# So, for each patient `i` from 1 to 2000, we have:
+# 
+# T_i ~ Exp(6)
+# 
+# This generates a sequence of interarrival times `T_1, T_2, ..., T_2000` that are exponentially distributed with a rate of 6.
 
 ```
 
