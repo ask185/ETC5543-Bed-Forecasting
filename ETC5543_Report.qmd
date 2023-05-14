@@ -1,5 +1,6 @@
 ---
 title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
+echo: FALSE
 format: pdf
 bibliography: reference.bib
 csl: academic-medicine.csl
@@ -95,9 +96,21 @@ One of the other challenges I faced was that the computation times were long. DE
 
 #### Method
 
-In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000.
+In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000. The performance metrics were computed for 2000 patients as well as for the future estimated number of 2500 patients.
 
-```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+The following parameters were used to lay the foundation of the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
+
+-   Total annual patients: 2000
+
+-   Arrival rate: $\frac {2000} {365} = 6$ patients per day
+
+-   Stroke level probabilities & bed occupation times see Table 1:
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+
+#| label: tbl-strokeCat
+#| tbl-cap: Stroke Categories, Probabiliy and Bed Occupation times
+
 library(tidyverse)
 library(ggplot2)
 library(bookdown)
@@ -129,18 +142,31 @@ bed_occupation_time_df <- data.frame(
   probability = c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 )
 
-ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)) +
+updated_bed_occupation_time_df <- bed_occupation_time_df
+
+colnames(updated_bed_occupation_time_df) <- c("Stroke Categories", "Bed Occupation times", "Stroke Probability")
+
+updated_bed_occupation_time_df %>%
+  knitr::kable(caption = "Stroke categories and corresponding length of stay and probabilities")
+```
+
+See Figure:1 for the summary of the stroke categories and the associated probabilities with corresponding length of stay.
+
+```{r figcat, fig.cap="Stroke categories, probabilities and bed occupation times", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, fig}
+
+# viz for the stroke categrories.
+
+v1 <-ggplot(updated_bed_occupation_time_df, aes(x = `Stroke Categories`, y = `Bed Occupation times`)) +
   geom_col(fill = "steelblue") +
   theme_minimal()+
-  geom_text(aes(label = scales::percent(probability, accuracy = 0.1)), 
+  geom_text(aes(label = scales::percent(`Stroke Probability`, accuracy = 0.1)), 
             position = position_stack(vjust = 0.5), color = "white", size = 4) +
   theme_minimal() +
   labs(
        x = "Stroke Category",
        y = "Bed Occupation Time (days)")
+v1
 
-bed_occupation_time_df %>%
-  knitr::kable(caption = "The table displaying stroke categories and corresponding length of stay and probabilities", label = "tab:bed_occupation_times_tab")
 ```
 
 ### References
