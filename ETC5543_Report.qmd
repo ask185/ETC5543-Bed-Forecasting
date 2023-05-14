@@ -152,7 +152,7 @@ updated_bed_occupation_time_df %>%
 
 See Figure:1 for the summary of the stroke categories and the associated probabilities with corresponding length of stay.
 
-```{r figcat, fig.cap="Stroke categories, probabilities and bed occupation times", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, fig}
+```{r figcat, fig.cap="Stroke categories, probabilities and bed occupation times", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
 
 # viz for the stroke categrories.
 
@@ -166,6 +166,17 @@ v1 <-ggplot(updated_bed_occupation_time_df, aes(x = `Stroke Categories`, y = `Be
        x = "Stroke Category",
        y = "Bed Occupation Time (days)")
 v1
+
+```
+
+With these input parameters, the stroke simulation model was developed to achieve the results by creating functions that generated the inter-arrival times, assigned stroke categories to the patients in the simulation, and generated the bed occupation times for the patients based on their stroke categories.
+
+#### Inter-arrival times
+
+The inter-arrival times in context of the hospital settings follow a Poisson process.
+
+```{r message=FALSE, warning=FALSE}
+
 
 ```
 
