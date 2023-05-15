@@ -214,7 +214,27 @@ generate_interarrival_times <- function(total_patients, arrival_rate) {
 
 #### Assigning the stroke categories to Patients
 
-Next, I created a `assigning_stroke_levels` function that assigns stroke categories to patients.
+Next, I created a `assigning_stroke_levels` function to assigns stroke categories to patients.
+
+The `assign_stroke_levels` function assigns stroke categories to patients based on a given set of probabilities for each category. These probabilities have been mentioned earlier in the report, please refer to Table 1. The function takes two arguments:
+
+1\. `total_patients`: The total number of patients for which stroke categories will be assigned.
+
+2\. `stroke_level_prob`: A vector containing the probability of each stroke category.
+
+Mathematically, this process can be explained as follows:
+
+Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n$ =2000. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ is the number of stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
+
+$P(Y_i = j) = p_j$
+
+where $p_j$ is the probability of the $j^{th}$ stroke category, specified in the `stroke_level_prob` vector.
+
+Then in this R-function stroke categories are assigned to patients by sampling from a discrete probability distribution with the specified probabilities:
+
+$Y_1, Y_2, ..., Y_n$ = sample( $1:k$ , size = $n$ , replace = TRUE, prob = $p$)
+
+The \`replace = TRUE\` argument ensures that each patient's stroke category is assigned independently, allowing for repeated selections of the same category.
 
 ### References
 
