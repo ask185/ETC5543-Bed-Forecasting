@@ -263,17 +263,84 @@ Let $f(Y)$ be the piecewise constant function that represents the length of stay
 
 $f(Y) = c_i$, if $Y$ belongs to the $i^{th}$ stroke category.
 
-In the R function `generate_length_of_stay`, the length of stay for each patient is calculated using this piecewise constant function. The function iterates through all patients, assigning a length of stay based on their stroke category:
+In the R function `generate_length_of_stay`, the length of stay for each patient is implemented using this piecewise constant function. The function iterates through all patients, assigning a length of stay based on their stroke category:
 
-1\. Retrieve the stroke category for the patient, denoted by `stroke_level`.
+```{r eval=TRUE, echo=FALSE}
+generate_length_of_stay <- function(total_patients, 
+                                    bed_occupation_time, 
+                                    stroke_levels) {
+  length_of_stay <- numeric(total_patients)
+  
+  for (i in 1:total_patients) {
+    
+    stroke_level <- stroke_levels[i]
+    
+    if (length(bed_occupation_time[[stroke_level]]) == 1) {
+      
+      length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]
+    } 
+    else {
+      length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]
+                                  :bed_occupation_time[[stroke_level]][2], 1)
+    }
+  }
+  
+  return(length_of_stay)
+}
 
-2\. Check if the bed occupation time for that category is a single value or a range of values.
 
-3\. If it's a single value, assign the length of stay to that value: `length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]`.
+# Generating length_of_stay for each patient
+length_of_stay <- generate_length_of_stay(total_patients, 
+                                          bed_occupation_time, 
+                                          stroke_levels)
+```
 
-4\. If it's a range of values, randomly sample a value from that range and assign it as the length of stay: `length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)`.
+1\. First this function, retrieve the stroke category for the patient, denoted by `stroke_level`.
+
+2\. Then it checks if the bed occupation time for that category is a single value or a range of values.
+
+3\. If it's a single value, this function assigns the length of stay to that value: `length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]`.
+
+4\. If it's a range of values, however, then it randomly sample a value from that range and assigns it as the length of stay: `length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]]`
+
+`[1]:bed_occupation_time[[stroke_level]][2], 1)`.
 
 This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piecewise constant function described above.
+
+#### Arrivals data
+
+Having defined these functions, the next step is check the distribution of the length of stay of the patients in our simulation model and have a look at the data.
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+set.seed(2023)
+
+# generating the arrival data for the current volume of patients
+
+# Add number_of_patients and length_of_stay to arrivals_data
+
+interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+
+stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+
+length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+
+arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
+
+arrivals_data$stroke_categories <- factor(arrivals_data$stroke_levels,
+                                          levels = c(1, 2, 3, 4, 5, 6),
+                                          labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
+
+ggplot(arrivals_data, aes(x = stroke_categories, y = length_of_stay, fill = stroke_categories)) +
+  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  theme_minimal() +
+  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
+  labs(title = "Mean Length of Stay by Stroke Category",
+       x = "Stroke Category",
+       y = "Mean Length of Stay (days)") +
+  scale_fill_discrete(name = "Stroke Category")
+
+arrivals_data %>% head()
+```
 
 ### References
 
