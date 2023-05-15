@@ -6,6 +6,7 @@ library(tidyverse)
 library(shinydashboard)
 library(shinythemes)
 library(plotly)
+library(shinycssloaders)
 
 source("functions.R")
  
@@ -53,7 +54,7 @@ set.seed(070523)
       column(6,
              tabsetPanel(
                tabPanel("Percent of Patients Waiting",
-                        plotlyOutput("patients_waiting_plot"),
+                        withSpinner(plotlyOutput("patients_waiting_plot")),
                         tags$div(
                           textOutput("subtitle_text"),
                           style = "background-color: steelblue; color: white; padding: 8px; 
@@ -70,7 +71,7 @@ set.seed(070523)
                         )
                ),
                tabPanel("Bed Utilization", 
-                        plotOutput("utilization_plot"),
+                        withSpinner(plotOutput("utilization_plot")),
                         tags$div(
                           "The optimal utilization rate is considered to be 80% or over.",
                           style = "padding: 8px; text-align: center;"
