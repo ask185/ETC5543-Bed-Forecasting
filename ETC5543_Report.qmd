@@ -86,17 +86,17 @@ In the case of the stroke ward simulation, DES was a better choice because it al
 
 #### Data
 
-The data used in this project is derived from multiple soruces including historical records and hospital statistics, which included arrival rates, bed occupation times, stroke categories and associated probabilities. Furthermore, valuable insights regarding the patient arrivals, annual patient load and the bed occupation times for different categories of stroke patients from the supervisor for this project, Professor Thanh Phan, Head of Neuroscience Research, Monash Health.
+The data used in this project is derived from multiple sources including historical records and hospital statistics, which included arrival rates, bed occupation times, stroke categories and associated probabilities. Furthermore, valuable insights regarding the patient arrivals, annual patient load and the bed occupation times for different categories of stroke patients were obtained from the supervisor for this project, Professor Thanh Phan, Head of Neuroscience Research, Monash Health.
 
-It is important to note that the data utilized in this project may have certain limitations, such as potential inaccuracies or biases in the original records. However, these limitations have been carefully considered and addressed wherever possible to ensure the reliability of the analysis. Furthermore, consultations with and feedback from supervisor for this project, Professor Phan were acquired regualrly to ensure the relaibility of the results generated from this model as well as the accuracy of the information and data used in this project. Moreover, the steps were taken to mitigate any potential effects of inaccuracies that emerge as a result of using simulation model to reflect the real-life scenarios of the stroke ward. It is important to note that simulation models presents certain limitations.
+It is important to note that the data utilized in this project may have certain limitations, such as potential inaccuracies or biases in the original records. However, these limitations have been carefully considered and addressed wherever possible to ensure the reliability of the analysis. Furthermore, consultations with and feedback from supervisor for this project, Professor Phan were acquired regularly to ensure the reliability of the results generated from this model as well as the accuracy of the information and data used in this project. Moreover, the steps were taken to mitigate any potential effects of inaccuracies that emerge as a result of using simulation model to reflect the real-life scenarios of the stroke ward. It is important to note that simulation models presents certain limitations.
 
-One of the key limitations of the simulation model is the validation and calibration of simulation model is a challenging process and can be quite time consuming at times, particularly in the absence of stroke specific data. The information used in this simulation model was collected from multiple wards where the stroke patients were admitted; there were a total of ten wards that had the stroke patients; the totoal number of these patients and their bed occupation times for the time period: October 2022 and March 2023 were observed and used to validate the length of stay of the patients from the simulation model. Furthermore, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan. These information on the stroke patients were incorporated into the model.
+One of the key limitations of the simulation model is the validation and calibration of simulation model is a challenging process and can be quite time consuming at times, particularly in the absence of stroke specific data. The information used in this simulation model was collected from multiple wards where the stroke patients were admitted; there were a total of ten wards that had the stroke patients; the total number of these patients and their bed occupation times for the time period: October 2022 and March 2023 were observed and used to validate the length of stay of the patients from the simulation model. Furthermore, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan. These information on the stroke patients were incorporated into the model.
 
 One of the other challenges I faced was that the computation times were long. DES can be computationally intensive when running multiple thousand simulation or multiple scenarios. This drawback of the DES made it difficult to run multiple simulations and compute performance measures of each simulation and average those results to produce more reliable results for the performance metrics.
 
 #### Method
 
-In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000. The performance metrics were computed for 2000 patients as well as for the future estimated number of 2500 patients.
+In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned, simulate the patient inflow, stay and exit, and finally run multiple simulations and for each simulation compute certain performance metrics such as the percent of the patients waiting, utilization rates and maximum queue length. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000. The performance metrics were computed for 2000 patients as well as for the future estimated number of 2500 patients.
 
 The following parameters were used to lay the foundation of the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
 
@@ -173,16 +173,12 @@ With these input parameters, the stroke simulation model was developed to achiev
 
 #### Inter-arrival times
 
-In specifying a queuing model, we make assumptions about the probabilistic nature of the
-arrival and service processes. The most common assumption to make about arrivals is that they follow a *Poisson process. @green2011queueing*
+In specifying a queuing model, we make assumptions about the probabilistic nature of the arrival and service processes. The most common assumption to make about arrivals is that they follow a *Poisson process. @green2011queueing*
 
-Assume $N(t)$ is the number of arrivals during a time period of duration $t$ and $N(t)$ has a
-Poisson distribution, then:
+Assume $N(t)$ is the number of arrivals during a time period of duration $t$ and $N(t)$ has a Poisson distribution, then:
 
 Probability= $$\{N(t) = n\} = \frac {e-λt
- (λt)n} {n!} $$
-where $\lambda$ is called the *rate* and is the expected number of arrivals per unit time. Another way to characterize the Poisson process is that the time between consecutive
-arrivals, called the *inter-arrival time*, has an exponential distribution.
+ (λt)n} {n!} $$ where $\lambda$ is called the *rate* and is the expected number of arrivals per unit time. Another way to characterize the Poisson process is that the time between consecutive arrivals, called the *inter-arrival time*, has an exponential distribution.
 
 Mathematically, the inter-arrival time for our model was generated in the following way:
 
@@ -190,29 +186,35 @@ Mathematically, the inter-arrival time for our model was generated in the follow
 
 -   Arrival rate = 6 patients, therefore, $\lambda =6$
 
-    For each patient "$i$" in the 2000 patients, we generate an inter-arrival time $T_i$ from an exponential distribution with the rate $(\lambda)$:
+    The exponential distribution has a probability density function (PDF) given by:
+
+    $$f(T) = λ \times Exp(-λ(T))$$
+
+    where $\lambda$ is the arrival_rate, and $T$ is a random variable representing the time between two successive patient arrivals.
+
+    In the simulation for each patient "$i$" in the 2000 patients (total number of patients), we generate an inter-arrival time $T_i$ from an exponential distribution with the rate $(\lambda)$:
 
     $$T_i \sim Exp(6)$$
 
-    This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{2000}$ that exponentially distributed with 6.
+    This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{2000}$ that is exponentially distributed with $\lambda$ = 6.
 
-```{r message=FALSE, warning=FALSE}
+    In R, this implementation is shown below:
 
-# You can represent the `generate_interarrival_times` function mathematically as follows:
-# 
-# Let `n` be the total number of patients and `λ` be the arrival rate. In your case, `n = 2000` and `λ = 6`.
-# 
-# For each patient `i` in the range `1` to `n`, we generate an interarrival time `T_i` from an exponential distribution with rate `λ`:
-# 
-# T_i ~ Exp(λ)
-# 
-# So, for each patient `i` from 1 to 2000, we have:
-# 
-# T_i ~ Exp(6)
-# 
-# This generates a sequence of interarrival times `T_1, T_2, ..., T_2000` that are exponentially distributed with a rate of 6.
+```{r echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+
+# total patients = 2000
+# arrival rate = 6
+
+generate_interarrival_times <- function(total_patients, arrival_rate) {
+  interarrival_times <- rexp(total_patients, rate = arrival_rate)
+  return(interarrival_times)
+}
 
 ```
+
+#### Assigning the stroke categories to Patients
+
+Next, I created a `assigning_stroke_levels` function that assigns stroke categories to patients.
 
 ### References
 
