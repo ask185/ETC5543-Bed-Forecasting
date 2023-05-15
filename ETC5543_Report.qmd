@@ -348,6 +348,7 @@ We can further examine the distribution of the **mean** length of stay of patien
 ```{r figtwo, fig.cap="Patients Arrival Data", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
 ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill = `stroke categoryNames`)) +
   geom_bar(stat = "summary", fun = "mean", position = "dodge") +
+  geom_text(aes(label = round(`Length of stay`, 2)), vjust = 1.5, size = 4) +
   theme_minimal() +
   scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
   labs(title = "Mean Length of Stay by Stroke Category",
