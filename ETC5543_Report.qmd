@@ -14,7 +14,7 @@ Geographical stroke units offer effective treatment for ischemic and hemorrhagic
 
 #### **Method and Design**:
 
-The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 3-21 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
+The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
 
 #### **Discussion:**
 
@@ -200,7 +200,7 @@ Mathematically, the inter-arrival time for our model was generated in the follow
 
     In R, this implementation is shown below:
 
-```{r echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 
 # total patients = 2000
 # arrival rate = 6
@@ -234,7 +234,46 @@ Then in this R-function stroke categories are assigned to patients by sampling f
 
 $Y_1, Y_2, ..., Y_n$ = sample( $1:k$ , size = $n$ , replace = TRUE, prob = $p$)
 
-The \`replace = TRUE\` argument ensures that each patient's stroke category is assigned independently, allowing for repeated selections of the same category.
+The `replace = TRUE` argument ensures that each patient's stroke category is assigned independently, allowing for repeated selections of the same category.
+
+The implementation in R is as follows:
+
+```{r eval=TRUE, echo=TRUE}
+
+# stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
+
+assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+  stroke_levels <- sample(1:length(stroke_level_prob), 
+                          size = total_patients, 
+                          replace = TRUE, 
+                          prob = stroke_level_prob)
+  return(stroke_levels)
+}
+
+stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+```
+
+#### Generating the Length of Stay
+
+As discussed (refer to Table 1), the bed occupation times for each category are defined. For this simulation model once the inter-arrival times and the stroke categories to the arriving patients have been assigned, the next step was to generate the length of stay of these patients based on their stroke level/category.
+
+In the context of our stroke simulation model, the length of stay is computed using a piecewise constant function that takes the stroke category assigned to each patient as input and maps it to the corresponding bed occupation time. The function can be described mathematically as follows:
+
+Let $f(Y)$ be the piecewise constant function that represents the length of stay for a patient with stroke category $Y$. The stroke categories are indexed by $i$, with each category corresponding to a bed occupation time $c_i$. The function $f(Y)$ is defined as:
+
+$f(Y) = c_i$, if $Y$ belongs to the $i^{th}$ stroke category.
+
+In the R function `generate_length_of_stay`, the length of stay for each patient is calculated using this piecewise constant function. The function iterates through all patients, assigning a length of stay based on their stroke category:
+
+1\. Retrieve the stroke category for the patient, denoted by `stroke_level`.
+
+2\. Check if the bed occupation time for that category is a single value or a range of values.
+
+3\. If it's a single value, assign the length of stay to that value: `length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]`.
+
+4\. If it's a range of values, randomly sample a value from that range and assign it as the length of stay: `length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)`.
+
+This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piecewise constant function described above.
 
 ### References
 
