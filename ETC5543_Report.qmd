@@ -388,7 +388,33 @@ stroke_distribution
 
 #### Stroke Simulation
 
-In this
+In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
+
+\*Simulation Process\*
+
+The `stroke_simulation` function simulates the arrival of `total_patients` patients at a stroke ward with a limited number of beds (`num_beds`). The inter-arrival times of the patients, their length of stay in the ward, and their stroke categories are utilized to begin the simulation process.
+
+For each arriving patient, this function first updates the bed occupation times for all beds, considering the time that has passed since the last patient arrival. Keeping track of the available beds, this function checks if there are any available beds. Vacant beds are assigned to the patients in case of the bed availability, else the patients are added to the queue, if all the beds are in use by other patients.
+
+\*Bed availability and queue\*:
+
+The primary challenge in the simulation is often to manage bed availability and the patient queue efficiently. Mathematically, the process of bed occupation times update can described as follows:
+
+-   For each arriving patient, the remaining bed occupation time for all beds is updated by subtracting the inter-arrival time since the last patient's arrival. If the remaining time becomes negative, it is set to 0 (using the `pmax()` function), indicating that the bed is available. Mathematically, the updated bed occupation time can be represented as:
+
+$Tn_i = max(T_i - t_{interarrival}, 0)$
+
+where $Tnew_i$ is the new bed occupation time for bed $i$, $T_i$ is the previous bed occupation time for bed $i$, and $t_{interarrival}$ is the time between the current and previous patient arrivals.
+
+If there's at least one available bed (bed occupation time = 0), the first available bed is assigned to the patient in the queue. The bed's occupation time is updated to the length of stay for the patient. Mathematically, the assignment can be expressed as:
+
+$Tnew_i$ = length_of_stay
+
+where $Tnew_i$ is the updated bed occupation time for the first available bed $i$ and `length_of_stay` is the length of stay for the current patient.
+
+If there are no available beds, the patient is added to the *queue*. The queue stores the length of stay for each patient in the order they arrive, and it represents the patients waiting for a bed to become available.
+
+In summary, the mathematics behind the \`stroke_simulation\` function involves generating inter-arrival times, length of stay, and assigning stroke categories, as well as efficiently managing bed availability and patient queue dynamics using the concepts of bed occupation time updates, bed assignment, and patient queuing.
 
 ### References
 
