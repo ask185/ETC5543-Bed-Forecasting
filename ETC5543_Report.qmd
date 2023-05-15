@@ -328,20 +328,22 @@ arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
 ```
 
-```{r eval=TRUE, echo=TRUE, warning=FALSE}
+```{r eval=TRUE, echo=FALSE, warning=FALSE}
 arrivals_data$stroke_categories <- factor(arrivals_data$stroke_levels,
                                           levels = c(1, 2, 3, 4, 5, 6),
                                           labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
 
 colnames(arrivals_data) <- c("Interarrival times", "stroke levels", "Length of stay", "stroke categoryNames")
 
-arrivals_data %>% head() %>%
+arrivals_data %>% 
+  select(-`stroke levels`) %>%
+  head() %>%
   knitr::kable(caption = "Patient Arrival Data")
 ```
 
-This table (Table: 2) shows us just the first six rows of the actual data I created with the three functions mentioned earlier.
+This table (Table: 2) shows us just the first six rows of the actual data I created with the three functions mentioned earlier. In the table we can see that the inter-arrival times of the patients, stroke categories these patients were assigned and their length of stay in the ward.
 
-The distribution of the bed occupation times (LOS) of the patients in our simulation can be viewed in Figure 2.
+We can further examine the distribution of the **mean** length of stay of patients in the arrivals data. (refer to Figure: 2)
 
 ```{r figtwo, fig.cap="Patients Arrival Data", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
 ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill = `stroke categoryNames`)) +
@@ -356,9 +358,37 @@ ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill
             legend.position = "none")
 ```
 
-In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels.
+In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels. This figure shows us that in the arrivals data the patients that were assigned the severe category stayed the longest in the ward, on average staying more 9 days in the ward. We can further examine the distribution of patients in each of the stroke category.
+
+In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 691 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distribution of the stroke patients", fig.width=6, fig.height=5}
+
+library(dplyr)
+arrivals_summary <- arrivals_data %>%
+  count(`stroke categoryNames`) %>%
+  mutate(max_count = n == max(n))
+
+stroke_distribution <- ggplot(arrivals_summary, aes(x = `stroke categoryNames`, y = n, fill = max_count)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = n), vjust = -0.5, size = 4) +
+  scale_fill_manual(values = c("darkgray", "steelblue"), guide = FALSE) +
+  theme_minimal() +
+  labs(
+    x = "Stroke Category",
+    y = "Number of Patients",
+    title = "Distribution of Patients in Each Stroke Category"
+  )
+
+stroke_distribution
+
+
+
+```
 
 #### Stroke Simulation
+
+In this
 
 ### References
 
