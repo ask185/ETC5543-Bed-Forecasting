@@ -309,7 +309,7 @@ This way, the R function `generate_length_of_stay` computes the length of stay f
 
 #### Arrivals data
 
-Having defined these functions, the next step is check the distribution of the length of stay of the patients in our simulation model and have a look at the data.
+Having defined these functions, the next step is check the distribution of the length of stay of patients in our simulation model and have a look at the patients arrival data.
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 set.seed(2023)
@@ -326,21 +326,39 @@ length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, st
 
 arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
+```
+
+```{r eval=TRUE, echo=TRUE, warning=FALSE}
 arrivals_data$stroke_categories <- factor(arrivals_data$stroke_levels,
                                           levels = c(1, 2, 3, 4, 5, 6),
                                           labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
 
-ggplot(arrivals_data, aes(x = stroke_categories, y = length_of_stay, fill = stroke_categories)) +
+colnames(arrivals_data) <- c("Interarrival times", "stroke levels", "Length of stay", "stroke categoryNames")
+
+arrivals_data %>% head() %>%
+  knitr::kable(caption = "Patient Arrival Data")
+```
+
+This table (Table: 2) shows us just the first six rows of the actual data I created with the three functions mentioned earlier.
+
+The distribution of the bed occupation times (LOS) of the patients in our simulation can be viewed in Figure 2.
+
+```{r figtwo, fig.cap="Patients Arrival Data", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill = `stroke categoryNames`)) +
   geom_bar(stat = "summary", fun = "mean", position = "dodge") +
   theme_minimal() +
   scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
   labs(title = "Mean Length of Stay by Stroke Category",
        x = "Stroke Category",
        y = "Mean Length of Stay (days)") +
-  scale_fill_discrete(name = "Stroke Category")
-
-arrivals_data %>% head()
+  scale_fill_discrete(name = "Stroke Category")+
+        theme(axis.text.x = element_text(angle = 45 ,hjust = 1),
+            legend.position = "none")
 ```
+
+In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels.
+
+#### Stroke Simulation
 
 ### References
 
