@@ -1,5 +1,6 @@
 ---
 title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
+number-sections: true
 echo: FALSE
 format: pdf
 bibliography: reference.bib
@@ -387,7 +388,7 @@ stroke_distribution
 
 ```
 
-#### Stroke Simulation
+#### Stroke Simulation Function {#sec-strokeSimulation}
 
 In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
 
@@ -415,7 +416,11 @@ where $Tnew_i$ is the updated bed occupation time for the first available bed $i
 
 If there are no available beds, the patient is added to the *queue*. The queue stores the length of stay for each patient in the order they arrive, and it represents the patients waiting for a bed to become available.
 
-In summary, the mathematics behind the \`stroke_simulation\` function involves generating inter-arrival times, length of stay, and assigning stroke categories, as well as efficiently managing bed availability and patient queue dynamics using the concepts of bed occupation time updates, bed assignment, and patient queuing.
+In summary, the mathematics behind the `stroke_simulation` function involves generating inter-arrival times, length of stay, and assigning stroke categories, as well as efficiently managing bed availability and patient queue dynamics using the concepts of bed occupation time updates, bed assignment, and patient queuing.
+
+#### Running the simulation and computing performance metrics
+
+As discussed in detail in section @sec-strokeSimulation the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results, ensuring that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more accurate and stable estimate of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs to understand the variability of the outcomes. This allows us to understand the variability with the system.
 
 ### References
 
