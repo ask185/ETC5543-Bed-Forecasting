@@ -23,7 +23,7 @@ The study utilized stroke unit data, including arrival rates, bed occupation tim
 
 ### ***Background and Motivation***
 
-**Introduction to hospital capacity planning**
+#### **Introduction to hospital capacity planning** 
 
 Healthcare systems worldwide are under continual pressure to provide accessible and effective health services to patients; consequently, the decision-making regarding the adequate provision of services to the patients is crucial for optimal patient care in hospitals. Hence, hospital capacity planning has emerged as a critical issue due to the increasing demand for hospital care and rising costs of inpatient care. Key metrics, such as bed capacity and associated indices such as bed occupancy and the ratio of beds to population are used to determine the availability of inpatient care [@Ravaghi2020]. The number of beds in a hospital can be considered a capital stock, influenced by the performance of medical staff and equipment [@healthGlance2017] [@liu2012] .
 
@@ -31,7 +31,7 @@ A shortage of available beds is the primary cause of delays in emergency admissi
 
 According to Storey et al. (2010) in their article "Hospital capacity planning: From measuring stocks to modelling flows" published in the Medical Journal of Australia, an 85% bed occupancy rate is a reasonable target for hospitals. However, this target may need adjustment depending on the facility and time periods @martin_storey_2010. Effective hospital resource management, including bed capacity, requires short- and long-term hospital capacity planning.
 
-**Stroke cases in Australia and Victoria**
+#### **Stroke cases in Australia and Victoria** 
 
 Stroke is ranked as the second leading cause of death with an annual mortality rate of over 6.5 million worldwide and 143.23 million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022). In Australia in 2018, an estimated 387,000 Australians aged 15 and over (1.3% of the population) had experienced a stroke at *some point* in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke). As per the same source, in 2020, there were an estimated **39,500 stroke events** in Australia--- more than 100 everyday. The rate of stroke events was 154 per 100,000 population. These stroke events include the new and recurrent stroke.[^1] In 2020, stroke was recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in Australia. Stroke was one of the 5 leading causes of death in Australia -- on average, 22 Australians died of stroke each day in 2020.[^2]
 
@@ -480,13 +480,17 @@ run_simulation <- function(arrival_rate,
 
 The function `run_simulation` takes five arguments: `arrival_rate`, `bed_occupation_time`, `stroke_level_prob`, `total_patients`, and `num_simulations`. (For detail on these arguments please see @sec-method )
 
-This function first generated a sequence of numbers from 20 to 50 -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were 120 simulations and 31 different numbers of beds (from 20 to 50), the **stroke_simulation** function ran a total of 3720 times (120 x 31), each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
+This function first generated a sequence of numbers from $20 - 50$ -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were $120$ simulations and $31$ different numbers of beds (from 20 to 50), the stroke_simulation function ran a total of $3720$ times $(120 \times 31)$, each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
 
 [^5]: For more details on lapply function:
 
     Bookdown: https://bookdown.org/rdpeng/rprogdatascience/loop-functions.html
 
     Pennsylvania State University: https://astrostatistics.psu.edu/su07/R/html/base/html/lapply.html
+
+After the results were obtained, confidence intervals were computed to ensure the reliability of the results of these simulations.
+
+### Validation and calibration
 
 ### References
 
