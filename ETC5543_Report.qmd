@@ -420,7 +420,64 @@ In summary, the mathematics behind the `stroke_simulation` function involves gen
 
 #### Running the simulation and computing performance metrics
 
-As discussed in detail in section @sec-strokeSimulation the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results, ensuring that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more accurate and stable estimate of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs to understand the variability of the outcomes. This allows us to understand the variability with the system.
+As discussed in detail in section @sec-strokeSimulation the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results, ensuring that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more accurate and stable estimate of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs is to understand the variability of the outcomes. This allows us to understand the variability within the system.
+
+Hence `run_simulation` function was created in the process of simulation to run multiple simulations and compute the performance metrics such as the utilization rates and the percent of patients waiting and others for **different** number of beds -- I have defined a range of beds in the function to run simulations for range of beds and compute the performance metrics.
+
+See the code chunk below
+
+```{r runSim, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
+
+
+run_simulation <- function(arrival_rate,
+                           bed_occupation_time,
+                           stroke_level_prob,
+                           total_patients,
+                           num_simulations) {
+    num_bed_range <- seq(20,50, by=1)
+
+  performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    lapply(num_bed_range, function(num_beds) {
+      stroke_sim <- stroke_simulation(total_patients =  total_patients,
+                                      arrival_rate = arrival_rate,
+                                      bed_occupation_time = bed_occupation_time,
+                                      stroke_level_prob = stroke_level_prob,
+                                      num_beds = num_beds)
+
+      num_beds <- length(stroke_sim$beds)
+      total_patients <- total_patients
+
+      occupied_beds <- sum(stroke_sim$beds > 0)
+      utilization <- occupied_beds / num_beds
+
+      total_wait_times <- sum(unlist(stroke_sim$queue))
+      num_patients_queue <- length(stroke_sim$queue)
+      avg_wait_times <- total_wait_times / num_patients_queue
+
+      average_time_in_queue = total_wait_times / num_patients_queue
+      max_queue_length <- length(stroke_sim$queue)
+
+      proportion_patients_waiting <- num_patients_queue / total_patients
+      percent_patients_waiting <- proportion_patients_waiting * 100
+
+      avg_length_of_stay <- (sum(stroke_sim$length_of_stay)) / total_patients
+
+      performance_metrics_month <- data.frame(num_beds = num_beds,
+                                              utilization = utilization,
+                                              avg_wait_times = avg_wait_times,
+                                              max_queue_length = max_queue_length,
+                                              # min_queue_length = stroke_sim$min_queue_length,
+                                              proportion_patients_waiting = proportion_patients_waiting,
+                                              percent_patients_waiting = percent_patients_waiting,
+                                              avg_length_of_stay = avg_length_of_stay)
+
+      return(performance_metrics_month)
+    })
+  })
+
+  return(performance_metrics_list)
+}
+```
 
 ### References
 
