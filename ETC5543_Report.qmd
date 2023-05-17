@@ -2,7 +2,7 @@
 title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
 number-sections: true
 echo: FALSE
-format: pdf
+format: html
 bibliography: reference.bib
 csl: academic-medicine.csl
 ---
@@ -390,6 +390,83 @@ stroke_distribution
 
 #### Stroke Simulation Function {#sec-ssf}
 
+```{r echo=FALSE, eval=TRUE}
+set.seed(2023)
+
+stroke_simulation <- function(total_patients, arrival_rate, 
+                              bed_occupation_time, stroke_level_prob, 
+                              num_beds) {
+  
+  interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+  stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+  length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+  
+  # initializing the beds and queue 
+  beds <- rep(0, num_beds)
+  queue <- list()
+  
+
+# inter-arrival_time is an input parameter for this function, 
+# which represents the time between patient arrivals. 
+# This variable is based on the generate_interarrival_times function, 
+# where we input the total number of patients and arrival rate.
+
+# The pmax function ensures that the bed occupation times do not become negative. 
+# A value of 0 in this context means that the bed is available 
+# (i.e., the patient has completed their stay)
+  
+  update_bed_occupation_times <- function(beds, interarrival_time) {
+  beds <- pmax(beds - interarrival_time, 0)
+  
+  # 'beds' is a numeric vector that represents the current remaining 
+  # bed occupation time for each bed in the simulation.
+  # Each element in this vector corresponds to a bed in the hospital
+  # ward. A value of 0 means that the bed is available for use.
+  # Subtracting the inter-arrival_time from each element of 'beds' 
+  # updates the remaining bed occupation times, considering the 
+  # passage of time between patient arrivals.
+  # The pmax function is used to ensure that the resulting bed 
+  # occupation times do not become negative, meaning that a 
+  # bed with a remaining time less than or equal to the interarrival_time
+  # will be considered available (set to 0).
+  return(beds)
+}
+  
+  # for every patient in total patients (1000)
+  
+  for (i in 1:total_patients) {
+    
+    # update the beds variable with the bed occupation times 
+    # of all the patients arriving at the inter-arrival times
+    
+    beds <- update_bed_occupation_times(beds, interarrival_times[i])
+    # creating a new variable available beds to keep track 
+    # of the available beds the beds that are available will
+    # have the bed occupation time of 0 so in this variable 
+    # I store the beds that are available hence which(beds==0)
+    
+    available_beds <- which(beds == 0)
+    
+    # here if the length of the available beds vector 
+    # is greater than 0 which means that 
+    # there is at least one bed with bed occupation times ==0 
+    # then assign the first available bed to the patient 
+    # by setting this available bed (bed occupation times ==0) 
+    # to the length of the stay of the patient 
+    # (whatever the severity of that patient might be)
+    
+    if (length(available_beds) > 0) {
+      beds[available_beds[1]] <- length_of_stay[i]
+    } else {
+      # if there is no bed available then append the queue list
+      queue <- append(queue, length_of_stay[i])
+    }
+  }
+  
+  return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
+}
+```
+
 In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
 
 \*Simulation Process\*
@@ -492,10 +569,98 @@ After the results were obtained, confidence intervals were computed to ensure th
 
 #### Results
 
-In this section I will discuss the results from my simulation by visualizing the results. The two key metrics that Prof. Phan, supervisor for this project, emphasized were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+In this section I will discuss the results from my simulation by visualizing the results.
+
+I ran the simulation for $120$ times for $31$ different number of beds (from $20-50$) and $2000$ patients.
+The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+
+Let's first visualize the length of stay distribution from the `stroke simulation function` -- as explained in detail in @sec-ssf, this function simulates the inflow, bed occupation times, queue and exit of patients from the stroke ward. I ran this function with 25 beds and 30 beds, and 40 beds to `num_beds` argument. Let's view the results of the distribution of the length that this simulation did for different number of beds.
+
+```{r echo=FALSE}
+
+stroke_sim_25 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 25)
+
+stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 30)
+
+stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
+                                   arrival_rate= arrival_rate, 
+                              bed_occupation_time = bed_occupation_time, 
+                              stroke_level_prob= stroke_level_prob, 
+                              num_beds= 40)
+
+
+```
 
 ```{r}
+# stroke_sim_25 <- data.frame(stroke_sim_25)
+# 
+# # stroke_sim_30 <- data.frame(stroke_sim_30)
+# 
+# stroke_sim_40 <- data.frame(stroke_sim_40)
+# 
+# 
+# library(ggplot2)
+# stroke_sim_25$length_of_stay <- as.numeric(stroke_sim_25$length_of_stay)
+# 
+# ggplot(stroke_sim_25, aes(y = length_of_stay)) +
+#   geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
+#   theme_minimal() +
+#   labs(title = "Length of Stay Distribution",
+#        x = "Length of Stay (days)",
+#        y = "Frequency")
+# 
+# # stroke_sim_30$length_of_stay <- as.numeric(stroke_sim_30$length_of_stay)
+# # 
+# # ggplot(stroke_sim_30, aes(y= length_of_stay)) +
+# #   geom_histogram(binwidh=0.5, fill="darkgrey", alpha=0.7 )+
+# #   theme_light()+
+# #   labs(title = "Length of Stay Distribution",
+# #        x = "Length of Stay (days)",
+# #        y = "Frequency")
+# 
+# stroke_sim_40$length_of_stay <- as.numeric(stroke_sim_40$length_of_stay)
+# 
+# stroke_sim_40 <- data.frame(stroke_sim_40)
+# ggplot(stroke_sim_40, aes(y= length_of_stay)) +
+#   geom_histogram(binwidh=0.5, fill="lightblue", alpha=0.7 )+
+#   theme_light()+
+#   labs(title = "Length of Stay Distribution",
+#        x = "Length of Stay (days)",
+#        y = "Frequency")
+```
 
+The two key metrics that Prof. Phan, supervisor for this project, emphasized were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+
+See
+
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+
+# library(ggplot2)
+# 
+# results <- run_simulation(arrival_rate = arrival_rate,
+#                           bed_occupation_time = bed_occupation_time,
+#                           stroke_level_prob = stroke_level_prob,
+#                           total_patients = total_patients,
+#                           num_simulations = 120)
+# 
+# ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+#   geom_point(size=0.7,
+#              alpha= 0.5) +
+#   geom_smooth(method = "loess") +
+#   theme_minimal() +
+#   labs(title = "Percent of Patients Waiting vs. Number of Beds",
+#        x = "Number of Beds",
+#        y = "Percent of Patients Waiting") +
+#   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+#   scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45))
 ```
 
 ### References
