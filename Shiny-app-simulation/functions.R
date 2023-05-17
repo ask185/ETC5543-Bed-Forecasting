@@ -1,8 +1,8 @@
 library(tidyverse)
 
-total_patients <- 2000 # assuming there are 2000 all around the year
-total_patients_future <- 2500 # assuming the 2500 patients in the future 
-patients_per_month <- 2000/12 # patients per month
+total_patients <- 350 # assuming there are 2000 all around the year
+total_patients_future <- 1250 # assuming the 2500 patients in the future 
+patients_per_month <- 350/12 # patients per month
 arrival_rate <- total_patients/365  # average 6 patients per day
 arrival_rate_future <- total_patients_future/365 # average 7 patients per day
 

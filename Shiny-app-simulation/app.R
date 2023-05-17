@@ -46,9 +46,9 @@ set.seed(070523)
       column(3,
              wellPanel(
                sliderInput("num_patients", "Total number of patients:",
-                           min = 500, max = 2500, value = 1000, step = 500),
+                           min = 350, max = 1250, value = 350, step = 200),
                sliderInput("num_beds", "Number of beds:",
-                           min = 5, max = 50, value = 22, step = 1)
+                           min = 5, max = 50, value = 12, step = 1)
              )
       ),
       column(6,
@@ -113,17 +113,20 @@ server <- function(input, output) {
   })
 
   optimal_beds <- function(num_patients) {
-    if (num_patients == 500) {
-      return(paste(12, 13, sep = "-"))
-    } else if (num_patients == 1000) {
-      return(paste(22, 24, sep = "-"))
-    } else if (num_patients == 1500) {
-      return(paste(31, 33, sep = "-"))
-    } else if (num_patients == 2000) {
-      return(paste(40, 42, sep = "-"))
-    } else if (num_patients == 2500) {
-      return(paste(49, 50, sep = "-"))
+    if (num_patients == 350) {
+      return(paste(10, 11, sep = "-"))
+    } else if (num_patients == 550) {
+      return(paste(13, 14, sep = "-"))
+    } else if (num_patients == 750) {
+      return(paste(17, 18, sep = "-"))
+    } else if (num_patients == 950) {
+      return(paste(21, 22, sep = "-"))
+    } else if (num_patients == 1150) {
+      return(paste(25, 26, sep = "-"))
+    } else if (num_patients == 1250) {
+      return(paste(27, 28, sep = "-"))
     }
+    
   }
   
   
@@ -145,15 +148,15 @@ server <- function(input, output) {
       selected = num_beds_range == input$num_beds
     )
     
-    optimal_bed_data <- data.frame(
-      num_patients = c(500, 1000, 1500, 2000, 2500),
-      optimal_beds = c(12, 23, 32, 41, 49),
-      label = c("Optimal Beds (500 patients): 12-13",
-                "Optimal Beds (1000 patients): 22-24",
-                "Optimal Beds (1500 patients): 31-33",
-                "Optimal Beds (2000 patients): 40-42",
-                "Optimal Beds (2500 patients): 49-50")
-    )
+    # optimal_bed_data <- data.frame(
+    #   num_patients = c(500, 1000, 1500, 2000, 2500),
+    #   optimal_beds = c(12, 23, 32, 41, 49),
+    #   label = c("Optimal Beds (500 patients): 12-13",
+    #             "Optimal Beds (1000 patients): 22-24",
+    #             "Optimal Beds (1500 patients): 31-33",
+    #             "Optimal Beds (2000 patients): 40-42",
+    #             "Optimal Beds (2500 patients): 49-50")
+    # )
     
 
     p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting, fill = selected)) +
