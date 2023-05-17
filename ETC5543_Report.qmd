@@ -2,7 +2,7 @@
 title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
 number-sections: true
 echo: FALSE
-format: html
+format: pdf
 bibliography: reference.bib
 csl: academic-medicine.csl
 ---
@@ -15,11 +15,11 @@ Geographical stroke units offer effective treatment for ischemic and hemorrhagic
 
 #### **Method and Design**: {#sec-methods}
 
-The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
+The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~350. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
 
 #### **Discussion:** {#sec-discussion}
 
-The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 25-bed provision was inadequate for the annual patient load of \~2000, leading to prolonged wait times and queues. The percent of patients queuing was around \~ 33% for 25 beds, 23% for 30 beds, and \~5% for 40 beds.
+The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 25-bed provision was inadequate for the annual patient load of \~350, leading to prolonged wait times and queues. The percent of patients queuing was around \~ 33% for 25 beds, 23% for 30 beds, and \~5% for 40 beds.
 
 ### ***Background and Motivation***
 
@@ -97,13 +97,13 @@ One of the other challenges I faced was that the computation times were long. DE
 
 #### Method {#sec-method}
 
-In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned, simulate the patient inflow, stay and exit, and finally run multiple simulations and for each simulation compute certain performance metrics such as the percent of the patients waiting, utilization rates and maximum queue length. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000. The performance metrics were computed for 2000 patients as well as for the future estimated number of 2500 patients.
+In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned, simulate the patient inflow, stay and exit, and finally run multiple simulations and for each simulation compute certain performance metrics such as the percent of the patients waiting, utilization rates and maximum queue length. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 350. The performance metrics were computed for 350 patients as well as for the future estimated number of 2500 patients.
 
 The following parameters were used to lay the foundation of the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
 
--   Total annual patients: 2000
+-   Total annual patients: 350
 
--   Arrival rate: $\frac {2000} {365} = 6$ patients per day
+-   Arrival rate: $\frac {350} {365} =\ 0.958\ \sim 1$ patient per day
 
 -   Stroke level probabilities & bed occupation times see Table 1:
 
@@ -119,9 +119,9 @@ library(bookdown)
 set.seed(2023)
 # Parameters
 
-total_patients <- 2000 # assuming there are 2000 all around the year
-total_patients_future <- 2500 # assuming the 2500 patients in the future 
-patients_per_month <- 2000/12 # patients per month
+total_patients <- 350 # assuming there are 350 all around the year
+total_patients_future <- 1250 # assuming the 2500 patients in the future 
+patients_per_month <- 350/12 # patients per month
 arrival_rate <- total_patients/365  # average 6 patients per day
 arrival_rate_future <- total_patients_future/365 # average 7 patients per day
 
@@ -183,9 +183,9 @@ Probability= $$\{N(t) = n\} = \frac {e-λt
 
 Mathematically, the inter-arrival time for our model was generated in the following way:
 
--   Total number of patients = 2000, hence let $n=2000$
+-   Total number of patients = $350$, hence let $n=350$
 
--   Arrival rate = 6 patients, therefore, $\lambda =6$
+-   Arrival rate = 1 patient per day on average, therefore, $\lambda =1$
 
     The exponential distribution has a probability density function (PDF) given by:
 
@@ -193,17 +193,17 @@ Mathematically, the inter-arrival time for our model was generated in the follow
 
     where $\lambda$ is the arrival_rate, and $T$ is a random variable representing the time between two successive patient arrivals.
 
-    In the simulation for each patient "$i$" in the 2000 patients (total number of patients), we generate an inter-arrival time $T_i$ from an exponential distribution with the rate $(\lambda)$:
+    In the simulation for each patient "$i$" in the 350 patients (total number of patients), we generate an inter-arrival time $T_i$ from an exponential distribution with the rate $(\lambda)$:
 
-    $$T_i \sim Exp(6)$$
+    $$T_i \sim Exp(1)$$
 
-    This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{2000}$ that is exponentially distributed with $\lambda$ = 6.
+    This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{350}$ that is exponentially distributed with $\lambda$ = $1$.
 
     In R, this implementation is shown below:
 
 ```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
 
-# total patients = 2000
+# total patients = 350
 # arrival rate = 6
 
 generate_interarrival_times <- function(total_patients, arrival_rate) {
@@ -225,7 +225,7 @@ The `assign_stroke_levels` function assigns stroke categories to patients based 
 
 Mathematically, this process can be explained as follows:
 
-Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n$ =2000. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ is the number of stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
+Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n$ =350. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ is the number of stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
 
 $P(Y_i = j) = p_j$
 
@@ -306,7 +306,7 @@ length_of_stay <- generate_length_of_stay(total_patients,
 
 `[1]:bed_occupation_time[[stroke_level]][2], 1)`.
 
-This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piecewise constant function described above.
+This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piece-wise constant function described above.
 
 #### Arrivals data {#sec-arrivalData}
 
@@ -362,7 +362,7 @@ ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill
 
 In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels. This figure shows us that in the arrivals data the patients that were assigned the severe category stayed the longest in the ward, on average staying more 9 days in the ward. We can further examine the distribution of patients in each of the stroke category.
 
-In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 691 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
+In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 121 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distribution of the stroke patients", fig.width=6, fig.height=5}
 
@@ -469,13 +469,13 @@ stroke_simulation <- function(total_patients, arrival_rate,
 
 In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
 
-\*Simulation Process\*
+*Simulation Process*
 
 The `stroke_simulation` function simulates the arrival of `total_patients` patients at a stroke ward with a limited number of beds (`num_beds`). The inter-arrival times of the patients, their length of stay in the ward, and their stroke categories are utilized to begin the simulation process.
 
 For each arriving patient, this function first updates the bed occupation times for all beds, considering the time that has passed since the last patient arrival. Keeping track of the available beds, this function checks if there are any available beds. Vacant beds are assigned to the patients in case of the bed availability, else the patients are added to the queue, if all the beds are in use by other patients.
 
-\*Bed availability and queue\*:
+*Bed availability and queue*:
 
 The primary challenge in the simulation is often to manage bed availability and the patient queue efficiently. Mathematically, the process of bed occupation times update can described as follows:
 
@@ -497,7 +497,7 @@ In summary, the mathematics behind the `stroke_simulation` function involves gen
 
 #### Running the simulation and computing performance metrics {#sec-runsim}
 
-As discussed in detail in section @sec-ssf the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results, ensuring that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more accurate and stable estimate of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs is to understand the variability of the outcomes. This allows us to understand the variability within the system.
+As discussed in detail in section @sec-ssf the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results to ensure that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more stable estimates of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs is to understand the variability of the outcomes. This allows us to understand the variability within the system.
 
 Hence `run_simulation` function was created in the process of simulation to run multiple simulations and compute the performance metrics such as the utilization rates and the percent of patients waiting and others for **different** number of beds -- I have defined a range of beds in the function to run simulations for range of beds and compute the performance metrics for these range of beds in each individual simulation and then average performance metrics across these simulations.
 
@@ -509,7 +509,7 @@ run_simulation <- function(arrival_rate,
                            stroke_level_prob,
                            total_patients,
                            num_simulations) {
-    num_bed_range <- seq(20,50, by=1)
+    num_bed_range <- seq(5,30, by=1)
 
   performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
     lapply(num_bed_range, function(num_beds) {
@@ -523,7 +523,7 @@ run_simulation <- function(arrival_rate,
       total_patients <- total_patients
 
       occupied_beds <- sum(stroke_sim$beds > 0)
-      utilization <- occupied_beds / num_beds
+      utilization <- (occupied_beds / num_beds)*100
 
       total_wait_times <- sum(unlist(stroke_sim$queue))
       num_patients_queue <- length(stroke_sim$queue)
@@ -557,7 +557,7 @@ run_simulation <- function(arrival_rate,
 
 The function `run_simulation` takes five arguments: `arrival_rate`, `bed_occupation_time`, `stroke_level_prob`, `total_patients`, and `num_simulations`. (For detail on these arguments please see @sec-method )
 
-This function first generated a sequence of numbers from $20 - 50$ -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were $120$ simulations and $31$ different numbers of beds (from 20 to 50), the stroke_simulation function ran a total of $3720$ times $(120 \times 31)$, each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
+This function first generated a sequence of numbers from $5- 30$ -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were $120$ simulations and $25$ different numbers of beds (from 5 to 30), the stroke_simulation function ran a total of $3000$ times $(120 \times 25)$, each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
 
 [^5]: For more details on lapply function:
 
@@ -571,8 +571,78 @@ After the results were obtained, confidence intervals were computed to ensure th
 
 In this section I will discuss the results from my simulation by visualizing the results.
 
-I ran the simulation for $120$ times for $31$ different number of beds (from $20-50$) and $2000$ patients.
+I ran the simulation for $120$ times for $25$ different number of beds (from $5-30$) and $350$ patients.
 The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+
+```{r echo=FALSE, eval=TRUE}
+results <- run_simulation(arrival_rate = arrival_rate,
+                          bed_occupation_time = bed_occupation_time,
+                          stroke_level_prob = stroke_level_prob,
+                          total_patients = total_patients,
+                          num_simulations = 120)
+
+results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
+
+
+```
+
+```{}
+```
+
+```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+
+# Load the ggplot2 library
+library(ggplot2)
+
+
+# Plot the percent of patients waiting against the number of beds
+ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+  geom_point(size=1,
+             alpha= 1) +
+  geom_smooth(method = "loess") +
+  theme_minimal() +
+  labs(
+       x = "Number of Beds",
+       y = "Percent of Patients Waiting") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
+
+```
+
+In the
+
+```{r figfive, fig.cap="Utilization percentages vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+
+# Plot utilization against the number of beds
+
+ggplot(results_df, aes(x = num_beds, y = utilization)) +
+  geom_point(size=0.7) +
+  geom_smooth(method = "loess") +
+  scale_y_continuous(breaks = seq(0, 100, by=10))+
+  theme_minimal()+
+  geom_hline(yintercept = 80, linetype = "dashed", color = "red", size = 0.5)+
+  labs(title = "Utilization vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Utilization (%)")
+```
+
+```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+
+xintersection = 11
+yintersection = 8
+ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_x_continuous(breaks = seq(4, 20, by=2))+
+  scale_y_continuous(breaks = seq(5, 155, by = 10))+
+  geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
+  geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
+  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
+  theme_minimal() +
+  labs(title = "Maximum Queue Length vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Maximum Queue Length")
+```
 
 Let's first visualize the length of stay distribution from the `stroke simulation function` -- as explained in detail in @sec-ssf, this function simulates the inflow, bed occupation times, queue and exit of patients from the stroke ward. I ran this function with 25 beds and 30 beds, and 40 beds to `num_beds` argument. Let's view the results of the distribution of the length that this simulation did for different number of beds.
 
