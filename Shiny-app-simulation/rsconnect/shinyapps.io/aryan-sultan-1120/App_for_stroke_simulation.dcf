@@ -5,9 +5,9 @@ account: aryan-sultan-1120
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9051839
-bundleId: 7215448
+bundleId: 7227607
 url: https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/
-when: 1684043303.7591
-lastSyncTime: 1684043303.75911
+when: 1684296934.39795
+lastSyncTime: 1684296934.39797
 asMultiple: FALSE
 asStatic: FALSE
