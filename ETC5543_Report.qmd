@@ -9,21 +9,21 @@ csl: academic-medicine.csl
 
 ### ***Abstract***:
 
-#### **Introduction**:     {#sec-introduction}
+#### **Introduction**: {#sec-introduction}
 
 Geographical stroke units offer effective treatment for ischemic and hemorrhagic stroke patients. Optimal care is achieved when patients are allocated to these wards. Determining the optimal number of beds required is a complex task. This study/project leverages discrete-event simulation, grounded in queueing theory, to ascertain the ideal number of beds for optimal care given patient influx. The study utilized stroke unit data including arrival rates, bed occupation times, and stroke severity probabilities to generate realistic scenarios for the simulation model. The objective of this project was to evaluate the impact of varying bed capacities on the performance of stroke care units such as bed utilization, maximum queue length, proportion of patients waiting, and average queue length.
 
-#### **Method and Design**:    {#sec-methods}
+#### **Method and Design**: {#sec-methods}
 
 The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~2000. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
 
-#### **Discussion:**  {#sec-discussion}
+#### **Discussion:** {#sec-discussion}
 
 The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 25-bed provision was inadequate for the annual patient load of \~2000, leading to prolonged wait times and queues. The percent of patients queuing was around \~ 33% for 25 beds, 23% for 30 beds, and \~5% for 40 beds.
 
 ### ***Background and Motivation***
 
-#### **Introduction to hospital capacity planning** 
+#### **Introduction to hospital capacity planning**
 
 Healthcare systems worldwide are under continual pressure to provide accessible and effective health services to patients; consequently, the decision-making regarding the adequate provision of services to the patients is crucial for optimal patient care in hospitals. Hence, hospital capacity planning has emerged as a critical issue due to the increasing demand for hospital care and rising costs of inpatient care. Key metrics, such as bed capacity and associated indices such as bed occupancy and the ratio of beds to population are used to determine the availability of inpatient care [@Ravaghi2020]. The number of beds in a hospital can be considered a capital stock, influenced by the performance of medical staff and equipment [@healthGlance2017] [@liu2012] .
 
@@ -31,7 +31,7 @@ A shortage of available beds is the primary cause of delays in emergency admissi
 
 According to Storey et al. (2010) in their article "Hospital capacity planning: From measuring stocks to modelling flows" published in the Medical Journal of Australia, an 85% bed occupancy rate is a reasonable target for hospitals. However, this target may need adjustment depending on the facility and time periods @martin_storey_2010. Effective hospital resource management, including bed capacity, requires short- and long-term hospital capacity planning.
 
-#### **Stroke cases in Australia and Victoria** 
+#### **Stroke cases in Australia and Victoria**
 
 Stroke is ranked as the second leading cause of death with an annual mortality rate of over 6.5 million worldwide and 143.23 million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022). In Australia in 2018, an estimated 387,000 Australians aged 15 and over (1.3% of the population) had experienced a stroke at *some point* in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke). As per the same source, in 2020, there were an estimated **39,500 stroke events** in Australia--- more than 100 everyday. The rate of stroke events was 154 per 100,000 population. These stroke events include the new and recurrent stroke.[^1] In 2020, stroke was recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in Australia. Stroke was one of the 5 leading causes of death in Australia -- on average, 22 Australians died of stroke each day in 2020.[^2]
 
@@ -47,7 +47,7 @@ Since 1980 the death rates for stroke have fallen by three-quarters -- from *110
 
 In Melbourne, the incidence and prevalence of stroke follow similar trends observed across Australia. The growing population and aging demographic contribute to the increasing demand for stroke care in the region. According to the Australian Institute of Health and Welfare, the age-standardized prevalence of stroke in Melbourne has been on the rise, highlighting the need for better access to specialized care for stroke patients.
 
-#### Monash Medical Research Institute    {#sec-mmri}
+#### Monash Medical Research Institute {#sec-mmri}
 
 In the stroke ward at the Monash Hospital there are a total of 46 beds as used by the neurology, neurosurgery and stroke patients. The objective of this project was to determine the optimal number of beds specifically for the stroke patients at the Monash Hospital to ensure the optimum care for the stroke patients.
 
@@ -55,15 +55,15 @@ For the purpose of this project at the *Monash Medical Research institute*, I ha
 
 ### *Objectives and Significance*
 
-#### **Objectives**  {#sec-objectives}
+#### **Objectives** {#sec-objectives}
 
 The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital ensuring that complex interactions between patients and beds are analyzed and provides an optimal number of beds needed at the stroke ward to ensure that the stroke patients receive optimum care. In order to achieve these objectives an evaluation of different bed capacities on the proportion of the patients waiting to be admitted into the ward and the utilization rates were considered. One of the goals was also to provide decision support tool to the hospital administrators and policymakers in optimizing bed allocation at the stroke ward.
 
-#### **Significance and Contributions**:    {#sec-significanceContribution}
+#### **Significance and Contributions**: {#sec-significanceContribution}
 
 In this project, *Discrete Event Simulation* has been employed to develop a queuing system that accurately captures the intricate complexity and inherent variability of a stroke ward. This model takes into account the stochastic nature of the patient arrivals, stroke severity levels, and length of stay, enabling a comprehensive analysis of the hospital ward's performance under different scenarios. To ensure the model's accuracy I incorporated key parameters such as the arrival rates, bed occupation times and the stroke level probabilities which were acquired from a combination of historical data, hospital statistics and relevant literature. @green2011queueing By effectively representing the complex interaction between these factors, this DES model is meant to provide valuable insights into the stroke ward's operations at the Monash Hospital. Furthermore, this model enables users to generate performance metrics, such as the percent of patients waiting at the given number of beds in the unit for a specific patient population, or the utilization capacity for a particular at a given number of beds for the selected patient load in the care unit under variety of scenarios. This simulation model is designed to be used as a support tool for hospital administrators when determining optimal bed allocation and resource management, ultimately enhancing patient care and outcomes.
 
-#### **Novel Features:**  {#novelFeatures}
+#### **Novel Features:** {#novelFeatures}
 
 While simulation modeling in healthcare is not a novel concept, this project aims to broaden the accessibility of the simulation modelling developed as part of this project by making it available as a support tool to a wider audience through a user-friendly shiny web-app which can be accessed [here.](https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/) (https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/). The Shiny app enables users to interactively adjust the number of patients and beds using slider inputs, allowing them to visualize a plot of the percentage of patients waiting based on the selected number of patients and beds as well as a plot of the utilization rates at the selected number of beds. Furthermore, the users are able to see the optimal number of beds for the selected patient load. By offering this tool in a web-based format, a wider audience can benefit from the insights generated by the simulation model, thereby enhancing decision-making processes in healthcare settings.
 
@@ -71,7 +71,7 @@ While simulation modeling in healthcare is not a novel concept, this project aim
 
 The methodology employed in this analysis is based on Discrete Event Simulation (DES), a widely recognized and effective technique for modeling complex systems with stochastic elements. DES was chosen for this project due to its ability to accurately represent the intricacies of a stroke care unit, incorporating the variability and uncertainty associated with patient arrivals, stroke severity levels, and length of stay.
 
-#### **Discrete Event Simulation (DES)**  {#sec-des}
+#### **Discrete Event Simulation (DES)** {#sec-des}
 
 Discrete Event Simulation (DES) is a computer-based modeling technique that simulates the operation of a system as a sequence of discrete events in time. Each event represents a change in the system's state.
 
@@ -85,7 +85,7 @@ Addressing the stochastic and dynamic elements and accurately representing indiv
 
 In the case of the stroke ward simulation, DES was a better choice because it allowed for the modeling of complex interactions between patients, beds, and resources in a dynamic and stochastic environment. The simulation was able to capture patient arrivals, bed occupancy, and other factors, providing a more accurate representation of the system's behavior and helping to identify optimal resource allocation. @jacobson2006discrete
 
-#### Data      {#sec-data}
+#### Data {#sec-data}
 
 The data used in this project is derived from multiple sources including historical records and hospital statistics, which included arrival rates, bed occupation times, stroke categories and associated probabilities. Furthermore, valuable insights regarding the patient arrivals, annual patient load and the bed occupation times for different categories of stroke patients were obtained from the supervisor for this project, Professor Thanh Phan, Head of Neuroscience Research, Monash Health.
 
@@ -95,7 +95,7 @@ One of the key limitations of the simulation model is the validation and calibra
 
 One of the other challenges I faced was that the computation times were long. DES can be computationally intensive when running multiple thousand simulation or multiple scenarios. This drawback of the DES made it difficult to run multiple simulations and compute performance measures of each simulation and average those results to produce more reliable results for the performance metrics.
 
-#### Method     {#sec-method}
+#### Method {#sec-method}
 
 In order to develop this model several functions were created to generate the patient inter-arrival times, assign stroke categories to patients in the simulation, generate their length of stay based on the stroke category they were assigned, simulate the patient inflow, stay and exit, and finally run multiple simulations and for each simulation compute certain performance metrics such as the percent of the patients waiting, utilization rates and maximum queue length. The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ 2000. The performance metrics were computed for 2000 patients as well as for the future estimated number of 2500 patients.
 
@@ -172,7 +172,7 @@ v1
 
 With these input parameters, the stroke simulation model was developed to achieve the results by creating functions that generated the inter-arrival times, assigned stroke categories to the patients in the simulation, and generated the bed occupation times for the patients based on their stroke categories.
 
-#### Inter-arrival times     {#sec-iat}
+#### Inter-arrival times {#sec-iat}
 
 In specifying a queuing model, we make assumptions about the probabilistic nature of the arrival and service processes. The most common assumption to make about arrivals is that they follow a *Poisson process. @green2011queueing*
 
@@ -213,7 +213,7 @@ generate_interarrival_times <- function(total_patients, arrival_rate) {
 
 ```
 
-#### Assigning the stroke categories to Patients    {#sec-assign}
+#### Assigning the stroke categories to Patients {#sec-assign}
 
 Next, I created a `assigning_stroke_levels` function to assigns stroke categories to patients.
 
@@ -254,7 +254,7 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 ```
 
-#### Generating the Length of Stay      {#sec-los}
+#### Generating the Length of Stay {#sec-los}
 
 As discussed (refer to Table 1), the bed occupation times for each category are defined. For this simulation model once the inter-arrival times and the stroke categories to the arriving patients have been assigned, the next step was to generate the length of stay of these patients based on their stroke level/category.
 
@@ -308,7 +308,7 @@ length_of_stay <- generate_length_of_stay(total_patients,
 
 This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piecewise constant function described above.
 
-#### Arrivals data      {#sec-arrivalData}
+#### Arrivals data {#sec-arrivalData}
 
 Having defined these functions, the next step is check the distribution of the length of stay of patients in our simulation model and have a look at the patients arrival data.
 
@@ -388,7 +388,7 @@ stroke_distribution
 
 ```
 
-#### Stroke Simulation Function      {#sec-ssf}
+#### Stroke Simulation Function {#sec-ssf}
 
 In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
 
@@ -418,7 +418,7 @@ If there are no available beds, the patient is added to the *queue*. The queue s
 
 In summary, the mathematics behind the `stroke_simulation` function involves generating inter-arrival times, length of stay, and assigning stroke categories, as well as efficiently managing bed availability and patient queue dynamics using the concepts of bed occupation time updates, bed assignment, and patient queuing.
 
-#### Running the simulation and computing performance metrics     {#sec-runsim}
+#### Running the simulation and computing performance metrics {#sec-runsim}
 
 As discussed in detail in section @sec-ssf the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted. It is important to run the simulation multiple times to obtain more reliable results, ensuring that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more accurate and stable estimate of the true expected values. Furthermore, multiple runs allow us to construct the prediction intervals for our estimates, because we often do not want to just look at the point estimates. One of the key advantages of running multiple runs is to understand the variability of the outcomes. This allows us to understand the variability within the system.
 
@@ -426,7 +426,7 @@ Hence `run_simulation` function was created in the process of simulation to run 
 
 In this `run_simulation` function, I essentially implement a *Monte Carlo* simulation, which is a mathematical technique that allows us to account for risk in quantitative analysis and decision making. Monte Carlo simulation performs risk analysis by building models of possible results by substituting a range of values---a probability distribution---for any factor that has inherent uncertainty. It then calculates results over and over, each time using a different set of random values from the probability functions.
 
-```{r}
+```{r echo=FALSE, eval=TRUE}
 run_simulation <- function(arrival_rate,
                            bed_occupation_time,
                            stroke_level_prob,
@@ -490,7 +490,13 @@ This function first generated a sequence of numbers from $20 - 50$ -- the range 
 
 After the results were obtained, confidence intervals were computed to ensure the reliability of the results of these simulations.
 
-### Validation and calibration
+#### Results
+
+In this section I will discuss the results from my simulation by visualizing the results. The two key metrics that Prof. Phan, supervisor for this project, emphasized were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+
+```{r}
+
+```
 
 ### References
 
