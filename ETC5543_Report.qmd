@@ -611,6 +611,10 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
 
 In the Figure 4, we see the relationship between the number of beds and the percent of patients waiting to be admitted into the ward. As discussed, ideally we would expect to have less than 5% of patients waiting to be admitted into the ward at any given time. The Figure 4 shows that the optimal number of beds for a stroke ward with 350 patients annually would be 11 beds, if percent of patients waiting to be admitted into the ward were to be taken into account alone.
 
+In the context of a stroke ward, rapid admission is critical for better patient outcome due to the time-sensitive nature of stroke treatment, hence striving for a 0% patient wait time would be considered ideal. However, like all areas of healthcare, this may not be feasible due to various operational constraints. Factors such as the hospital\'s resources, policies, and the specific department or ward influence the threshold for percent of patients waiting that would be considered ideal by the hospital administrators. For an Emergency Department, for example, minimizing wait times is critical as delays can result in poorer patient outcomes.
+
+It is important to highlight that many hospitals aim to follow guidelines that advocate for the rapid administration of treatment once a patient arrives at the hospital. The American Heart Association/American Stroke Association (AHA/ASA) guidelines recommend a door-to-needle time (the time from when a patient arrives at the hospital to when they receive intravenous thrombolytic therapy) of 60 minutes or less for at least 50% of acute ischemic stroke patients.
+
 ```{r figfive, fig.cap="Utilization percentages vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 # Plot utilization against the number of beds
