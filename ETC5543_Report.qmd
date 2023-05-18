@@ -574,12 +574,12 @@ In this section I will discuss the results from my simulation by visualizing the
 I ran the simulation for $120$ times for $25$ different number of beds (from $5-30$) and $350$ patients.
 The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
 
-```{r echo=FALSE, eval=TRUE}
+```{r echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
 results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time,
                           stroke_level_prob = stroke_level_prob,
                           total_patients = total_patients,
-                          num_simulations = 120)
+                          num_simulations = 1000)
 
 results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
 
@@ -589,7 +589,7 @@ results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
 ```{}
 ```
 
-```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 # Load the ggplot2 library
 library(ggplot2)
@@ -609,9 +609,9 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
 
 ```
 
-In the
+In the Figure 4, we see the relationship between the number of beds and the percent of patients waiting to be admitted into the ward. As discussed, ideally we would expect to have less than 5% of patients waiting to be admitted into the ward at any given time. The Figure 4 shows that the optimal number of beds for a stroke ward with 350 patients annually would be 11 beds, if percent of patients waiting to be admitted into the ward were to be taken into account alone.
 
-```{r figfive, fig.cap="Utilization percentages vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+```{r figfive, fig.cap="Utilization percentages vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 # Plot utilization against the number of beds
 
@@ -626,7 +626,7 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
        y = "Utilization (%)")
 ```
 
-```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 xintersection = 11
 yintersection = 8
@@ -707,30 +707,7 @@ stroke_sim_40 <- stroke_simulation(total_patients= total_patients,
 #        y = "Frequency")
 ```
 
-The two key metrics that Prof. Phan, supervisor for this project, emphasized were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
-
-See
-
-```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
-
-# library(ggplot2)
-# 
-# results <- run_simulation(arrival_rate = arrival_rate,
-#                           bed_occupation_time = bed_occupation_time,
-#                           stroke_level_prob = stroke_level_prob,
-#                           total_patients = total_patients,
-#                           num_simulations = 120)
-# 
-# ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-#   geom_point(size=0.7,
-#              alpha= 0.5) +
-#   geom_smooth(method = "loess") +
-#   theme_minimal() +
-#   labs(title = "Percent of Patients Waiting vs. Number of Beds",
-#        x = "Number of Beds",
-#        y = "Percent of Patients Waiting") +
-#   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-#   scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45))
+```{}
 ```
 
 ### References
