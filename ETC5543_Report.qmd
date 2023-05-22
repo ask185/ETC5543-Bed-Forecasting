@@ -557,7 +557,7 @@ run_simulation <- function(arrival_rate,
 
 The function `run_simulation` takes five arguments: `arrival_rate`, `bed_occupation_time`, `stroke_level_prob`, `total_patients`, and `num_simulations`. (For detail on these arguments please see @sec-method )
 
-This function first generated a sequence of numbers from $5- 30$ -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were $120$ simulations and $25$ different numbers of beds (from 5 to 30), the stroke_simulation function ran a total of $3000$ times $(120 \times 25)$, each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
+This function first generated a sequence of numbers from $5- 30$ -- the range as I defined inside the function -- which represents the range of number of beds to be simulated, then a `lapply` function was used twice in a nested manner to apply the `stroke_simulation` function for each number of beds and for each simulation. The outer `lapply` was for the number of simulations and the inner `lapply` was for each number of beds.[^5] For each simulation and number of beds, the `stroke_simulation` function was run with the given parameters to simulate the scenario of a stroke ward with a specific number of beds and a certain number of patients. After the simulation was run, various performance metrics were calculated based on the output of the `stroke_simulation` function. These performance metrics were then stored in a data frame for each number of beds and each simulation, and returned as a list of lists. In essence, for each simulation, the code ran the **stroke_simulation** function for each specified number of beds. This means that if there were $120$ simulations and $25$ different numbers of beds (from 5 to 30), the `run_simulation` function ran a total of $3000$ times $(120 \times 25)$, each time with a different combination of simulation number and number of beds. The results of each of these simulations were collected into a list of data frames, which were then combined into a single data frame for further processing.
 
 [^5]: For more details on lapply function:
 
@@ -571,7 +571,7 @@ After the results were obtained, confidence intervals were computed to ensure th
 
 In this section I will discuss the results from my simulation by visualizing the results.
 
-I ran the simulation for $1000$ times for $25$ different number of beds (from $5-30$) and $350$ patients. The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+I ran the simulation for $5000$ times for $25$ different number of beds (from $5-30$) for $350$ patients ( $5000 \times 25 = 125000$ simulations. The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
 
 ```{r echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
 
@@ -579,21 +579,51 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time,
                           stroke_level_prob = stroke_level_prob,
                           total_patients = total_patients,
-                          num_simulations = 1000)
+                          num_simulations = 5000)
 
 results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
-
+results_df$percent_patients_waiting <- round(results_df$percent_patients_waiting)
+results_df$utilization <- round(results_df$utilization)
+results_df$avg_wait_times <- tidyr::replace_na(results_df$avg_wait_times, 0)
 
 ```
 
-```         
+````         
+```{r}
+
+
+library(kableExtra)
+
+results_df_table <- results_df %>%
+  rename(c(`Num. of beds`=num_beds,
+           `Avg. Waiting Times`=avg_wait_times))
+
+results_df_table <- results_df_table %>%
+  rename(c( `Max. Queue Length`=max_queue_length,
+            `Proportion of Patients waiting` = proportion_patients_waiting,
+            `Percent of Patients waiting` = percent_patients_waiting,
+            `Avg. Length of Stay`= avg_length_of_stay
+    
+  )) %>%
+  head(10) %>%
+  kableExtra::kbl()
+
+results_df_table
+
 ```
+````
 
 ```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 # Load the ggplot2 library
 library(ggplot2)
 
+ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Average Waiting Times vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Average Waiting Time (Days)")
 
 # Plot the percent of patients waiting against the number of beds
 # ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
@@ -606,17 +636,26 @@ library(ggplot2)
 #        y = "Percent of Patients Waiting") +
 #   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
 #   scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
-
+# 
+# results_df <- results_df %>%
+#   mutate(percent_patients_waiting = percent_patients_waiting * 100)
+# 
+# ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+#   geom_bar(stat = "identity",
+#            fill = "steelblue", 
+#            width = 0.7) +
+#   theme_minimal()
 ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
   geom_bar(stat = "identity",
-           fill = "steelblue", 
+           fill = "steelblue",
            width = 0.7) +
   theme_minimal() +
-  labs(
-       x = "Number of Beds",
-       y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-  scale_y_continuous(breaks = seq(0, 40, by = 5))
+labs(
+     x = "Number of Beds",
+     y = "Percent of Patients Waiting")
+#+
+# geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+# scale_y_continuous(breaks = seq(0, 40, by = 5))
 
 
 
@@ -672,7 +711,7 @@ The maximum queue length in my simulation represents the highest number of patie
 
 As discussed the 5% rule for the percent of patients waiting is an average or overall target for the year. It's possible for the percent of patients waiting to spike above this target at times (as seen in the max queue length), but on average across the year, the goal is to have less than 5% of patients waiting.
 
-As per our analysis, the maximum queue length at the availibility of 10 beds is 15 patients, let's calculate what percent of 350 does this make. When we calculate $\frac {15} {350} * {100} = 4.2\%$, it means that at the point of maximum demand, the percent of total patients for the year that were waiting was 4.2%. This is in line with our target of less than 5% of patients waiting on average. However, it's important to remember that this is the peak demand and does not necessarily reflect the average wait time across the year. This means that during our simulation there was a time in the year when up to 15 patients were waiting to be admitted (4.2% of the annual total), but this doesn't mean that 4.2% of patients were always waiting.
+As per our analysis, the maximum queue length at the availibility of 10 beds is 15 patients, let's calculate what percent of 350 does this make. When we calculate $\frac {15} {350} * {100} = 4.2\%$, it means that at the point of maximum demand, the percent of total patients for the year that were waiting was 4.2%. This is in line with our target of less than 5% of patients waiting on average. However, it's important to remember that this is the peak demand and does not necessarily reflect the average wait time across the year. This means that during our simulation there was a time in the year when up to 15 patients were waiting to be admitted (4.2% of the annual total patients), but this doesn't mean that 4.2% of patients were always waiting.
 
 ```{r echo=FALSE}
 
