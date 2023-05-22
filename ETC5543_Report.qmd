@@ -579,28 +579,19 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time,
                           stroke_level_prob = stroke_level_prob,
                           total_patients = total_patients,
-                          num_simulations = 5000)
+                          num_simulations = 2000)
 
 results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
 results_df$percent_patients_waiting <- round(results_df$percent_patients_waiting)
 results_df$utilization <- round(results_df$utilization)
 results_df$avg_wait_times <- tidyr::replace_na(results_df$avg_wait_times, 0)
 
-```
-
-````         
-```{r}
-
-
 library(kableExtra)
 
 results_df_table <- results_df %>%
+  select(-proportion_patients_waiting) %>%
   rename(c(`Num. of beds`=num_beds,
-           `Avg. Waiting Times`=avg_wait_times))
-
-results_df_table <- results_df_table %>%
-  rename(c( `Max. Queue Length`=max_queue_length,
-            `Proportion of Patients waiting` = proportion_patients_waiting,
+           `Max. Queue Length`=max_queue_length,
             `Percent of Patients waiting` = percent_patients_waiting,
             `Avg. Length of Stay`= avg_length_of_stay
     
@@ -611,51 +602,30 @@ results_df_table <- results_df_table %>%
 results_df_table
 
 ```
-````
+
+```         
+```
 
 ```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
 # Load the ggplot2 library
 library(ggplot2)
 
-ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  labs(title = "Average Waiting Times vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Average Waiting Time (Days)")
-
 # Plot the percent of patients waiting against the number of beds
-# ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-#   geom_point(size=1,
-#              alpha= 1) +
-#   geom_smooth(method = "loess") +
-#   theme_minimal() +
-#   labs(
-#        x = "Number of Beds",
-#        y = "Percent of Patients Waiting") +
-#   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-#   scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
-# 
-# results_df <- results_df %>%
-#   mutate(percent_patients_waiting = percent_patients_waiting * 100)
-# 
-# ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-#   geom_bar(stat = "identity",
-#            fill = "steelblue", 
-#            width = 0.7) +
-#   theme_minimal()
 ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-  geom_bar(stat = "identity",
-           fill = "steelblue",
-           width = 0.7) +
+  geom_point(size=1,
+             alpha= 1) +
+  geom_smooth(method = "gam") +
   theme_minimal() +
-labs(
-     x = "Number of Beds",
-     y = "Percent of Patients Waiting")
-#+
-# geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-# scale_y_continuous(breaks = seq(0, 40, by = 5))
+  labs(
+       x = "Number of Beds",
+       y = "Percent of Patients Waiting") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))+
+  scale_x_continuous(breaks = c(2,4,6,8,10,12,14,16,18,20,22,
+                                24,26,28,30))
+
+
 
 
 
@@ -675,8 +645,8 @@ It is important to highlight that many hospitals aim to follow guidelines that a
 
 ggplot(results_df, aes(x = num_beds, y = utilization)) +
   geom_point(size=0.7) +
-  geom_smooth(method = "loess") +
-  scale_y_continuous(breaks = seq(0, 50, by=10))+
+  geom_smooth(method = "gam") +
+  scale_y_continuous(breaks = seq(0, 100, by=10))+
   scale_x_continuous(breaks = seq(0, 30, by=1))+
   theme_minimal()+
   geom_hline(yintercept = 80, linetype = "dashed", color = "red", size = 0.5)+
@@ -685,7 +655,7 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
        y = "Utilization (%)")
 ```
 
-In Figure 5, we see that utilization percentages at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $0.85 (85 pc)$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital However, this figure can vary greatly depending on context. In the stroke ward a patient's length of stay is determined by the stroke severity and patient's medical history as well as their health condition at the time of the occurrence of the stroke. Some patients may need to stay for longer periods of time of up to 21 days to recover, in such instances, the bed remains occupied by a patient for a longer than expected period of time. Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes. Hence a $70\%$ bed utilization percentages would be considered fine for a stroke ward. As per this metric, the optimal number of beds in the ward would be $10$ at which the bed utilization percentage is $\sim 70\%$.
+In Figure 5, we see that utilization percentages at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $0.80 (80 \%)$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital However, this figure can vary greatly depending on context. In the stroke ward a patient's length of stay is determined by the stroke severity and patient's medical history as well as their health condition at the time of the occurrence of the stroke. Some patients may need to stay for longer periods of time of up to 21 days to recover, in such instances, the bed remains occupied by a patient for a longer than expected period of time. Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes. Hence a $70\%$ bed utilization percentages would be considered fine for a stroke ward. As per this metric, the optimal number of beds in the ward would be $10$ at which the bed utilization percentage is $\sim 70\%$.
 
 ```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
@@ -693,7 +663,7 @@ xintersection = 11
 yintersection = 8
 ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
   geom_point() +
-  geom_smooth(method = "loess") +
+  geom_smooth(method = "gam") +
   scale_x_continuous(breaks = seq(4, 20, by=2))+
   scale_y_continuous(breaks = seq(5, 155, by = 10))+
   geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
