@@ -712,7 +712,7 @@ params <- list(arrival_rate = 1,
                stroke_level_prob = stroke_level_prob,
                total_patients = total_patients)
 # Define the factors by which we'll vary the parameters
-factors <- c(0.8, 0.9, 1.1, 1.2)
+factors <- c(1.5, 2.5, 3.5, 4.5 )
 
 # Initialize an empty list to store results
 results <- list()
@@ -750,7 +750,7 @@ for (param in names(params)) {
 
 # Example of simple plot: changes in utilization for different number of beds
 library(ggplot2)
-ggplot(results[["arrival_rate_1.2"]], aes(x=num_beds, y=utilization)) +
+ggplot(results[["arrival_rate_1.5"]], aes(x=num_beds, y=percent_patients_waiting)) +
   geom_line() +
   xlab("Number of Beds") +
   ylab("Utilization") +
