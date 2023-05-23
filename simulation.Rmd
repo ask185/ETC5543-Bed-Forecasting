@@ -660,20 +660,103 @@ ggplot(results_df_future, aes(x = num_beds, y = max_queue_length)) +
 ```
 
 
-### Data from the BI team Monash Health
-
 ```{r}
-library(tidyverse)
+# Function to run simulation
+run_simulation_sa <- function(params, num_simulations) {
+  num_bed_range <- seq(5,20, by=1)
+  
+  performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    lapply(num_bed_range, function(num_beds) {
+      stroke_sim <- stroke_simulation(total_patients =  params$total_patients,
+                                      arrival_rate = params$arrival_rate,
+                                      bed_occupation_time = params$bed_occupation_time,
+                                      stroke_level_prob = params$stroke_level_prob,
+                                      num_beds = num_beds)
+      
+      # Calculate only the desired metrics
+      num_beds <- length(stroke_sim$beds)
 
-read_csv("stroke_data.csv") -> stroke
+      occupied_beds <- sum(stroke_sim$beds > 0)
+      utilization <- occupied_beds / num_beds
 
-stroke %>% 
-  filter(MedicalSpecialty == "Stroke") -> stroke
+      num_patients_queue <- length(stroke_sim$queue)
 
-stroke %>%
-  select(WardName) %>%
-  distinct()
+      proportion_patients_waiting <- num_patients_queue / total_patients
+      percent_patients_waiting <- proportion_patients_waiting * 100
+
+      max_queue_length <- length(stroke_sim$queue)
+      
+      # Return only the desired metrics
+      performance_metrics_month <- data.frame(num_beds = num_beds,
+                                              utilization = utilization,
+                                              percent_patients_waiting = percent_patients_waiting,
+                                              max_queue_length = max_queue_length)
+      
+      return(performance_metrics_month)
+    })
+  })
+  
+  # Collapse the list of data frames into one data frame
+  performance_metrics_df <- do.call(rbind, unlist(performance_metrics_list, recursive = FALSE))
+  
+  return(performance_metrics_df)
+}
+
+
+# Initialize a data frame to store results
+# results_df_sa <- data.frame()
+
+# Original parameters
+params <- list(arrival_rate = 1,
+               bed_occupation_time = bed_occupation_time,
+               stroke_level_prob = stroke_level_prob,
+               total_patients = total_patients)
+# Define the factors by which we'll vary the parameters
+factors <- c(0.8, 0.9, 1.1, 1.2)
+
+# Initialize an empty list to store results
+results <- list()
+
+# Vary parameters
+for (param in names(params)) {
+  for (factor in factors) {
+    params_adjusted <- params
+    if (param == 'bed_occupation_time') {
+      params_adjusted[[param]] <- unlist(lapply(params[[param]], function(x) x * factor))
+    } else {
+      params_adjusted[[param]] <- params[[param]] * factor
+    }
+    # Run simulation
+    output <- run_simulation_sa(params_adjusted, num_simulations = 120)
+    
+    # Store results
+    results[[paste(param, factor, sep = "_")]] <- output
+  }
+}
+
+
+
 ```
 
+
+```{r}
+# Compute summary statistics
+for (param in names(params)) {
+  for (factor in factors) {
+    print(paste("Summary for", param, "multiplied by", factor))
+    print(summary(results[[paste(param, factor, sep = "_")]][,c("utilization", "percent_patients_waiting", "max_queue_length")]))
+  }
+}
+
+# Example of simple plot: changes in utilization for different number of beds
+library(ggplot2)
+ggplot(results[["arrival_rate_1.2"]], aes(x=num_beds, y=utilization)) +
+  geom_line() +
+  xlab("Number of Beds") +
+  ylab("Utilization") +
+  ggtitle("Sensitivity of Utilization to Number of Beds")
+
+
+```
 
 
