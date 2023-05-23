@@ -2,7 +2,9 @@
 title: "Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis"
 number-sections: true
 echo: FALSE
-format: pdf
+format: 
+    pdf: 
+      fig-pos: 'h'
 bibliography: reference.bib
 csl: academic-medicine.csl
 ---
@@ -171,6 +173,8 @@ v1
 ```
 
 With these input parameters, the stroke simulation model was developed to achieve the results by creating functions that generated the inter-arrival times, assigned stroke categories to the patients in the simulation, and generated the bed occupation times for the patients based on their stroke categories.
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
 
 #### Inter-arrival times {#sec-iat}
 
@@ -572,11 +576,15 @@ After the results were obtained, confidence intervals were computed to ensure th
 
 In this section I will discuss the results from my simulation by visualizing the results.
 
-I ran the simulation for $2000$ times for $25$ different number of beds (from $5-30$) for $350$ patients ( $2000 \times 25 = 50000$ simulations. The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+I ran the simulation for $2000$ times for $25$ different number of beds (from $5-30$) for $350$ patients ( `run_simulation` function ran a total of $2000 \times 25 = 50000$ times, each time with the different combination of simulation number and number of beds).
 
-Table
+The two key metrics that Prof. Phan, supervisor for this project, emphasized on reading for understanding the bed capacity needs of the stroke ward were the `percent of patients waiting` and the `utilization rates`. As explained by Prof. Phan, ideally the hospital would desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke ward at any given time. This is an important threshold considered when determining the optimal number of beds in the stroke ward.
+
+Table 3 displays the key performance metrics for $350$ patients: percent of the patients waiting, utilization of beds (in $%$ $\%$ ) and the maximum queue length.
 
 ```{r echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
+
+set.seed(070523)
 
 results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time,
@@ -593,7 +601,8 @@ library(kableExtra)
 
 results_df_table <- results_df %>%
   select(-proportion_patients_waiting,
-         -avg_length_of_stay) %>%
+         -avg_length_of_stay,
+         -avg_wait_times) %>%
   rename(c(`Num. of beds`=num_beds,
            `Max. Queue Length`=max_queue_length,
             `Percent of Patients waiting` = percent_patients_waiting
@@ -603,9 +612,6 @@ results_df_table <- results_df %>%
 
 results_df_table
 
-```
-
-```         
 ```
 
 ```{r figfour, fig.cap="Percent of patients waiting vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
@@ -634,30 +640,13 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
 
 ```
 
-In the Figure 4, we see the relationship between the number of beds and the percent of patients waiting to be admitted into the ward. As discussed, ideally we would expect to have less than 5% of patients waiting to be admitted into the ward at any given time -- this 5% rule for the percent of patients waiting, is an **average or overall target for the year**. The Figure 4 shows that the optimal number of beds for a stroke ward with 350 patients annually would be 11 beds, if percent of patients waiting to be admitted into the ward were to be taken into account alone.
+In the Figure 4, we see the relationship between the number of beds and the percent of patients waiting to be admitted into the ward. As discussed, ideally we would expect to have less than 5% of patients waiting to be admitted into the ward at any given time -- this 5% rule for the percent of patients waiting, is an **average or overall target for the year**. The Figure 4 shows that the optimal number of beds for a stroke ward with 350 patients annually would be 10 beds, if percent of patients waiting to be admitted into the ward were to be taken into account alone.
 
-In the context of a stroke ward, rapid admission is critical for better patient outcome due to the time-sensitive nature of stroke treatment, hence striving for a 0% patient wait time would be considered ideal. In general, however, like all areas of healthcare, striving for a 0% patients wait time may not be feasible due to various operational constraints because factors such as the hospital's resources, policies, and the specific department or ward influence the threshold for percent of patients waiting at any given time that would be considered ideal by the hospital administrators. For an Emergency Department, for example, minimizing wait times is critical as delays can result in poorer patient outcomes.
+In the context of a stroke ward, rapid admission is critical for better patient outcome due to the time-sensitive nature of stroke treatment, hence striving for a 0% patient wait time would be considered ideal. In general, however, like all areas of healthcare, striving for a 0% patients wait time may not be feasible due to various operational constraints because factors such as the hospital's resources, policies, and the specific department or ward influence the threshold for percent of patients waiting at any given time.
 
-It is important to highlight that many hospitals aim to follow guidelines that advocate for the rapid administration of treatment once a patient arrives at the hospital. The American Heart Association/American Stroke Association (AHA/ASA) guidelines recommend a door-to-needle time (the time from when a patient arrives at the hospital to when they receive intravenous thrombolytic therapy) of 60 minutes or less for at least 50% of acute ischemic stroke patients. @diercks2010prolonged @leifer2011metrics
+It is important to highlight that many hospitals aim to follow guidelines that advocate for the rapid administration of treatment once a patient arrives at the hospital. For example in the US, The American Heart Association/American Stroke Association (AHA/ASA) guidelines recommend a door-to-needle time (the time from when a patient arrives at the hospital to when they receive intravenous thrombolytic therapy) of 60 minutes or less for at least 50% of acute ischemic stroke patients. @diercks2010prolonged @leifer2011metrics. In Australia guidelines regarding the stroke admissions are laid out by the Stroke Foundation -- Australia.
 
-```{r figfive, fig.cap="Utilization percentages vs the Number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
-
-# Plot utilization against the number of beds
-
-
-ggplot(results_df, aes(x = num_beds, y = utilization)) +
-  geom_point(size=0.7) +
-  geom_smooth(method = "gam") +
-  scale_y_continuous(breaks = seq(0, 100, by=10))+
-  scale_x_continuous(breaks = seq(0, 30, by=1))+
-  theme_minimal()+
-  geom_hline(yintercept = 80, linetype = "dashed", color = "red", size = 0.5)+
-  labs(title = "Utilization vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Utilization (%)")
-```
-
-In Figure 5, we see that utilization percentages at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $0.80 (80 \%)$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital However, this figure can vary greatly depending on context. In the stroke ward a patient's length of stay is determined by the stroke severity and patient's medical history as well as their health condition at the time of the occurrence of the stroke. Some patients may need to stay for longer periods of time of up to 21 days to recover, in such instances, the bed remains occupied by a patient for a longer than expected period of time. Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes. Hence a $70\%$ bed utilization percentages would be considered fine for a stroke ward. As per this metric, the optimal number of beds in the ward would be $10$ at which the bed utilization percentage is $\sim 70\%$.
+In Figure 5, we see that utilization percentages at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $0.80 (80 \%)$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital However, this figure can vary greatly depending on context. In the stroke ward a patient's length of stay is determined by the stroke severity and patient's medical history as well as their health condition at the time of the occurrence of the stroke. Some patients may need to stay for longer periods of time in the ward of up to 21 days to recover, in such instances, the bed remains occupied by a patient for a longer than expected period of time. Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes. Hence a $70\%$ bed utilization percentages would be considered fine for a stroke ward. As per this metric, the optimal number of beds in the ward would be $10$ at which the bed utilization percentage is $\sim 70\%$.
 
 ```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
 
@@ -683,7 +672,7 @@ The maximum queue length in my simulation represents the highest number of patie
 
 As discussed the 5% rule for the percent of patients waiting is an average or overall target for the year. It's possible for the percent of patients waiting to spike above this target at times (as seen in the max queue length), but on average across the year, the goal is to have less than 5% of patients waiting.
 
-As per our analysis, the maximum queue length at the availibility of 10 beds is 15 patients, let's calculate what percent of 350 does this make. When we calculate $\frac {15} {350} * {100} = 4.2\%$, it means that at the point of maximum demand, the percent of total patients for the year that were waiting was 4.2%. This is in line with our target of less than 5% of patients waiting on average. However, it's important to remember that this is the peak demand and does not necessarily reflect the average wait time across the year. This means that during our simulation there was a time in the year when up to 15 patients were waiting to be admitted (4.2% of the annual total patients), but this doesn't mean that 4.2% of patients were always waiting.
+As per our analysis, the maximum queue length at the availability of 10 beds is 15 patients, let's calculate what percent of 350 does this make. When we calculate $\frac {15} {350} * {100} = 4.2\%$, it means that at the point of maximum demand, the percent of total patients for the year that were waiting was 4.2%. This is in line with our target of less than 5% of patients waiting on average. However, it's important to remember that this is the peak demand and does not necessarily reflect the average wait time across the year. This means that during our simulation there was a time in the year when up to 15 patients were waiting to be admitted (4.2% of the annual total patients), but this doesn't mean that 4.2% of patients were always waiting.
 
 ```{r echo=FALSE}
 
@@ -746,8 +735,102 @@ stroke_sim_40 <- stroke_simulation(total_patients= total_patients,
 #        y = "Frequency")
 ```
 
-```         
+#### Sensitivity Analysis
+
+```{r}
+# Function to run simulation
+run_simulation_sa <- function(params, num_simulations) {
+  num_bed_range <- seq(5,20, by=1)
+  
+  performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    lapply(num_bed_range, function(num_beds) {
+      stroke_sim <- stroke_simulation(total_patients =  params$total_patients,
+                                      arrival_rate = params$arrival_rate,
+                                      bed_occupation_time = params$bed_occupation_time,
+                                      stroke_level_prob = params$stroke_level_prob,
+                                      num_beds = num_beds)
+      
+      # Calculate only the desired metrics
+      num_beds <- length(stroke_sim$beds)
+
+      occupied_beds <- sum(stroke_sim$beds > 0)
+      utilization <- occupied_beds / num_beds
+
+      num_patients_queue <- length(stroke_sim$queue)
+
+      proportion_patients_waiting <- num_patients_queue / total_patients
+      percent_patients_waiting <- proportion_patients_waiting * 100
+
+      max_queue_length <- length(stroke_sim$queue)
+      
+      # Return only the desired metrics
+      performance_metrics_month <- data.frame(num_beds = num_beds,
+                                              utilization = utilization,
+                                              percent_patients_waiting = percent_patients_waiting,
+                                              max_queue_length = max_queue_length)
+      
+      return(performance_metrics_month)
+    })
+  })
+  
+  # Collapse the list of data frames into one data frame
+  performance_metrics_df <- do.call(rbind, unlist(performance_metrics_list, recursive = FALSE))
+  
+  return(performance_metrics_df)
+}
+
+
+# Initialize a data frame to store results
+# results_df_sa <- data.frame()
+
+# Original parameters
+params <- list(arrival_rate = 1,
+               bed_occupation_time = bed_occupation_time,
+               stroke_level_prob = stroke_level_prob,
+               total_patients = total_patients)
+# Define the factors by which we'll vary the parameters
+factors <- c(1.5, 2.5, 3.5, 4.5 )
+
+# Initialize an empty list to store results
+results <- list()
+
+# Vary parameters
+for (param in names(params)) {
+  for (factor in factors) {
+    params_adjusted <- params
+    if (param == 'bed_occupation_time') {
+      params_adjusted[[param]] <- unlist(lapply(params[[param]], function(x) x * factor))
+    } else {
+      params_adjusted[[param]] <- params[[param]] * factor
+    }
+    # Run simulation
+    output <- run_simulation_sa(params_adjusted, num_simulations = 120)
+    
+    # Store results
+    results[[paste(param, factor, sep = "_")]] <- output
+  }
+}
+
+# Compute summary statistics
+for (param in names(params)) {
+  for (factor in factors) {
+    print(paste("Summary for", param, "multiplied by", factor))
+    print(summary(results[[paste(param, factor, sep = "_")]][,c("utilization", "percent_patients_waiting", "max_queue_length")]))
+  }
+}
 ```
+
+Based on the sensitivity analysis, the healthcare system's efficiency and capacity were tested under increased pressures on multiple parameters. The variables tested include arrival_rate, bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.
+
+For the arrival_rate, as the multiplying factor increased, we observed a consistent rise in utilization, percent_patients_waiting, and max_queue_length. With a 1.5 multiplier, the mean utilization was 0.7581, increasing steadily to 0.9783 at a 4.5 multiplier. This indicates that as more patients arrive, the healthcare system's resources become increasingly utilized. The waiting percentage of patients also increased from a mean of 15.684 to 57.50, while the max_queue_length ballooned from 54.89 to 201.2. These changes show the strain on the healthcare system as the influx of patients surges.
+
+Similar trends were observed with bed_occupation_time. With increased occupation time, there was a significant rise in utilization, waiting patients, and queue length. This implies that prolonged occupation times exert considerable pressure on the system, leaving fewer resources for new patients and creating long queues.
+
+On the other hand, changes in stroke_level_prob, representing the proportion of stroke severity levels, did not have a significant impact on the healthcare system performance. The utilization, percentage of patients waiting, and max queue length remained relatively consistent across all multiplying factors, indicating that the stroke severity level distribution does not significantly affect the system's capacity and efficiency.
+
+Lastly, changes in total_patients exhibited similar trends to arrival_rate and bed_occupation_time, with all measured values increasing alongside the multiplier. However, these changes were more drastic, indicating that an increase in the total number of patients significantly strains the healthcare system. For instance, the mean max_queue_length skyrocketed from 39.4 at a 1.5 multiplier to 119.6 at a 4.5 multiplier, revealing the system's limitations in handling a large volume of patients.
+
+In conclusion, these findings illustrate the healthcare system's vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients. While stroke severity level changes do not significantly affect system performance, strategic improvements should focus on efficient patient handling and reducing bed occupation times to enhance capacity and minimize patient waiting times. Future studies could further explore potential optimization strategies, taking into consideration real-world constraints and potential trade-offs.
 
 ### References
 
