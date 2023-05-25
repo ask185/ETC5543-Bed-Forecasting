@@ -289,3 +289,260 @@
 # }
 # 
 # shinyApp(ui = ui, server = server)
+###############################################################################
+
+# install.packages(c("shiny", "ggplot2"))
+# install.packages("shinythemes")
+library(shiny)
+library(ggplot2)
+library(tidyverse)
+library(shinydashboard)
+library(shinythemes)
+library(plotly)
+library(shinycssloaders)
+
+
+ui <- fluidPage(
+  theme = shinytheme("superhero"),
+  titlePanel("Stroke Simulation App"),
+  
+  tags$div(
+    tags$p("Stroke is one of the leading causes to disability and death in the Australia.
+    According to the Australian Institute of Health and Welfare, in 2020, stroke was
+    recorded as the underlying cause of 8,200 deaths, accounting for 5.1% of all deaths in
+    Australia. Stroke was one of the 5 leading causes of death in Australia – on average,
+    22 Australians died of stroke each day in 2020. Hence the stroke care units are crucial
+    in reducing the death rates and speedying up the recovery for stroke patients.
+    This app simulates the percentage of stroke patients waiting for a bed and
+           bed utilization in a stroke unit at Monash Medical Center based on the number of
+           patients and the number of available beds.
+           As per our analysis the optimal number of beds for the annual load of 2000 patients
+           should be 40 in the stroke care unit.
+           "),
+    style = "background-color: #f0f0f0; color: black; padding: 10px;"
+  ),
+  br(),
+  
+  fluidRow(
+    column(3,
+           wellPanel(
+             selectInput("num_patients", "Number of Patients:",
+                         choices = c(350, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500),
+                         selected = 350),
+             sliderInput("num_beds", "Number of beds:",
+                         min = 5, max = 50, value = 12, step = 1),
+             sliderInput("very_mild", "Very Mild Stroke Occupation Time:", min = 1, max = 7, value = 4),
+             sliderInput("mild", "Mild Stroke Occupation Time:", min = 1, max = 7, value = 4),
+             sliderInput("moderate", "Moderate Stroke Occupation Time:", min = 3, max = 10, value = 7),
+             sliderInput("moderate_severe", "Moderate-Severe Stroke Occupation Time:", min = 3, max = 10, value = 7),
+             sliderInput("severe", "Severe Stroke Occupation Time:", min = 3, max = 10, value = 8),
+             sliderInput("very_severe", "Very Severe Stroke Occupation Time:", min = 3, max = 10, value = 10)
+           )
+    ),
+    textOutput("length_of_stay_text"),
+    verbatimTextOutput("sim_results"),
+    
+    column(6,
+           tabsetPanel(
+             tabPanel("Percent of Patients Waiting",
+                      withSpinner(plotlyOutput("patients_waiting_plot")),
+                      tags$div(
+                        textOutput("subtitle_text"),
+                        style = "background-color: steelblue; color: white; padding: 8px;
+                          border-radius: 3px; text-align: center;"),
+                      tags$div(
+                        textOutput("patients_waiting_text"),
+                        style = "background-color: #f0f0f0; color: black; padding:
+                          8px; border-radius: 3px; text-align: center;"
+                      ),
+                      tags$div(
+                        textOutput("utilization_text"),
+                        style = "background-color: lightgreen; color: black;
+                          padding: 8px; border-radius: 3px; text-align: center;"
+                      )
+             )
+           )
+    ),
+    actionButton("run_simulation", "Run Simulation")
+    #          tabPanel("Bed Utilization",
+    #                   withSpinner(plotOutput("utilization_plot")),
+    #                   tags$div(
+    #                     "The optimal utilization rate is considered to be 80% or over.",
+    #                     style = "padding: 8px; text-align: center;"
+    #                   )
+    #          )
+    #        )
+    # ),
+    # column(3,
+    #        plotlyOutput("static_plot"))
+  )
+)
+
+
+server <- function(input, output) {
+  set.seed(07052023)
+  
+  bed_occupation_time <- reactive({
+    df <- data.frame(category = 1:6, mean_time = c(input$very_mild, 
+                                                   input$mild, input$moderate, input$moderate_severe, input$severe, 
+                                                   input$very_severe))
+    print(df)
+    return(df)
+  })
+  
+  
+  stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
+  
+  generate_interarrival_times <- function(total_patients, arrival_rate) {
+    interarrival_times <- rexp(total_patients, rate = arrival_rate)
+    print("generate_interarrival_times() was called, first 5 values are:")
+    print(head(interarrival_times, 5))
+    return(interarrival_times)
+  }
+  
+  assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+    stroke_levels <- sample(1:length(stroke_level_prob),
+                            size = total_patients,
+                            replace = TRUE,
+                            prob = stroke_level_prob)
+    print("assign_stroke_levels() was called, first 5 values are:")
+    print(head(stroke_levels, 5))
+    return(stroke_levels)
+  }
+  
+  generate_length_of_stay <- function(total_patients, stroke_levels) {
+    length_of_stay <- numeric(total_patients)
+    bot <- bed_occupation_time()
+    
+    print("generate_length_of_stay() was called, bot is:")
+    print(bot)
+    
+    for (i in 1:total_patients) {
+      stroke_level <- sample(stroke_levels, 1, prob = bot$probability)
+      length_of_stay[i] <- bot$mean_time[stroke_level]
+    }
+    
+    print("generate_length_of_stay() calculated length_of_stay, first 5 values are:")
+    print(head(length_of_stay, 5))
+    
+    return(length_of_stay)
+  }
+  
+  stroke_simulation <- function(total_patients, num_beds, bed_occupation_time) {
+    print("stroke_simulation() was called with total_patients, num_beds:")
+    print(total_patients)
+    print(num_beds)
+    arrival_rate <- total_patients/365
+    
+    interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+    stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+    length_of_stay <- generate_length_of_stay(total_patients, stroke_levels)
+    
+    beds <- rep(0, num_beds)
+    waiting_times <- numeric(total_patients)
+    
+    update_bed_occupation_times <- function(beds, interarrival_time) {
+      beds <- pmax(beds - interarrival_time, 0)
+      return(beds)
+    }
+    
+    for (i in 1:total_patients) {
+      beds <- update_bed_occupation_times(beds, interarrival_times[i])
+      available_beds <- which(beds == 0)
+      if (length(available_beds) > 0) {
+        beds[available_beds[1]] <- length_of_stay[i]
+      } else {
+        waiting_times[i] <- length_of_stay[i]
+      }
+    }
+    
+    patients_waiting <- sum(waiting_times > 0)
+    percent_patients_waiting <- (patients_waiting / total_patients) * 100
+    bed_utilization <- sum(length_of_stay) / (num_beds * sum(interarrival_times)) * 100
+    
+    print("stroke_simulation() finished, first 5 values of length_of_stay are:")
+    print(head(length_of_stay, 5))
+    
+    return(list(percent_patients_waiting = percent_patients_waiting,
+                bed_utilization = bed_utilization))
+  }
+  
+  
+  length_of_stay_output <- reactive({
+    total_patients <- as.numeric(input$num_patients)
+    stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+    length_of_stay <- generate_length_of_stay(total_patients, stroke_levels)
+    return(length_of_stay)
+  })
+  
+  output$length_of_stay_text <- renderText({
+    req(length_of_stay_output())
+    los_values <- length_of_stay_output()
+    paste("Mean Length of Stay:", mean(los_values),
+          #"Median Length of Stay:", median(los_values),
+          "Min Length of Stay:", min(los_values),
+          "Max Length of Stay:", max(los_values))
+  })
+  
+  
+  waiting_percents_data <- reactive({
+    num_beds_range <- seq(5, 50, by = 1)
+    total_patients <- as.numeric(input$num_patients)
+    bed_occupation_time <- bed_occupation_time()
+    
+    print("waiting_percents_data() was called with total_patients, num_beds_range:")
+    print(total_patients)
+    print(head(num_beds_range, 5))
+    
+    waiting_percents <- sapply(num_beds_range, function(num_beds) {
+      sim_results <- stroke_simulation(total_patients, num_beds, bed_occupation_time)
+      sim_results$percent_patients_waiting
+    })
+    
+    print("waiting_percents_data() calculated waiting_percents, first 5 values are:")
+    print(head(waiting_percents, 5))
+    
+    return(waiting_percents)
+  })
+  
+  
+  # Run the simulation here, outside of the loop but still inside withProgress()
+  set.seed(07052023)
+  sim_results <- stroke_simulation(as.numeric(input$num_patients),
+                                   as.numeric(input$num_beds),
+                                   bed_occupation_time())
+  
+  # Create a data frame from the waiting_percents_data()
+  data <- data.frame(num_beds = seq(5, 50, by = 1),
+                     percent_patients_waiting = sim_results$percent_patients_waiting)
+  
+  p_one <- ggplot(data, aes(x = num_beds, y = percent_patients_waiting)) +
+    geom_point(size=2, stroke=0) +
+    geom_segment(aes(x = num_beds, xend = num_beds, y = 0, yend = percent_patients_waiting),
+                 color = "steelblue")+
+    geom_hline(yintercept = 5, color = "red", size = 0.3) +
+    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 5),
+                       labels = function(x) paste0(x, "%"))+
+    scale_x_continuous(breaks = seq(5, 50, by = 1), expand = c(0, 0.5)) +
+    scale_fill_manual(values = c("steelblue", "red")) +
+    labs(title = "Percent of Patients Waiting vs Number of Beds",
+         x = "Number of Beds",
+         y = "Percent of Patients Waiting") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90 ,hjust = 1),
+          legend.position = "none")+
+    theme(axis.text.x = element_text(size = 10),
+          axis.text.y = element_text(size = 10),
+          plot.title = element_text(size = 14),
+          axis.title.x = element_text(size = 13),
+          axis.title.y = element_text(size = 13),
+          legend.position = "none")
+  
+  output$waiting_plot <- renderPlotly(p_one)
+  
+  
+}
+
+
+shinyApp(ui = ui, server = server)
+
