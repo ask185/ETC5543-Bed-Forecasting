@@ -676,23 +676,23 @@ As per our analysis, the maximum queue length at the availability of 10 beds is 
 
 ```{r echo=FALSE}
 
-stroke_sim_25 <- stroke_simulation(total_patients= total_patients, 
+stroke_sim_5 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
                               bed_occupation_time = bed_occupation_time, 
                               stroke_level_prob= stroke_level_prob, 
-                              num_beds= 25)
+                              num_beds= 5)
 
-stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
+stroke_sim_8 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
                               bed_occupation_time = bed_occupation_time, 
                               stroke_level_prob= stroke_level_prob, 
-                              num_beds= 30)
+                              num_beds= 8)
 
-stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
+stroke_sim_11 <- stroke_simulation(total_patients= total_patients, 
                                    arrival_rate= arrival_rate, 
                               bed_occupation_time = bed_occupation_time, 
                               stroke_level_prob= stroke_level_prob, 
-                              num_beds= 40)
+                              num_beds= 11)
 
 
 ```
@@ -831,6 +831,20 @@ On the other hand, changes in stroke_level_prob, representing the proportion of 
 Lastly, changes in total_patients exhibited similar trends to arrival_rate and bed_occupation_time, with all measured values increasing alongside the multiplier. However, these changes were more drastic, indicating that an increase in the total number of patients significantly strains the healthcare system. For instance, the mean max_queue_length skyrocketed from 39.4 at a 1.5 multiplier to 119.6 at a 4.5 multiplier, revealing the system's limitations in handling a large volume of patients.
 
 In conclusion, these findings illustrate the healthcare system's vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients. While stroke severity level changes do not significantly affect system performance, strategic improvements should focus on efficient patient handling and reducing bed occupation times to enhance capacity and minimize patient waiting times. Future studies could further explore potential optimization strategies, taking into consideration real-world constraints and potential trade-offs.
+
+### Conclusion
+
+In summary, the stroke simulation model devised in this investigation yields crucial understandings pertinent to the efficient management of hospital resources, particularly concerning stroke patient treatment. Remarkably, it was observed that the intricate interplay between the count of hospital beds, yearly patient influx, and bed occupancy durations, results in substantial effects on both patient wait times and bed utilization ratios.
+
+The key value of individualized resource allocation was underscored by our model, as demonstrated through the adjustable stroke severity levels. This essential feature accentuates the notion that stroke cases differ in their demand for resources, a vital element to be considered in policy development. Additionally, the ability of our model to imitate various availability of hospital beds was instrumental in evaluating their impact on patient waiting periods and bed utilization rates. This could potentially aid hospital management in making informed decisions regarding resource distribution and capacity management.
+
+The implications of this model in practical scenarios are profound. It offers an intuitive tool to policy makers and hospital management for efficient resource strategy formulation, based on live data and fluctuating patient load. More importantly, the model is inherently connected to the foundational objective of our study, which is to enhance the allocation of hospital resources for stroke patients, focusing on minimizing patient waiting durations and optimizing bed utilization rates.
+
+Despite its advantages, our model has its inherent limitations. It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions. Instances like sudden patient surges due to epidemic situations or natural calamities aren't factored into the current model. Also, the model overlooks other potential chokepoints in stroke patient care, like the availability of healthcare staff or medical apparatus.
+
+Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations. Further, future iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.
+
+To encapsulate, our stroke simulation model aids in understanding and addressing the complicated task of hospital resource allocation for stroke patients. It paves the way towards more robust, dynamic, and inclusive healthcare simulation models. Despite its constraints, the model demonstrates significant potential to inform and impact hospital management strategies, eventually contributing to better patient care.
 
 ### References
 
