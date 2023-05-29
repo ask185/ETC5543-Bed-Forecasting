@@ -1,0 +1,31 @@
+.reveal h1 > span, .reveal h2 > span, .reveal h3 > span, .reveal h4 > span, .reveal h5 > span, .reveal h6 > span {
+    background-color: black;
+    color: white; 
+}
+
+.reveal .slides > section p > span {
+    background-color: black;
+    color: white; 
+}
+
+.reveal .slides section {
+    font-size: 30px;
+}
+
+.reveal br {
+    color: transparent;
+}
+
+.reveal .panel-tabset .tab-bar .tab span {
+    color: white !important;
+    background-color: black !important;
+}
+
+.reveal .panel-tabset .tab-bar .tab.active span {
+    color: white !important;
+    background-color: black !important;
+}
+
+
+
+
