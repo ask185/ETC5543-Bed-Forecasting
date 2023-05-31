@@ -21,7 +21,7 @@ The simulation model considered factors such as patient arrival rates, stroke se
 
 In this project, data from 2021 on stroke patients at Monash hospital was utilized to estimate the number of stroke unit beds needed given the distribution of stroke severity and the length of stay associated with each category of stroke severity. Moreover, I have developed a web-based app such that policy makers and clinicians can use it as policy support tool to estimate the number of bed needed in their hospitals.
 
-#### **Discussion:** {#sec-discussion}
+#### **Results:** {#sec-discussion}
 
 The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 7-bed provision was inadequate for the annual patient load of \~ $350$, leading to prolonged wait times and queues. The percent of patients queuing was around \~ $19 \%$ for 7 beds, $15\%$ for 8 beds, \~ $8\%$ for 9 beds and \~ $5\%$ for 10 beds.
 
