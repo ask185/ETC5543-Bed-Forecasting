@@ -277,7 +277,7 @@ g
 
 <span><br></span>
 
-<span> The auxiliary functions, I created, computed the patients inter-arrival times, assigned stroke categories based on the stroke level probabilities to patients, and calculated the length of stay of the patients based on the assigned stroke categories. 
+<span> The auxiliary functions computed the patients inter-arrival times, assigned stroke categories based on the stroke level probabilities to patients, and calculated the length of stay of the patients based on the assigned stroke categories. </span>
 
 :::
 :::
@@ -594,22 +594,26 @@ substantial effects on both patient wait times and bed utilization ratios.</span
 <span> Also, the model overlooks other potential chokepoints in stroke patient
 care, like the availability of healthcare staff or medical apparatus.</span>
 
-## {auto-animate=true}
+<br>
 
 <span> Despite its advantages, our model has its inherent limitations. It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions.</span>
 
-<span> Also, the model overlooks other potential chokepoints in stroke patient
-care, like the availability of healthcare staff or medical apparatus.</span>
 
 ## {auto-animate=true}
 
 ### <span>Future Enhancements </span>
 
+## {auto-animate=true}
+
 <span>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
+
+## {auto-animate=true}
+
+<span> Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations.</span>
 
 <br>
 
-<span> Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations.</span>
+<span>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
 
 ## {auto-animate=true}
 
@@ -625,7 +629,8 @@ care, like the availability of healthcare staff or medical apparatus.</span>
 
 ### <span>What questions do you have?</span>
  
-
+#### <span>You can find my shiny app </span>
+<span>[here](https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/)</span>
 
 
 
