@@ -5,10 +5,10 @@ account: aryan-sultan-1120
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9051839
-bundleId: 7272705
+bundleId: 7280102
 url: https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/
-when: 1685253488.82333
-lastSyncTime: 1685253488.82334
+when: 1685424423.95581
+lastSyncTime: 1685424423.95581
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: app_functions.R|app_new.R
+ignoredFiles: app_functions.R|app_new.R|www/background.jpg|www/background_one.jpg|www/background_three.jpg|www/background_two.jpg|www/percent_of_patients_waiting1.png

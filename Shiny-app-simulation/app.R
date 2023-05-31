@@ -319,8 +319,8 @@ ui <- fluidPage(
     This app simulates the percentage of stroke patients waiting for a bed and
            bed utilization in a stroke unit at Monash Medical Center based on the number of
            patients and the number of available beds.
-           As per our analysis the optimal number of beds for the annual load of 2000 patients
-           should be 40 in the stroke care unit.
+           As per our analysis the optimal number of beds for the annual load of 350 patients
+           should be 10-11 beds in the stroke care unit.
            "),
     style = "background-color: #f0f0f0; color: black; padding: 10px;"
   ),
@@ -399,7 +399,7 @@ ui <- fluidPage(
     ),
     column(3,
            plotlyOutput("static_plot"),
-           tags$p("Bed occupation times (LOS) for each category of stroke as selected by the user.",
+           tags$p("Length of Stay) for each category of stroke as selected by the user.",
                   style = "background-color: steelblue; color: white; padding: 8px;
                           border-radius: 3px; text-align: right;")
     ),
@@ -591,7 +591,7 @@ server <- function(input, output) {
       theme_minimal()+
       labs(
         x = "Stroke Category",
-        y = "Bed Occupation Time (days)") +
+        y = "Length of stay (days)") +
       scale_x_discrete(labels = c("Very Mild", "Mild", "Moderate", "Moderate-Severe", "Severe", "Very Severe")) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
     
