@@ -640,7 +640,7 @@ server <- function(input, output) {
   
   output$patients_waiting_text <- renderText({
     paste0("Percent of patients waiting at the selected number of beds (", input$num_beds, 
-           ") and the annual patient load of ", input$num_patients, " are ", sprintf("%.2f", simulation_results()$percent_patients_waiting * 100), "%.")
+           ") and the annual patient load of ", input$num_patients, " are ", sprintf("%.2f", simulation_results()$percent_patients_waiting), "%.")
   })
   
   output$utilization_text <- renderText({
