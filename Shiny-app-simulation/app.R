@@ -399,7 +399,7 @@ ui <- fluidPage(
     ),
     column(3,
            plotlyOutput("static_plot"),
-           tags$p("Length of Stay) for each category of stroke as selected by the user.",
+           tags$p("Length of Stay for each category of stroke as selected by the user.",
                   style = "background-color: steelblue; color: white; padding: 8px;
                           border-radius: 3px; text-align: right;")
     ),
@@ -412,6 +412,7 @@ server <- function(input, output) {
   set.seed(07052023)
   
   bed_occupation_time <- reactive({
+    set.seed(07052023)
     data.frame(
       category = 1:6,
       mean_time = c(input$very_mild, input$mild, input$moderate, input$moderate_severe, input$severe, input$very_severe)
@@ -421,11 +422,13 @@ server <- function(input, output) {
   stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
   
   generate_interarrival_times <- function(total_patients, arrival_rate) {
+    set.seed(07052023)
     interarrival_times <- rexp(total_patients, rate = arrival_rate)
     return(interarrival_times)
   }
   
   assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+    set.seed(07052023)
     stroke_levels <- sample(1:length(stroke_level_prob),
                             size = total_patients,
                             replace = TRUE,
@@ -434,6 +437,7 @@ server <- function(input, output) {
   }
   
   generate_length_of_stay <- function(total_patients, stroke_levels) {
+    set.seed(07052023)
     length_of_stay <- numeric(total_patients)
     bot <- bed_occupation_time()
     
@@ -445,6 +449,7 @@ server <- function(input, output) {
   }
   
   stroke_simulation <- function(total_patients, num_beds, bed_occupation_time) {
+    set.seed(07052023)
     # total_patients <- as.numeric(input$num_patients)
     # num_beds <- as.numeric(input$num_beds)
     bed_occupation_time <- bed_occupation_time()
@@ -458,11 +463,13 @@ server <- function(input, output) {
     waiting_times <- numeric(total_patients)
     
     update_bed_occupation_times <- function(beds, interarrival_time) {
+      set.seed(07052023)
       beds <- pmax(beds - interarrival_time, 0)
       return(beds)
     }
     
     for (i in 1:total_patients) {
+      set.seed(07052023)
       beds <- update_bed_occupation_times(beds, interarrival_times[i])
       available_beds <- which(beds == 0)
       if (length(available_beds) > 0) {
@@ -482,6 +489,7 @@ server <- function(input, output) {
   
   
   length_of_stay_output <- reactive({
+    set.seed(07052023)
     total_patients <- as.numeric(input$num_patients)
     stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
     length_of_stay <- generate_length_of_stay(total_patients, stroke_levels)
@@ -489,6 +497,7 @@ server <- function(input, output) {
   })
   
   output$length_of_stay_table <- renderTable({
+    set.seed(07052023)
     req(length_of_stay_output())
     los_values <- length_of_stay_output()
     los_table <- data.frame(
@@ -501,6 +510,7 @@ server <- function(input, output) {
   }, row.names = FALSE)
   
   waiting_percents_data <- reactive({
+    set.seed(07052023)
     num_beds_range <- seq(5, 50, by = 1)
     total_patients <- as.numeric(input$num_patients)
     bed_occupation_time <- bed_occupation_time()
@@ -522,11 +532,13 @@ server <- function(input, output) {
   })
   
   output$patients_waiting_plot <- renderPlotly({
+    set.seed(07052023)
     # Get the reactive data
     waiting_percents <- waiting_percents_data()
     
     # Create the data frame
     df <- data.frame(
+      # set.seed(07052023)
       NumBeds = seq(5, 50, by = 1),
       PercentPatientsWaiting = as.integer(round(waiting_percents)))
     
@@ -541,10 +553,12 @@ server <- function(input, output) {
     }
     
     optimal_beds <- reactive({
+      set.seed(07052023)
       find_optimal_beds(as.numeric(input$num_patients), bed_occupation_time())
     })
     
     output$optimal_beds_text <- renderText({
+      set.seed(07052023)
       optimal_beds_val <- optimal_beds()
       if (is.na(optimal_beds_val)) {
         "No optimal number of beds found (i.e., no number of beds results in <= 5% of patients waiting)"
@@ -599,6 +613,7 @@ server <- function(input, output) {
   })
   
   utilization_percents_data <- reactive({
+    set.seed(07052023)
     utilization_percents <- sapply(5:50, function(x) {
       stroke_simulation(as.numeric(input$num_patients), x, bed_occupation_time())$bed_utilization
     })
@@ -606,6 +621,7 @@ server <- function(input, output) {
   })
   
   output$utilization_plot <- renderPlot({
+    set.seed(07052023)
     # Get the reactive data
     utilization_percents <- utilization_percents_data()
     
