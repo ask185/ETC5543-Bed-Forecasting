@@ -13,7 +13,7 @@ format:
     width: 1280
     height: 780
     theme: simple
-    parallax-background-image: national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg
+    parallax-background-image: uriel-sc-11KDtiUWRq4-unsplash.jpg
     parallax-background-size: "cover"
     parallax-background-horizontal: 400
     parallax-background-vertical: 100
@@ -64,568 +64,251 @@ knitr::opts_chunk$set(
 <br>
 :::
 
-# <span>Introduction</span> {background-image="conny-schneider-pREq0ns_p_E-unsplash.jpg" background-size="cover"}
+# <span>Introduction</span> {background-image="elena-mozhvilo-V2hZ1VNsZJE-unsplash.jpg" background-size="cover"}
 
 <span>(*Aims and Objectives of the Project*)</span>
 
 ## {auto-animate=true}
 
-<span>1. The aim of this project was to develop a *discrete event simulation* model that accurately captures the dynamics of the stroke ward at Monash Hospital. </span>
+<div class = "text-center">
+<p>
+<span> Discrete event simulation model </span>
+</p>
+</div
 
-## {auto-animate=true}
+<br>
 
-<span> 2. The project evaluated different bed capacities and their impact on patient wait times and bed utilization rates.</span>
+<div class="image-container">
+  <img src="discreteEvent.png">
+</div>
+ 
 
-<span> 1. The aim of this project was to develop a *discrete event simulation* model that accurately captures the dynamics of the stroke ward at Monash Hospital.</span>
+## 
+<div class = "text-center">
+<p>
+<span> Evaluate & determine Optimal Number of Beds </span>
+</p>
+</div
 
-## {auto-animate=true}
+<br>
 
-<span> 3. Additionally, the project aimed to provide a decision support tool to hospital administrators and policymakers to optimize bed allocation at the stroke ward.<span>
-
-<span> 2. The project evaluated different bed capacities and their impact on patient wait times and bed utilization rates.<span>
-
-<span> 1. The aim of this project was to develop a *discrete event simulation* model that accurately captures the dynamics of the stroke ward at Monash Hospital.<span>
-
-# <span>Background</span> {background-image="david-becker-crs2vlkSe98-unsplash.jpg" background-size="cover"}
-
-<span>(*Stroke Care Units*)</span>
-
-## {auto-animate=true}
-
-<span> Geographical stroke unit care has been proven to be an effective therapy for patients with both *ischaemic* and *haemorrhagic* stroke.</span>
-
-## {auto-animate=true}
-
-<span> Determining the optimal number of beds for stroke care units is a complex and challenging task. </span>
-
-<span> Geographical stroke unit care has been proven to be an effective therapy for patients with both *ischaemic* and *haemorrhagic* stroke.</span>
+<div class="image-container">
+  <img src="OptimalBeds.png">
+</div>
 
 
-# <span>Setting up a model </span> {background-image="alessandro-bianchi-_kdTyfnUFAc-unsplash.jpg" background-size="cover"}
+# <span>Setting up a model </span>{background-image="andrew-george-g-fm27_BRyQ-unsplash.jpg" background-size="cover"}
 
 <span>(*Stepts I took to set up a model*)</span>
 
 
-## {auto-animate=true} 
+## {auto-animate=true}
 
-<span>**1. Understanding the Problem and Gathering Data:** The first step in building a simulation model was to understand the issue at hand - bed allocation in stroke units.</span>
+<div class = "text-center">
+<p>
+<span>**1. Determining Key Parameters and Variables:** Identified the key parameters and variables that influence the model.</span>
+</p>
+</div
+
+<span><br></span>
+
+![](Stroke_CatTable_sim.png){style='width:100%; height:100%; object-fit:cover'} 
 
 ## {auto-animate=true}
 
-<span>**2. Determining Key Parameters and Variables:** Next, we identified the key parameters and variables that influence the model.</span>
+<div class = "text-center">
+<p>
+<span> **2. Auxiliary Functions:**
+</p>
+</div>
 
-<span><br></span>
+<div class="image-container">
+  <img src="auxiliary_functions.png">
+</div>
 
-<span>***1. Understanding the Problem and Gathering Data***</span> 
 
 ## {auto-animate=true}
 
-<span>**3. Defining the Simulation Model:** We defined a function, `stroke_simulation()`, to represent the bed allocation process in a stroke unit.</span>
+<div class = "text-center">
+<p>
+<span> **3. Defining the Simulation Model** </span>
+</p>
+</div>
 
-<span><br></span>
+<div class="image-container">
+  <img src="stroke_simulationFunction.png">
+</div>
 
-<span>***2. Determining Key Parameters and Variables***</span>
-
-<span><br></span>
-
-<span>***1. Understanding the Problem and Gathering Data***</span> 
 
 ## {auto-animate=true}
 
-<span> **4. Creating Auxiliary Functions:** To assist with the main simulation function, we created several auxiliary functions to:
- *generate interarrival times*, 
- *assign stroke levels to patients*,
- *calculate the length of stay*.</span>
- 
-<span><br></span>
+<div class = "text-center">
+<p>
+<span> **4. Analyzing Simulation Results** </span>
+</p>
+</div>
 
-<span>***3. Defining the Simulation Model***</span> 
+<div class="image-container">
+  <img src="keyMetrics.png">
+</div>
 
-<span><br></span>
 
-<span>***2. Determining Key Parameters and Variables*** </span>
-
-<span><br></span>
-
-<span>***1. Understanding the Problem and Gathering Data*** </span>
 
 ## {auto-animate=true}
 
-<span>**5. Implementing the Simulation Logic:** Within the `stroke_simulation()` function, we implemented the logic to update bed occupation times, allocate available beds to incoming patients, and track waiting times for patients when no beds were available.</span>
+<div class = "text-center">
+<p>
+<span>**5. Creating the Shiny Application** </span>
+</p>
+</div>
 
-<span><br></span>
+<div class="image-container">
+  <img src="shinyWebApp.png">
+</div>
 
-<span>***4. Creating Auxiliary Functions***</span> 
-
-<span><br></span>
-
-<span>***3. Defining the Simulation Model***</span> 
-
-<span><br></span>
-
-<span>***2. Determining Key Parameters and Variables*** </span>
-
-<span><br></span>
-
-<span>***1. Understanding the Problem and Gathering Data*** </span>
-
-## {auto-animate=true}
-
-<span>**6. Analyzing Simulation Results:** Finally, we computed and analyzed key performance indicators from the simulation results, such as the percentage of patients waiting and the bed utilization rate.</span>
-
-<span><br></span>
-
-<span>***5. Implementing the Simulation Logic*** </span>
-
-<span><br></span>
-
-<span>***4. Creating Auxiliary Functions*** </span>
-
-<span><br></span>
-
-<span>***3. Defining the Simulation Model*** </span>
-
-<span><br></span>
-
-<span>***2. Determining Key Parameters and Variables***</span>
-
-<span><br></span>
-
-<span>***1. Understanding the Problem and Gathering Data***</span>
-
-## {auto-animate=true}
-
-<span>**7. Creating the Shiny Application:** We used R Shiny to create an interactive web application that allows users to input parameters and run the simulation model.</span>
-
-<span><br></span>
-
-<span>***6. Analyzing Simulation Results***</span>
-
-<span><br></span>
-
-<span>***5. Implementing the Simulation Logic*** </span>
-
-<span><br></span>
-
-<span>***4. Creating Auxiliary Functions***</span>
-
-<span><br></span>
-
-<span>***3. Defining the Simulation Model*** </span>
-
-<span><br></span>
-
-<span>***2. Determining Key Parameters and Variables*** </span>
-
-<span><br></span>
-
-<span>***1. Understanding the Problem and Gathering Data***</span>
-
-## {auto-animate=true}
-
-```{r}
-library(DiagrammeR)
-
-g<- grViz("
-  digraph {
-    
-    graph [bgcolor = transparent]
-
-    node [shape = box, style = filled, fillcolor = lighblue, fontcolor=white, fontsize=20]
-    A [label = '1. Understanding the Problem and Gathering Data']
-    B [label = '2. Determining Key Parameters and Variables']
-    C [label = '3. Defining the Simulation Model']
-    D [label = '4. Creating Auxiliary Functions']
-    E [label = '5. Implementing the Simulation Logic']
-    F [label = '6. Analyzing Simulation Results']
-    G [label = '7. Creating the Shiny Application']
-  
-    A -> B -> C -> D -> E -> F -> G
-  }
-", width = 1550, height = 750)
-
-
-g
-
-```
-
-
-# <span> Simulation </span> {background-image="joel-filipe-Mbf3xFiC1Zo-unsplash.jpg" background-size="cover"}
+# <span> Simulation </span> {background-image="adi-goldstein-EUsVwEOsblE-unsplash.jpg" background-size="cover"}
 <span>*Method and structure of the Model*</span>
 
 ##
 
 <span> We simulated the model for an annual load of $350$ patients at Monash health. </span>
 
-![](Stroke_CatTable_sim.png){style='width:100%; height:100%; object-fit:cover'}
+::: {.r-stack}
+![](arrivalData.png){.fragment width=650" height="450"}
 
-##
+![](Mean_lenghtOfStay_byStrokeCat.png){.fragment width="700" height="500"}
 
-### <span> Arrivals Data </span>
-
-::: columns
-::: {.column width="70%"}
-
-![](arrivalData.png){style='width:100%; height:100%; object-fit:cover'}
+![](DistOfPatients_inEachStrokeCat.png){.fragment width="750" height="550"}
 
 :::
 
-::: {.column width="30%"}
 
-
-<span> Here you can see the first six rows of the Patient arrivals data. </span> 
-
-<span><br></span>
-
-<span> The auxiliary functions computed the patients inter-arrival times, assigned stroke categories based on the stroke level probabilities to patients, and calculated the length of stay of the patients based on the assigned stroke categories. </span>
-
-:::
-:::
+# <span>Results</span> {background-image="luke-chesser-JKUTrJ4vK00-unsplash.jpg"}
 
 ## {auto-animate=true}
 
-### <span> Distribution of Patients </span>
+<div class = "text-center">
+<p>
+<span> Key Performance Metrics 
+</p>
+</div>
 
-::: columns
+::: {.r-stack}
 
-::: {.column width="80%"}
+![](PercentPWaiting_MetricTAB.png){.fragment width=650" height="450"}
 
-![](DistOfPatients_inEachStrokeCat.png){style='width:80%; height:100%; object-fit:cover'}
-:::
+![](percentPWaiting.png){.fragment width=750" height="550"}
 
-::: {.column width="20%"}
+![](MaxQueueLength.png){.fragment width=850" height="650"}
 
-<span> Here we see that $137$ patients were assigned the *mild* category of stroke. These assignments of the category are based on the probabilities of stroke levels. </span>
+![](UtilizationPercent.png){.fragment width=900" height="700"}
 
-:::
-:::
-
-## {auto-animate=true}
-
-### <span>Mean Length of stay </span>
-
-::: columns
-
-::: {.column width="80%"}
-
-![](Mean_lenghtOfStay_byStrokeCat.png){style='width:80%; height:100%; object-fit:cover'}
-:::
-
-::: {.column width="20%"}
-
-<span> In this figure we can observe the mean length of stay of patients from each category of stroke in the arrivals data. </span>
-
-:::
 :::
 
 
-# <span>Results</span> {background-image="national-cancer-institute-ct10qdGv1hQ-unsplash.jpg"}
-
-<span> We used the performance metrics such as the percent of patients waiting, utilization percentages and the maximum queue length to make the assessment about the optimal number of beds required in  the ward. </span>
-
-## {auto-animate=true}
-
-<span> I ran the simulation for 2000 times for 25 different number of beds (from 5 − 30) for 350
-patients ( run_simulation function ran a total of 2000 × 25 = 50000 times, each time with
-the different combination of simulation number and number of beds).</span>
-
-## {auto-animate=true}
-
-<span> The two key metrics studied for this project were the *percent of patients waiting* and the *utilization rates*. 
-
-<br>
-
-<span> I ran the simulation for 2000 times for 25 different number of beds (from 5 − 30) for 350
-patients ( run_simulation function ran a total of 2000 × 25 = 50000 times, each time with
-the different combination of simulation number and number of beds).</span>
-
-## {auto-animate=true}
-
-<span> As explained by Prof. Phan, ideally the hospital would
-desire to have less than 5% of the patients waiting (queuing) to be admitted into the stroke
-ward at any given time. </span>
-
-<br>
-
-<span> The two key metrics studied for this project were the *percent of patients waiting* and the *utilization rates*. 
-
-<br>
-
-<span> I ran the simulation for 2000 times for 25 different number of beds (from 5 − 30) for 350
-patients ( run_simulation function ran a total of 2000 × 25 = 50000 times, each time with
-the different combination of simulation number and number of beds).</span>
-
-## {auto-animate=true}
-
-<span>This is an [important threshold]{.fragment .highlight-red} considered when determining the optimal number of beds in the stroke ward.</span>
-
-## {auto-animate=true}
-
-### <span>Key Metrics</span> 
-
-![](keyMetricTab.png){style='width:80%; height:100%'}
-
-## {auto-animate=true}
-
-### <span>Percent of Patients Waiting</span>
-
-::: columns
-::: {.column width="70%"}
-![](percentPWaiting.png)
-:::
-
-::: {.column width="30%"}
-
-::: {.incremental}
-
-<span> This 5% rule for the percent of patients waiting, is an *average or overall target* for the year. </span>
-
-<span><br></span>
-
-<span>The Figure shows that the optimal number of beds for a stroke ward with 350 patients annually would be 10 beds. </span>
-
-:::
-
-:::
-:::
-
+# <span> Sensitivity Analysis </span> {background-image="jesse-orrico-rmWtVQN5RzU-unsplash.jpg"}
 
 
 ## {auto-animate=true}
 
-### <span>Maximum Queue length</span>
-
-::: columns
-::: {.column width="70%"}
-
-![](MaxQueueLength.png){style='object-fit:cover'}
-:::
-
-::: {.column width="30%"}
-
-::: {.incremental}
-
-<span> For 350 patients annually \& 11 beds in the ward, a maximum queue length of 15 means that at the peak of demand during the year, there were 15 patients waiting to be admitted. </span>
-
-<span><br></span>
-
-<span> However, it is important to be noted that this doesn’t mean that 15 patients will be waiting at all times. </span>
-
-:::
-
-:::
-:::
-
-##
-
-### <span>Utilization Percentage</span>
-
-::: columns
-::: {.column width="60%"}
-
-![](UtilizationPercent.png){style='width:80%; height:90%; object-fit:cover'}
-:::
-
-::: {.column width="40%"}
+<div class = "text-center" >
+<p>
+<span>The variables tested include: arrival_rate, bed_occupation_time, stroke_level_prob, total_patients, with each variable multiplied by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+</p>
+</div>
 
 
-<span> Utilization percentages at 11 beds for 350 patients annually is less than
-70%. Typically 0.80(80\%) is considered an optimal utilization rate for wards.</span>
-
-<br>
-
-<span>[However, this figure can vary greatly depending on context!]{.fragment .highlight-red}</span>
-
-<br>
-
-<span> Some patients may need to stay for longer periods to recover, Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes.</span>
-
-:::
-:::
-
-
-## <span> Sensitivity Analysis </span>
-
-![](sensitivityAnalysis.png){style='width:80%; height:90%; object-fit:cover'}
-
-## {auto-animate=true}
-
-<span>The variables tested include arrival_rate,
-bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied
-by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+<div class="image-container">
+  <img src="sensitivityAnalysis.png">
+</div>
 
 
 ## {auto-animate=true}
 
-<span>For the arrival_rate, as the multiplying factor increased, we observed a consistent rise in utilization, percent_patients_waiting, and max_queue_length.  </span>
+<span>In conclusion, these findings illustrate the healthcare system’s vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients.</span>
 
-<br>
 
-<span>The variables tested include arrival_rate,
-bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied
-by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+# <span> Conclusion </span> {background-image="d-a-v-i-d-s-o-n-l-u-n-a-KeGToDVN0l4-unsplash.jpg" background-size="cover"}
 
-## {auto-animate=true}
-
-<span>Similar trends were observed with bed_occupation_time.</span>
-
-<br>
-
-<span>For the arrival_rate, as the multiplying factor increased, we observed a consistent rise in utilization, percent_patients_waiting, and max_queue_length. </span>
-
-<br>
-
-<span>The variables tested include arrival_rate, bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+*Do or do not. There is no try*
 
 ## {auto-animate=true}
 
-<span>On the other hand, changes in stroke_level_prob, representing the proportion of stroke severity levels, did not have a significant impact on the healthcare system performance. </span>
-
-<br>
-
-<span>Similar trends were observed with bed_occupation_time.</span>
-
-<br>
-
-<span>For the arrival_rate, as the multiplying factor increased, we observed a consistent rise in utilization, percent_patients_waiting, and max_queue_length. With a 1.5 multiplier, the
-mean utilization was 0.7581, increasing steadily to 0.9783 at a 4.5 multiplier. </span>
-
-<br>
-
-<span>The variables tested include arrival_rate,
-bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied
-by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+<span> 1. **Interplay between different individual components of the System:** Impact of bed count, patient influx, and bed occupancy on patient wait times and bed utilization.</span>
 
 ## {auto-animate=true}
 
-<span>Lastly, changes in total_patients exhibited similar trends to arrival_rate and bed_occupation_time,with all measured values increasing alongside the multiplier. </span>
+<span> 2. **Model Capabilities:** Our model effectively assesses the impact of bed availability on patient waiting times and bed utilization rates. </span>
 
 <br>
 
-<span>On the other hand, changes in stroke_level_prob, representing the proportion of stroke severity levels, did not have a significant impact on the healthcare system performance. </span>
-
-<br>
-
-<span>Similar trends were observed with bed_occupation_time.</span>
-
-<br>
-
-<span>For the arrival_rate, as the multiplying factor increased, we observed a consistent rise in utilization, percent_patients_waiting, and max_queue_length. With a 1.5 multiplier, the
-mean utilization was 0.7581, increasing steadily to 0.9783 at a 4.5 multiplier. </span>
-
-<br>
-
-<span>The variables tested include arrival_rate,
-bed_occupation_time, stroke_level_prob, and total_patients, with each variable multiplied
-by a factor of 1.5, 2.5, 3.5, and 4.5, respectively.</span>
+<span> 1. **Interplay between different individual components of the System:** Impact of bed count, patient influx, and bed occupancy on patient wait times and bed utilization.</span>
 
 ## {auto-animate=true}
 
-<span> However, these changes were more drastic, indicating that an increase in the total number of patients significantly strains the healthcare system.</span>
-
-## {auto-animate=true}
-
-<span>In conclusion, these findings illustrate the healthcare system’s vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients.</span> 
+<span> 3. **Study Objective:** Enhancing resource allocation, minimizing patient wait times, and optimizing bed utilization for stroke patients.
 
 <br>
 
-<span> However, these changes were more drastic, indicating that an increase in the total number of patients significantly strains the healthcare system.</span>
-
-## {auto-animate=true}
-
-<span> While
-stroke severity level changes do not significantly affect system performance, strategic improvements should focus on efficient patient handling and reducing bed occupation times to enhance capacity and minimize patient waiting times. </span>
+<span> 2. **Model Capabilities:** Our model effectively assesses the impact of bed availability on patient waiting times and bed utilization rates. </span>
 
 <br>
 
-<span>In conclusion, these findings illustrate the healthcare system’s vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients.</span> 
+<span> 1. **Interplay between different individual components of the System:** Impact of bed count, patient influx, and bed occupancy on patient wait times and bed utilization.</span>
+
+# <span> Limitations </span> {.repeated-background style="background-image: url('pexels-cottonbro-studio-3952240.jpg'); background-size: 100px 150px; background-repeat: repeat;"}
 
 <br>
 
-<span> However, these changes were more drastic, indicating that an increase in the total number of patients significantly strains the healthcare system.</span>
+<div class = "text-center" >
+<p>
+<span><span> Despite its advantages, our model has its inherent limitations.</span></span>
+</p>
+</div>
 
-# <span> Conclusion </span> {background-image="brano-Mm1VIPqd0OA-unsplash.jpg" background-size="cover"}
-
-## {auto-animate=true}
-
-<span>Remarkably, it was observed that the intricate interplay between
-the count of hospital beds, yearly patient influx, and bed occupancy durations results in
-substantial effects on both patient wait times and bed utilization ratios.</span>
+</section>
 
 ## {auto-animate=true}
 
-<span>The ability of our model to imitate various availability
-of hospital beds was instrumental in evaluating their impact on percent of patients waiting and
-bed utilization rates. </span>
+<span> 1. Model limitations: Assumptions on patient arrivals, stroke severity, and bed occupancy.</span>
+
+## {auto-animate=true}
+
+<span> 2. Model does not account for healthcare staff or medical equipment availability. </span>
 
 <br>
 
-<span>Remarkably, it was observed that the intricate interplay between
-the count of hospital beds, yearly patient influx, and bed occupancy durations results in
-substantial effects on both patient wait times and bed utilization ratios.</span>
+<span> 1. Model limitations: Assumptions on patient arrivals, stroke severity, and bed occupancy.</span>
 
 ## {auto-animate=true}
 
-<span>More importantly, the model is inherently connected
-to the foundational objective of our study, which is to enhance the allocation of hospital
-resources for stroke patients, focusing on minimizing patient waiting durations and optimizing
-bed utilization rate. </span>
+<span> 3. Model simplifies complex reality: Actual situation may differ from assumptions.</span>
+
+<span> 2. Model does not account for healthcare staff or medical equipment availability. </span>
 
 <br>
 
-<span>The ability of our model to imitate various availability
-of hospital beds was instrumental in evaluating their impact on percent of patients waiting and
-bed utilization rates. </span>
+<span> 1. Model limitations: Assumptions on patient arrivals, stroke severity, and bed occupancy.</span>
 
-<br>
 
-<span>Remarkably, it was observed that the intricate interplay between
-the count of hospital beds, yearly patient influx, and bed occupancy durations results in
-substantial effects on both patient wait times and bed utilization ratios.</span>
+# <span>Future Enhancements </span> {.repeated-background-img style="background-image: url('milad-fakurian-58Z17lnVS4U-unsplash.jpg'); background-size: 100px 150px; background-repeat: repeat;"}
 
 ## {auto-animate=true}
 
-### <span> Limitations </span> 
-
-<span> Despite its advantages, our model has its inherent limitations. It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions.</span>
-
-## {auto-animate=true}
-
-<span> Also, the model overlooks other potential chokepoints in stroke patient
-care, like the availability of healthcare staff or medical apparatus.</span>
-
-<br>
-
-<span> Despite its advantages, our model has its inherent limitations. It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions.</span>
+<span> 1. Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
 
 
 ## {auto-animate=true}
 
-### <span>Future Enhancements </span>
-
-## {auto-animate=true}
-
-<span>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
-
-## {auto-animate=true}
-
-<span> Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations.</span>
+<span> 2. Further, iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.</span>
 
 <br>
 
-<span>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
+<span> 1. Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
 
-## {auto-animate=true}
+# {background-image="collab-media-g5wo-_XOzJI-unsplash.jpg"}
 
-<span>Further, future iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.</span>
-
-<span>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. </span>
-
-<br>
-
-<span> Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations.</span>
-
-# <span> Thank You </span> {background-image="collab-media-g5wo-_XOzJI-unsplash.jpg"}
+### <span> Thank You </span> 
 
 ### <span>What questions do you have?</span>
  
