@@ -136,11 +136,32 @@
 
 
 .repeated-background-img {
-  background-image: url('milad-fakurian-58Z17lnVS4U-unsplash.jpg');
+  background-image: url('david-becker-crs2vlkSe98-unsplash.jpg');
   background-size: 100px 150px;
   background-repeat: repeat;
 }
 
+.repeated-background-imgOne {
+  background-image: url('robina-weermeijer-3KGF9R_0oHs-unsplash.jpg');
+  background-size: 100px 150px;
+  background-repeat: repeat;
+}
 
+.url-style {
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.black-font {
+    color: black ;
+}
+
+.black-background-white-font {
+    background-color: black;
+    color: white;
+}
 
 
