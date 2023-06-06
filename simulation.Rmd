@@ -3,31 +3,16 @@ title: "Simulation of the data"
 author: "Aryan Sultan"
 date: "2023-03-29"
 output:
-  html_document: default
   pdf_document: 
     bookdown::pdf_document2
+  html_document: default
 ---
 
 
 ### Brief Introduction
 
-The simulation model based in the queue theory for MMRI stroke ward bed capacity forecast considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of ~350. The distribution of stroke severity was as follows: very mild (probability = 0.2), mild (probability = 0.2), moderate (probability = 0.35), severe (probability = 0.1), and very severe (probability = 0.15). Bed occupation times ranged from 1 day (very mild) to 3-21 days (severe). The study explored 25-50 bed scenarios and considered an increase in patient arrival to 1250 in the near future. Simulation was run for 100 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 25-bed provision.
+The simulation model based in the queue theory for MMRI stroke ward bed capacity forecast considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 1 patients/day, based on an annual patient load of ~350. The study explored 5-50 bed scenarios and considered an increase in patient arrival to 2500 in the near future. Simulation was run for 2000 replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 8-bed provision.
 
-### Work flow
-
-In this section lets briefly explain the steps taken to create a stroke simulation model.
-
-* Set Parameters
-* Create functions for:
-                 - Generating the inter-arrival times
-                 - Assigning stroke categories to patients for simulation 
-                 - Generate length of stay for patients based on the stroke categories of patients
-                 - Create arrivals data that shows the inter-arrivals times of patients, their length 
-                 of stay and the associated category of stroke.
-* Create a simulation function that simulates the arrival and stay of 350 patients with various stroke categories
-* Create yet another function that runs simulation a for few hundreds replicates and computes the performance metrics for each simulation and averages them over producing mean performance metrics across multiples replication of simulations. 
-
-### Parameters
 
 ```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -52,11 +37,28 @@ bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29)
 stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 ```
 
-Below one can see the table \@ref(tab:bed_occupation_times_tab) as well as the plot (see: Fig \@ref(fig:bed_occupation_times_tab)) which display the stroke category, corresponding length of stay for patients and stroke probabilities.
 
-```{r bed_occupation_times_fig, eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Bed Occupation Time vs. Stroke Category", fig.label="fig:bed_occupation_times_fig"}
-
+```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
+library(tidyverse)
 library(ggplot2)
+library(bookdown)
+
+set.seed(2023)
+# Parameters
+
+total_patients <- 350 # assuming there are 350 all around the year
+total_patients_future <- 1250 # assuming the 1250 patients in the future 
+patients_per_month <- 350/12 # patients per month
+arrival_rate <- total_patients/365  # average 6 patients per day
+arrival_rate_future <- total_patients_future/365 # average 7 patients per day
+
+# Bed occupation time (in days) for each stroke level
+
+bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29))
+
+
+# Probability of each stroke level
+stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 
 bed_occupation_time_df <- data.frame(
   stroke_category = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"),
@@ -76,11 +78,23 @@ ggplot(bed_occupation_time_df, aes(x = stroke_category, y = bed_occupation_time)
 
 bed_occupation_time_df %>%
   knitr::kable(caption = "The table displaying stroke categories and corresponding length of stay and probabilities", label = "tab:bed_occupation_times_tab")
-
-
-  
-
 ```
+
+### Work flow
+
+In this section lets briefly explain the steps taken to create a stroke simulation model.
+
+* Set Parameters (described above)
+* Create auxiliary functions for:
+                 - Generating the inter-arrival times
+                 - Assigning stroke categories to patients for simulation 
+                 - Generate length of stay for patients based on the stroke categories of patients
+                 - Create arrivals data that shows the inter-arrivals times of patients, their length 
+                 of stay and the associated category of stroke.
+* Create a `simulation function` that simulates the arrival and stay of 350 patients with various stroke categories
+* Create yet another function that runs simulation a for few hundreds replicates and computes the performance metrics for each simulation and averages them over producing mean performance metrics across multiples replication of simulations. 
+
+### Auxiliary functions
 
 The length of stay for the patients depends on the stroke category, as can be seen from the plot above, the patients in the severe stroke category need to spend 10 days in the stroke care unit. This information needs to be incorporated into the simulation function.
 
@@ -107,6 +121,7 @@ set.seed(2023)
 # defined above
 
 generate_interarrival_times <- function(total_patients, arrival_rate) {
+  set.seed(07052023)
   interarrival_times <- rexp(total_patients, rate = arrival_rate)
   return(interarrival_times)
 }
@@ -128,6 +143,7 @@ set.seed(2023)
 # To achieve this we use sample()
 
 assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+  set.seed(07052023)
   stroke_levels <- sample(1:length(stroke_level_prob), 
                           size = total_patients, 
                           replace = TRUE, 
@@ -153,30 +169,51 @@ stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_fut
 ### Generating the length of stay to patients in the simulation
 
 ```{r}
-set.seed(2023)
 #generating length of stay
 
 generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
-  length_of_stay <- numeric(total_patients)
-  
-  for (i in 1:total_patients) {
-    stroke_level <- stroke_levels[i]
-    
-    if (length(bed_occupation_time[[stroke_level]]) == 1) {
-      length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]
+  set.seed(07052023)
+  los <- numeric(total_patients)
+
+  i <- 1
+  while (i <= total_patients) {
+    stroke_categories <- stroke_levels[i]
+    bed_time <- bed_occupation_time[[stroke_categories]]
+    los[i] <- if (length(bed_time) == 1) {
+      bed_time[1]
     } else {
-      length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)
+      sample(bed_time[1]:bed_time[2], 1)
     }
+    i <- i + 1
   }
-  
-  return(length_of_stay)
+
+  return(los)
 }
-
-
 # Generating length_of_stay for each patient
 length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
 
 ```
+
+
+Step by step guide of this function:
+
+This function takes three arguments: total number of patients, bed occupation times, and the stroke categories (stroke levels). Stroke levels/categories are defined by the previous function - `assign_stroke_levels` function described above. 
+
+Inside the function, I create a numeric vector of the length of the total patients. 
+
+`los <- numeric(total_patients)` -- this is filled with zeros. 
+
+Then I initialize a counter variable *'i'* to 1 (`i <-1`). This counter variable gets used to iterate over each patient.
+
+Then I initialize a *'while'* loop that runs as long as the *'i'* counter variable is less than or equal to the total number of patients: `while (i <= total_patients)`.
+
+Inside the loop, I extract stroke category for each patients from the `stroke_level` variable and stoke it in the `stroke_categories`.
+
+In the next step, I extract the bed occupation times for each patient's stroke category in the `stroke_categories`. `bed_occupation_time` is a list where the element at index `stroke_categories` is the bed occupation time for that stroke category.
+
+In the next few lines, I first assign a value to the 'i' element of the `los`, which represents the bed occupation times/ length of stay of each 'i' patient. Then I direct R that if the length of the bed time is 1, i.e., the single value for the stroke category then assign it that single value, however, if there are range values for the stroke category then sample and randomly choose value for that patient for the given stroke category.
+
+In the end `i <- i + 1` this line increments the counter i by 1. This is done so that R can move on to the next patient in the next iteration of the loop and to make sure this loop stops when the `i` equals `total_patients`.
 
 
 ### Creating the Arrivals data 
@@ -262,7 +299,7 @@ In summary, the output of the stroke_simulation function provides information ab
 ### Stroke simulation and visualization of the distribution of length of stay of patients in the ward
 
 
-Below in the plot one can see the frequency (distribution) of the number of days the 350 patients stayed in the stroke ward in my simulation for 25 beds as well as for  40 beds. One can see how this simulation computed the length of stay for different categories of stroke for 350 patients based on the stroke probabilities. 
+Below in the plot, one can see the frequency (distribution) of the number of days the 350 patients stayed in the stroke ward in my simulation for 25 beds as well as for  40 beds. One can see how this simulation computed the length of stay for different categories of stroke for 350 patients based on the stroke probabilities. 
 
 
 ```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
@@ -274,13 +311,14 @@ set.seed(2023)
 stroke_simulation <- function(total_patients, arrival_rate, 
                               bed_occupation_time, stroke_level_prob, 
                               num_beds) {
+  set.seed(07052023)
   
   interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
   stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
   length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
   
   # initializing the beds and queue 
-  beds <- rep(0, num_beds)
+  beds <- numeric(num_beds)
   queue <- list()
   
 
@@ -294,6 +332,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
 # (i.e., the patient has completed their stay)
   
   update_bed_occupation_times <- function(beds, interarrival_time) {
+    set.seed(07052023)
   beds <- pmax(beds - interarrival_time, 0)
   
   # 'beds' is a numeric vector that represents the current remaining 
@@ -311,8 +350,9 @@ stroke_simulation <- function(total_patients, arrival_rate,
 }
   
   # for every patient in total patients (1000)
-  
-  for (i in 1:total_patients) {
+  i <- 1
+  while (i <= total_patients) {
+    set.seed(07052023)
     
     # update the beds variable with the bed occupation times 
     # of all the patients arriving at the inter-arrival times
@@ -334,8 +374,10 @@ stroke_simulation <- function(total_patients, arrival_rate,
     # (whatever the severity of that patient might be)
     
     if (length(available_beds) > 0) {
+      set.seed(07052023)
       beds[available_beds[1]] <- length_of_stay[i]
     } else {
+      set.seed(07052023)
       # if there is no bed available then append the queue list
       queue <- append(queue, length_of_stay[i])
     }
@@ -343,95 +385,200 @@ stroke_simulation <- function(total_patients, arrival_rate,
   
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
-```
 
-```{r eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, include=TRUE}
-# set.seed(2023)
-# 
-# options(scipen = 999)
-# 
-# # stroke_sim_50 <- stroke_simulation(total_patients= total_patients, 
-# #                                    arrival_rate= arrival_rate, 
-# #                               bed_occupation_time = bed_occupation_time, 
-# #                               stroke_level_prob= stroke_level_prob, 
-# #                               num_beds= 50)
-# 
-# stroke_sim_40 <- stroke_simulation(total_patients= total_patients, 
-#                                    arrival_rate= arrival_rate, 
-#                               bed_occupation_time = bed_occupation_time, 
-#                               stroke_level_prob= stroke_level_prob, 
-#                               num_beds= 40)
-# 
-# # stroke_sim_30 <- stroke_simulation(total_patients= total_patients, 
-# #                                    arrival_rate= arrival_rate, 
-# #                               bed_occupation_time = bed_occupation_time, 
-# #                               stroke_level_prob= stroke_level_prob,
-# #                               num_beds= 30)
-# 
-# stroke_sim_10 <- stroke_simulation(total_patients= total_patients, 
-#                                    arrival_rate= arrival_rate, 
-#                               bed_occupation_time = bed_occupation_time, 
-#                               stroke_level_prob= stroke_level_prob, 
-#                               num_beds= 10)
-# 
-# # long_format_data <- stroke_sim_25 %>%
-# #   gather(key = "variable", value = "value", starts_with("queue"))
-# 
-# stroke_sim_10 <- data.frame(stroke_sim_25)
-# 
-# stroke_sim_40 <- data.frame(stroke_sim_40)
+
 
 ```
 
 
-```{r }
+```{r}
 
+## defining the auxiliary functions such as the inter-arrival times, length of stay and assigning the stroke category functions inside the stroke simulation function.
+
+stroke_simulation_mod <- function(total_patients, arrival_rate, 
+                              bed_occupation_time, stroke_level_prob, 
+                              num_beds) {
+  set.seed(07052023)
+
+  generate_interarrival_times <- function(total_patients, arrival_rate) {
+    interarrival_times <- rexp(total_patients, rate = arrival_rate)
+    return(interarrival_times)
+  } 
+  
+  assign_stroke_levels <- function(total_patients, stroke_level_prob) {
+    stroke_levels <- sample(1:length(stroke_level_prob), 
+                            size = total_patients, 
+                            replace = TRUE, 
+                            prob = stroke_level_prob)
+    return(stroke_levels)
+  }
+  
+  generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
+    length_of_stay <- numeric(total_patients)
+    
+    for (i in 1:total_patients) {
+      stroke_level <- stroke_levels[i]
+      
+      if (length(bed_occupation_time[[stroke_level]]) == 1) {
+        length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]
+      } else {
+        length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]:bed_occupation_time[[stroke_level]][2], 1)
+      }
+    }
+    
+    return(length_of_stay)
+  }
+  
+  interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
+  stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
+  length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+  
+    beds <- rep(0, num_beds)
+  queue <- list()
+  
+  update_bed_occupation_times <- function(beds, interarrival_time) {
+    set.seed(07052023)
+  beds <- pmax(beds - interarrival_time, 0)
+
+  return(beds)
+}
+
+  
+  for (i in 1:total_patients) {
+    set.seed(07052023)
+    
+    beds <- update_bed_occupation_times(beds, interarrival_times[i])
+    available_beds <- which(beds == 0)
+    
+    if (length(available_beds) > 0) {
+      set.seed(07052023)
+      beds[available_beds[1]] <- length_of_stay[i]
+    } else {
+      set.seed(07052023)
+      # if there is no bed available then append the queue list
+      queue <- append(queue, length_of_stay[i])
+    }
+  }
+  
+  return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
+}
+
+## run simulation function
+
+run_simulation_mod <- function(arrival_rate,
+                           bed_occupation_time,
+                           stroke_level_prob,
+                           total_patients,
+                           num_simulations) {
+  set.seed(07052023)
+    num_bed_range <- seq(5,20, by=1)
+
+  performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    set.seed(07052023)
+    lapply(num_bed_range, function(num_beds) {
+      set.seed(07052023)
+      stroke_sim <- stroke_simulation_mod(total_patients =  total_patients,
+                                      arrival_rate = arrival_rate,
+                                      bed_occupation_time = bed_occupation_time,
+                                      stroke_level_prob = stroke_level_prob,
+                                      num_beds = num_beds)
+
+      num_beds <- length(stroke_sim$beds)
+      total_patients <- total_patients
+
+      occupied_beds <- sum(stroke_sim$beds > 0)
+      utilization <- occupied_beds / num_beds
+
+      total_wait_times <- sum(unlist(stroke_sim$queue))
+      num_patients_queue <- length(stroke_sim$queue)
+      avg_wait_times <- total_wait_times / num_patients_queue
+
+      average_time_in_queue = total_wait_times / num_patients_queue
+      max_queue_length <- length(stroke_sim$queue)
+
+      proportion_patients_waiting <- num_patients_queue / total_patients
+      percent_patients_waiting <- proportion_patients_waiting * 100
+
+      avg_length_of_stay <- (sum(stroke_sim$length_of_stay)) / total_patients
+
+      performance_metrics_month <- data.frame(num_beds = num_beds,
+                                              utilization = utilization,
+                                              avg_wait_times = avg_wait_times,
+                                              max_queue_length = max_queue_length,
+                                              # min_queue_length = stroke_sim$min_queue_length,
+                                              proportion_patients_waiting = proportion_patients_waiting,
+                                              percent_patients_waiting = percent_patients_waiting,
+                                              avg_length_of_stay = avg_length_of_stay)
+
+      return(performance_metrics_month)
+    })
+  })
+
+  return(performance_metrics_list)
+}
+
+
+results_mod <- run_simulation(arrival_rate = arrival_rate,
+                          bed_occupation_time = bed_occupation_time,
+                          stroke_level_prob = stroke_level_prob,
+                          total_patients = total_patients,
+                          num_simulations = 2000)
+results_df_mod <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
+```
+
+```{r}
+# Load the ggplot2 library
 library(ggplot2)
-stroke_sim_25$length_of_stay <- as.numeric(stroke_sim_25$length_of_stay)
 
-ggplot(stroke_sim_25, aes(y = length_of_stay)) +
-  geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
+# Plot average waiting times against the number of beds
+ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Average Waiting Times vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Average Waiting Time (Days)")
+
+# Plot the percent of patients waiting against the number of beds
+ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+  geom_point(size=1,
+             alpha= 1) +
+  geom_smooth(method = "loess") +
   theme_minimal() +
-  labs(title = "Length of Stay Distribution",
-       x = "Length of Stay (days)",
-       y = "Frequency")
-
-stroke_sim_40$length_of_stay <- as.numeric(stroke_sim_40$length_of_stay)
-stroke_sim_40 <- data.frame(stroke_sim_40)
-ggplot(stroke_sim_40, aes(y= length_of_stay)) +
-  geom_histogram(binwidh=0.5, fill="darkgreen", alpha=0.7 )+
-  theme_light()+
-  labs(title = "Length of Stay Distribution",
-       x = "Length of Stay (days)",
-       y = "Frequency")
+  labs(title = "Percent of Patients Waiting vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Percent of Patients Waiting") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
 
 
-# stroke sim future
+# Plot utilization against the number of beds
+ggplot(results_df, aes(x = num_beds, y = utilization)) +
+  geom_point(size=0.7) +
+  geom_smooth(method = "loess") +
+  theme_minimal()+
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
+  labs(title = "Utilization vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Utilization")
 
-# stroke_sim_50_f <- stroke_simulation(total_patients= total_patients_future, 
-#                                    arrival_rate= arrival_rate_future, 
-#                                    bed_occupation_time = bed_occupation_time, 
-#                                    stroke_level_prob= stroke_level_prob, 
-#                                    num_beds= 50)
-# 
-# stroke_sim_40_f <- stroke_simulation(total_patients= total_patients_future, 
-#                                    arrival_rate= arrival_rate_future, 
-#                                    bed_occupation_time = bed_occupation_time, 
-#                                    stroke_level_prob= stroke_level_prob, 
-#                                    num_beds= 40)
-# 
-# stroke_sim_30_f <- stroke_simulation(total_patients= total_patients_future, 
-#                                      arrival_rate= arrival_rate_future, 
-#                                      bed_occupation_time = bed_occupation_time,
-#                                      stroke_level_prob= stroke_level_prob, 
-#                                      num_beds= 30)
-# 
-# stroke_sim_20_f <- stroke_simulation(total_patients= total_patients_future, 
-#                                      arrival_rate= arrival_rate_future, 
-#                                      bed_occupation_time = bed_occupation_time,
-#                                      stroke_level_prob= stroke_level_prob, 
-#                                      num_beds= 20)
+# Plot max queue length against the number of beds
+xintersection = 11
+yintersection = 8
+ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_x_continuous(breaks = seq(4, 20, by=2))+
+  scale_y_continuous(breaks = seq(5, 155, by = 10))+
+  geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
+  geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
+  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
+  theme_minimal() +
+  labs(title = "Maximum Queue Length vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Maximum Queue Length")
+
 ```
+
 
 Keep in mind that the length of stay is influenced by the stroke severity, and the distribution of patients across different stroke severity categories. A high frequency for a specific length of stay could indicate that a large number of patients have a similar stroke severity, leading to similar bed occupation times.
 
@@ -463,10 +610,13 @@ run_simulation <- function(arrival_rate,
                            stroke_level_prob,
                            total_patients,
                            num_simulations) {
+  set.seed(07052023)
     num_bed_range <- seq(5,20, by=1)
 
   performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
+    set.seed(07052023)
     lapply(num_bed_range, function(num_beds) {
+      set.seed(07052023)
       stroke_sim <- stroke_simulation(total_patients =  total_patients,
                                       arrival_rate = arrival_rate,
                                       bed_occupation_time = bed_occupation_time,
@@ -511,13 +661,7 @@ results <- run_simulation(arrival_rate = arrival_rate,
                           bed_occupation_time = bed_occupation_time,
                           stroke_level_prob = stroke_level_prob,
                           total_patients = total_patients,
-                          num_simulations = 120)
-
-results_future <- run_simulation(arrival_rate = arrival_rate_future,
-                                 bed_occupation_time = bed_occupation_time,
-                                 stroke_level_prob = stroke_level_prob,
-                                 total_patients = total_patients_future,
-                                 num_simulations = 120)
+                          num_simulations = 2000)
 
 
 
@@ -529,21 +673,7 @@ results_future <- run_simulation(arrival_rate = arrival_rate_future,
 # Combine all the data frames into one
 # 
  results_df <-do.call(rbind, lapply(results, function(x) do.call(rbind, x)))
-# 
-# metrics_summary <- results_df %>%
-#   group_by(num_beds) %>%
-#   summarise(across(everything(), list(mean = mean, sd = sd)))
-# 
-# num_simulations = 120
-# 
-# metrics_summary <- metrics_summary %>%
-#   mutate(ci_utilization_mean_lower = utilization_mean - qt(0.975, num_simulations - 1) * utilization_mean_sd / sqrt(num_simulations),
-#          ci_utilization_mean_upper = utilization_mean + qt(0.975, num_simulations - 1) * utilization_mean_sd / sqrt(num_simulations))
 
-
-
-
-#colnames(metrics_summary)
 
 ```
 
@@ -612,6 +742,12 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
 ```{r}
 # visualization for the future
 
+results_future <- run_simulation(arrival_rate = arrival_rate,
+                          bed_occupation_time = bed_occupation_time,
+                          stroke_level_prob = stroke_level_prob,
+                          total_patients = 2500,
+                          num_simulations = 100)
+
 results_df_future <- do.call(rbind, lapply(results_future, function(x) do.call(rbind, x)))
 
 # Load the ggplot2 library
@@ -658,7 +794,9 @@ ggplot(results_df_future, aes(x = num_beds, y = max_queue_length)) +
        x = "Number of Beds",
        y = "Maximum Queue Length")
 ```
+---------------------------------------------------------------------------------------------
 
+## Sensitivity analysis
 
 ```{r}
 # Function to run simulation
@@ -734,29 +872,7 @@ for (param in names(params)) {
   }
 }
 
-
-
 ```
 
-
-```{r}
-# Compute summary statistics
-for (param in names(params)) {
-  for (factor in factors) {
-    print(paste("Summary for", param, "multiplied by", factor))
-    print(summary(results[[paste(param, factor, sep = "_")]][,c("utilization", "percent_patients_waiting", "max_queue_length")]))
-  }
-}
-
-# Example of simple plot: changes in utilization for different number of beds
-library(ggplot2)
-ggplot(results[["arrival_rate_1.5"]], aes(x=num_beds, y=percent_patients_waiting)) +
-  geom_line() +
-  xlab("Number of Beds") +
-  ylab("Utilization") +
-  ggtitle("Sensitivity of Utilization to Number of Beds")
-
-
-```
 
 
