@@ -159,10 +159,6 @@ assign_stroke_levels <- function(total_patients, stroke_level_prob) {
 # stroke levels for the present number of patients
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 
-# future stroke levels for the future increased number of patients
-
-stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_future,
-                                             stroke_level_prob = stroke_level_prob)
 ```
 
 
