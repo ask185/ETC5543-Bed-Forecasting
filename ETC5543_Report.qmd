@@ -17,13 +17,27 @@ Geographical stroke units offer effective treatment for ischemic and hemorrhagic
 
 #### **Method and Design**: {#sec-methods}
 
-The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 6 patients/day, based on an annual patient load of \~350. The distribution of stroke severity was as follows: very mild (probability = 0.0570), mild (probability = 0.342), mild-moderate (probability = 0.217), moderate (probability = 0.136), and moderate-severe (probability = 0.0971) and severe (probability = 0.151). Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 5-50 bed scenarios and considered an increase in patient arrival to 2500 in the future. Simulation was run for $2000$ replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 7-bed provision.
+The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 1 patients/day, based on an annual patient load of \~350. The distribution of stroke severity was as follows:
+
+-   very mild (probability = 0.0570),
+
+-   mild (probability = 0.342),
+
+-   mild-moderate (probability = 0.217),
+
+-   moderate (probability = 0.136),
+
+-   moderate-severe (probability = 0.0971) and
+
+-   severe (probability = 0.151).
+
+    Bed occupation times ranged from 1 day (very mild) to 4-10 days (severe). The study explored 5-50 bed scenarios and considered an increase in patient arrival to 2500 in the future. Simulation was run for $2000$ replications, evaluating performance measures (e.g., average queue length, maximum queue length, and capacity utilization) with an initial 7-bed provision.
 
 In this project, data from 2021 on stroke patients at Monash hospital was utilized to estimate the number of stroke unit beds needed given the distribution of stroke severity and the length of stay associated with each category of stroke severity. Moreover, I have developed a web-based app such that policy makers and clinicians can use it as policy support tool to estimate the number of bed needed in their hospitals.
 
 #### **Results:** {#sec-discussion}
 
-The study utilized stroke unit data, including arrival rates, bed occupation times, and stroke severity probabilities, to generate realistic scenarios for the simulation model. A simulation model showed that the initial 7-bed provision was inadequate for the annual patient load of \~ $350$, leading to prolonged wait times and queues. The percent of patients queuing was around \~ $19 \%$ for 7 beds, $15\%$ for 8 beds, \~ $8\%$ for 9 beds and \~ $5\%$ for 10 beds.
+A simulation model showed that the initial 7-bed provision was inadequate for the annual patient load of \~ $350$, leading to prolonged wait times and queues. The percent of patients queuing was around \~ $19 \%$ for 7 beds, $15\%$ for 8 beds, \~ $8\%$ for 9 beds and \~ $5\%$ for 10 beds.
 
 ### ***Background and Motivation***
 
@@ -35,7 +49,7 @@ A shortage of available beds is the primary cause of delays in emergency admissi
 
 According to Storey et al. (2010) in their article "Hospital capacity planning: From measuring stocks to modelling flows" published in the Medical Journal of Australia, an 85% bed occupancy rate is a reasonable target for hospitals. However, this target may need adjustment depending on the facility and time periods @martin_storey_2010. Effective hospital resource management, including bed capacity, requires short- and long-term hospital capacity planning.
 
-#### **Stroke cases in Australia and Victoria**
+#### Prevalence of stroke in Australia and Victoria
 
 Stroke is ranked as the second leading cause of death with an annual mortality rate of over $6.5$ million worldwide and $143.23$ million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022).
 
@@ -59,19 +73,21 @@ In a recent international survey, stroke unit care was only available in $91\%$ 
 
 In Australia, $81\%$ of hospitals have stroke unit care @foundation2021audit . An important issue in access to the stroke unit bed is the capacity of the hospital with stroke unit care to provide the service. A national survey in 2021 showed that $71\%$ of patients were treated in stroke unit while $29\%$ of the patients from the same hospitals were not treated in such location @foundation2021audit . The Stroke Foundation has set a target of $94\%$ access to stroke unit. A related document suggested a minimum of 8 bed for a unit with $350$ admitted patients and $22$ beds for a unit with more than 1000 admitted patients @foundation2019framework .
 
-#### Monash Medical Research Institute {#sec-mmri}
+#### Monash Hospital {#sec-mmri}
 
-In the stroke ward at the Monash Hospital there are a total of 46 beds as used by the neurology, neurosurgery and stroke patients. The objective of this project was to determine the optimal number of beds specifically for the stroke patients at the Monash Hospital to ensure the optimum care for the stroke patients.
+In the stroke ward at the Monash Hospital there are a total of 46 beds as used by the neurology, neurosurgery and stroke patients. The objective of this project was to estimate the optimal number of beds specifically for the stroke patients at the Monash Hospital to ensure the optimum care for the stroke patients.
 
-For the purpose of this project at the *Monash Medical Research institute*, I have used the **simulation modelling** to represent a queuing system within a hospital setting. The main objective of this simulation was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
+For the purpose of this project at the *Monash Medical Research institute*, I have used the **simulation modelling** grounded in queue theory to represent a queuing system within a hospital setting. The main objective of this simulation was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
 
 ### *Objectives and Significance*
 
 #### **Objectives** {#sec-objectives}
 
-The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital ensuring that the complex interactions between patients and beds are analyzed so that the model could be used to assess an optimal number of beds needed at the stroke ward to ensure that the stroke patients receive optimum care.
+The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital. The goal was to ensure that the complex interactions between patients and beds are captured by the model so that this could be used to assess an optimal number of beds needed at the stroke ward.
 
-In order to achieve these objectives an evaluation of different bed capacities on the percent of the patients waiting to be admitted into the ward and the utilization rates/percentages were considered. One of the goals was also to provide decision support tool to the hospital administrators and policymakers in optimizing bed allocation at the stroke ward.
+In order to achieve these objectives an evaluation of different bed capacities on two key performance metrics: the percent of the patients waiting to be admitted into the ward and the utilization rates/percentages were considered.
+
+The modek is intended to be used as a decision support tool by the hospital administrators and policymakers in optimizing bed allocation at the stroke ward.
 
 #### **Significance and Contributions**: {#sec-significanceContribution}
 
@@ -323,47 +339,27 @@ As discussed (refer to Table 1), the bed occupation times for each category are 
 
 For this simulation model once the inter-arrival times and the stroke categories to the arriving patients have been assigned, the next step was to generate the length of stay of these patients based on their stroke level/category.
 
-Let's denote $B_1, B_2, ..., B_k$ as the bed occupation times for each of the \$k\$ stroke categories, with $B_j$ corresponding to stroke category $j$. These are given by the \`bed_occupation_time\` list in the function.
+```{r eval=TRUE, echo=TRUE}
 
-The function `generate_length_of_stay` assigns a length of stay $L_i$ for each patient \$i\$, where $i = 1, 2, ..., n$ and $n$ is the total number of patients. $L_i$ is defined as follows:
-
-If $B_{Y_i}$ has only one value, then $L_i = B_{Y_i}$.
-
-If $B_{Y_i}$ has more than one value (let's say it's a range from $B_{Y_i}^{(min)}$ to $B_{Y_i}^{(max)}$), then $L_i$ is a random sample from the range $B_{Y_i}^{(min)}$ to $B_{Y_i}^{(max)}$.
-
-Mathematically, this can be represented as:
-
-$L_i = \begin{cases} B_{Y_i} & \text{if } B_{Y_i} \text{ has only one value} \\ \text{random sample from } B_{Y_i}^{(min)} \text{ to } B_{Y_i}^{(max)} & \text{if } B_{Y_i} \text{ has more than one value} \end{cases}$
-
-Therefore, the `generate_length_of_stay` function constructs a vector $\mathbf{L} = (L_1, L_2, ..., L_n)$ representing the length of stay for each patient. Each $L_i$ depends on the assigned stroke category $Y_i$ of the patient, and follows the distribution of bed occupation times for that stroke category.
-
-The key aspect here is that the function applies different distributions for the length of stay depending on the stroke category. Thus, the function captures the variability in bed occupation times across different stroke categories.
-
-```{r eval=TRUE, echo=FALSE}
-generate_length_of_stay <- function(total_patients, 
-                                    bed_occupation_time, 
-                                    stroke_levels) {
+length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
   set.seed(07052023)
-  length_of_stay <- numeric(total_patients)
-  
-  for (i in 1:total_patients) {
+  los <- numeric(total_patients)
+
+  i <- 1
+  while (i <= total_patients) {
     set.seed(07052023)
-    
-    stroke_level <- stroke_levels[i]
-    
-    if (length(bed_occupation_time[[stroke_level]]) == 1) {
+    stroke_categories <- stroke_levels[i]
+    bed_time <- bed_occupation_time[[stroke_categories]]
+    los[i] <- if (length(bed_time) == 1) {
+      bed_time[1]
+    } else {
       set.seed(07052023)
-      
-      length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]
-    } 
-    else {
-      set.seed(07052023)
-      length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]][1]
-                                  :bed_occupation_time[[stroke_level]][2], 1)
+      sample(bed_time[1]:bed_time[2], 1)
     }
+    i <- i + 1
   }
-  
-  return(length_of_stay)
+
+  return(los)
 }
 
 
@@ -373,17 +369,25 @@ length_of_stay <- generate_length_of_stay(total_patients,
                                           stroke_levels)
 ```
 
-1\. First this function, retrieve the stroke category for the patient, denoted by `stroke_level`.
+Step by step guide of this function:
 
-2\. Then it checks if the bed occupation time for that category is a single value or a range of values.
+This function takes three arguments: total number of patients, bed occupation times, and the stroke categories (stroke levels). Stroke levels/categories are defined by the previous function - `assign_stroke_levels` function described above.
 
-3\. If it's a single value, this function assigns the length of stay to that value: `length_of_stay[i] <- bed_occupation_time[[stroke_level]][1]`.
+Inside the function, I create a numeric vector of the length of the total patients.
 
-4\. If it's a range of values, however, then it randomly sample a value from that range and assigns it as the length of stay: `length_of_stay[i] <- sample(bed_occupation_time[[stroke_level]]`
+`los <- numeric(total_patients)` \-- this is filled with zeros.
 
-`[1]:bed_occupation_time[[stroke_level]][2], 1)`.
+Then I initialize a counter variable *'i'* to 1 (`i <-1`). This counter variable gets used to iterate over each patient.
 
-This way, the R function `generate_length_of_stay` computes the length of stay for each patient based on their stroke category using the piece-wise constant function described above.
+Then I initialize a *'while'* loop that runs as long as the *'i'* counter variable is less than or equal to the total number of patients: `while (i <= total_patients)`.
+
+Inside the loop, I extract stroke category for each patients from the \`stroke_level`variable and stoke it in the`stroke_categories.
+
+In the next step, I extract the bed occupation times for each patient's stroke category in the `stroke_categories`. `bed_occupation_time` is a list where the element at index \`stroke_categories\` is the bed occupation time for that stroke category.
+
+In the next few lines, I first assign a value to the 'i' element of the `los`, which represents the bed occupation times/ length of stay of each 'i' patient. Then I direct R that if the length of the bed time is 1, i.e., the single value for the stroke category then assign it that single value, however, if there are range values for the stroke category then sample and randomly choose value for that patient for the given stroke category.
+
+In the end `i <- i + 1` this line increments the counter i by 1. This is done so that R can move on to the next patient in the next iteration of the loop and to make sure this loop stops when the \`i`equals`total_patients\`.
 
 #### Arrivals data {#sec-arrivalData}
 
@@ -400,7 +404,7 @@ interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
 
 stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
 
-length_of_stay<- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+length_of_stay<- length_of_stay(total_patients, bed_occupation_time, stroke_levels)
 
 arrivals_data <- data.frame(interarrival_times, stroke_levels, length_of_stay)
 
@@ -477,7 +481,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
   
   interarrival_times <- generate_interarrival_times(total_patients, arrival_rate)
   stroke_levels <- assign_stroke_levels(total_patients, stroke_level_prob)
-  length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
+  length_of_stay <- length_of_stay(total_patients, bed_occupation_time, stroke_levels)
   
   # initializing the beds and queue 
   beds <- rep(0, num_beds)
@@ -709,7 +713,7 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
              alpha= 1) +
   geom_smooth(method = "gam") +
   theme_minimal() +
-  labs(
+  labs(title = "Percent of Patients Waiting",
        x = "Number of Beds",
        y = "Percent of Patients Waiting") +
   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
@@ -747,7 +751,7 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
   scale_y_continuous(breaks = seq(5, 155, by = 10))+
   # geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
   # geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
-  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
+  # geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
   theme_minimal() +
   labs(title = "Maximum Queue Length vs. Number of Beds",
        x = "Number of Beds",
@@ -831,12 +835,15 @@ stroke_sim_11 <- stroke_simulation(total_patients= total_patients,
 ggplot(results_df, aes(x = num_beds, y = utilization)) +
   geom_point() +
   geom_smooth(method = "gam") +
-  scale_x_continuous(breaks = seq(4, 20, by=2))+
-  scale_y_continuous(breaks = seq(5, 155, by = 10))+
+  scale_x_continuous(breaks = seq(4, 35, by=2))+
+  scale_y_continuous(breaks = seq(5, 100, by = 10))+
+  #geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
+  #geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
+  #geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
   theme_minimal() +
   labs(title = "Utilization % vs. Number of Beds",
        x = "Number of Beds",
-       y = "Maximum Queue Length")
+       y = "Utilization Percentage")
 ```
 
 #### Sensitivity Analysis
@@ -844,13 +851,10 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
 ```{r}
 # Function to run simulation
 run_simulation_sa <- function(params, num_simulations) {
-  set.seed(07052023)
   num_bed_range <- seq(5,20, by=1)
   
   performance_metrics_list <- lapply(1:num_simulations, function(simulation) {
-    set.seed(07052023)
     lapply(num_bed_range, function(num_beds) {
-      set.seed(07052023)
       stroke_sim <- stroke_simulation(total_patients =  params$total_patients,
                                       arrival_rate = params$arrival_rate,
                                       bed_occupation_time = params$bed_occupation_time,
@@ -903,12 +907,9 @@ results <- list()
 
 # Vary parameters
 for (param in names(params)) {
-  set.seed(07052023)
   for (factor in factors) {
-    set.seed(07052023)
     params_adjusted <- params
     if (param == 'bed_occupation_time') {
-      set.seed(07052023)
       params_adjusted[[param]] <- unlist(lapply(params[[param]], function(x) x * factor))
     } else {
       params_adjusted[[param]] <- params[[param]] * factor
@@ -923,9 +924,7 @@ for (param in names(params)) {
 
 # Compute summary statistics
 for (param in names(params)) {
-  set.seed(07052023)
   for (factor in factors) {
-    set.seed(07052023)
     print(paste("Summary for", param, "multiplied by", factor))
     print(summary(results[[paste(param, factor, sep = "_")]][,c("utilization", "percent_patients_waiting", "max_queue_length")]))
   }
