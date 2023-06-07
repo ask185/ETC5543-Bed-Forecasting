@@ -377,6 +377,8 @@ stroke_simulation <- function(total_patients, arrival_rate,
       # if there is no bed available then append the queue list
       queue <- append(queue, length_of_stay[i])
     }
+    
+    i <- i +1 
   }
   
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
