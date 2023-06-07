@@ -302,6 +302,8 @@ In summary, the output of the stroke_simulation function provides information ab
 
 set.seed(2023)
 
+set.seed(2023)
+
 stroke_simulation <- function(total_patients, arrival_rate, 
                               bed_occupation_time, stroke_level_prob, 
                               num_beds) {
@@ -384,8 +386,63 @@ stroke_simulation <- function(total_patients, arrival_rate,
 
 
 
+
 ```
 
+
+
+```{r}
+# Load the ggplot2 library
+library(ggplot2)
+
+# Plot average waiting times against the number of beds
+ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  labs(title = "Average Waiting Times vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Average Waiting Time (Days)")
+
+# Plot the percent of patients waiting against the number of beds
+ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+  geom_point(size=1,
+             alpha= 1) +
+  geom_smooth(method = "loess") +
+  theme_minimal() +
+  labs(title = "Percent of Patients Waiting vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Percent of Patients Waiting") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
+
+
+# Plot utilization against the number of beds
+ggplot(results_df, aes(x = num_beds, y = utilization)) +
+  geom_point(size=0.7) +
+  geom_smooth(method = "loess") +
+  theme_minimal()+
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
+  labs(title = "Utilization vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Utilization")
+
+# Plot max queue length against the number of beds
+xintersection = 11
+yintersection = 8
+ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_x_continuous(breaks = seq(4, 20, by=2))+
+  scale_y_continuous(breaks = seq(5, 155, by = 10))+
+  geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
+  geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
+  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
+  theme_minimal() +
+  labs(title = "Maximum Queue Length vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Maximum Queue Length")
+
+```
 
 
 ### Running multiple simulations and computing the performance statistics
@@ -542,63 +599,6 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
 
 
 
-```
-
-
-```{r}
-# visualization for the future
-
-results_future <- run_simulation(arrival_rate = arrival_rate,
-                          bed_occupation_time = bed_occupation_time,
-                          stroke_level_prob = stroke_level_prob,
-                          total_patients = 2500,
-                          num_simulations = 100)
-
-results_df_future <- do.call(rbind, lapply(results_future, function(x) do.call(rbind, x)))
-
-# Load the ggplot2 library
-library(ggplot2)
-
-# Plot average waiting times against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = avg_wait_times)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  labs(title = "Average Waiting Times vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Average Waiting Time (Days)")
-
-# Plot the proportion of patients waiting against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = percent_patients_waiting)) +
-  geom_point(size=0.7,
-             alpha= 0.5) +
-  geom_smooth(method = "loess") +
-  theme_minimal() +
-  labs(title = "Percent of Patients Waiting vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-  scale_y_continuous(breaks = c(5,10,15,20,25,30,35,40,45)) +
-  scale_x_continuous(breaks = c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50))
-
-
-# Plot utilization against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = utilization)) +
-  geom_point(size=0.7) +
-  geom_smooth(method = "loess") +
-  theme_minimal()+
-  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
-  labs(title = "Utilization vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Utilization")
-
-# Plot max queue length against the number of beds
-ggplot(results_df_future, aes(x = num_beds, y = max_queue_length)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  theme_minimal() +
-  labs(title = "Maximum Queue Length vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Maximum Queue Length")
 ```
 ---------------------------------------------------------------------------------------------
 
