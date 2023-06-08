@@ -7,7 +7,7 @@
 <link href="ETC5543_Presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="ETC5543_Presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="ETC5543_Presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="ETC5543_Presentation_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="ETC5543_Presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.340">
 
   <meta name="author" content="Aryan Sultan">
@@ -321,166 +321,101 @@
     }
   </style>
 </head>
-<body class="quarto-dark">
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 
 <section id="etc5543-business-creative-activity-project" class="slide level2">
-<h2><span> ETC5543 Business Creative Activity Project</span></h2>
+<h2>ETC5543 Business Creative Activity Project</h2>
 <p><br></p>
-<h3 id="optimizing-bed-allocation-in-stroke-units-a-simulation-based-analysis"><span>Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis</span></h3>
+<h3 id="optimizing-bed-allocation-in-stroke-units-a-simulation-based-analysis"><span> Optimizing Bed Allocation in Stroke Units: A Simulation-Based Analysis </span></h3>
 <p><br></p>
-<h5 id="prepared-and-presented-by-aryan-sultan"><span>Prepared and presented by: Aryan Sultan</span></h5>
-<h5 id="department-of-econometrics-and-business-statistics"><span> Department of Econometrics and Business Statistics </span></h5>
+<h5 id="prepared-and-presented-by-aryan-sultan">Prepared and presented by: Aryan Sultan</h5>
+<h5 id="department-of-econometrics-and-business-statistics">Department of Econometrics and Business Statistics</h5>
 <div class="tl">
 <p><br></p>
-<h5 id="akha0094student.monash.edu"><span>akha0094@student.monash.edu</span></h5>
+<h5 id="akha0094student.monash.edu">akha0094@student.monash.edu</h5>
 <p><br></p>
 </div>
 <p><br></p>
 <p><a href=" https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/" class="url-style"> https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/</a></p>
-<p>:::</p>
 </section>
 <section>
-<section id="background" class="title-slide slide level1 center" data-background-image="elena-mozhvilo-V2hZ1VNsZJE-unsplash.jpg" data-background-size="cover">
-<h1><span>Background</span></h1>
-<div class="columns">
-<div class="column black-background-white-font fragment" data-fragment-index="1" style="width:100%;">
-<p>Key Insights - Economic Impact of Stroke Report Deloitte 2020</p>
-</div><div class="column" style="width:25%;">
-<div class="fragment" data-fragment-index="2">
-<p>445,087</p>
-</div>
-</div><div class="column" style="width:25%;">
-<div class="fragment" data-fragment-index="3">
-<p>8,703</p>
-</div>
-</div><div class="column" style="width:25%;">
-<div class="fragment" data-fragment-index="4">
-<p>Every <strong>19</strong> minutes</p>
-</div>
-</div><div class="column" style="width:25%;">
-<div class="fragment" data-fragment-index="5">
-<p>Estimated 27,428</p>
-</div>
-</div>
-</div>
+<section id="background" class="title-slide slide level1 center">
+<h1><span> Background </span></h1>
+<p><br></p>
+<p>Key Insights - <span> <em>Economic Impact of Stroke</em></span> (Deloitte Australia - 2020)</p>
+<p><br></p>
+<p><span>445,087</span> individuals were grappling with the aftermath of a Stroke.</p>
+<p>Stroke was the cause of death for <span>8,703</span></p>
+<p>A stroke incident occurred every <span>19 minutes </span></p>
+<p>Estimated <span>27,428</span> people encountered a stroke for the first time in their lives</p>
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
-<div>
-<ul>
-<li class="fragment">Geographical stroke units offer effective treatment for ischemic and hemorrhagic stroke patients.</li>
-<li class="fragment">Optimal care is achieved when patients are allocated to these wards. Estimating the optimum number of beds required is a complex task.</li>
-</ul>
-</div>
+<p>Geographical stroke unit care is a <span><strong>proven stroke therapy</strong></span> for ischemic and hemorrhagic stroke patients.</p>
+<p><br></p>
+<p>Optimal care is achieved when patients are <span><strong>allocated to these wards</strong></span>.</p>
+<p><br></p>
+<p><span> <strong>Access to stroke care units</strong> </span> has been attributed to as one of the leading factors for declining death rates in Australia among stroke patients.</p>
+<p><br></p>
+<p><span> <strong>Estimating the optimal number of beds</strong> </span> in a stroke unit is a critical and challenging task</p>
 </section></section>
-<section id="objectives" class="title-slide slide level1 center" data-background-image="joshua-coleman-E_2lA5a9i6I-unsplash.jpg" data-background-size="cover">
+<section id="objectives" class="title-slide slide level1 center">
 <h1><span> Objectives </span></h1>
-<div class="r-stack">
-<p><img data-src="discreteEvent.png" class="fragment" width="1000"></p>
-<p><img data-src="OptimalBeds.png" class="fragment" width="1050" height="600"></p>
-</div>
-</section>
+<p><em>Discrete Event Simulation</em> &gt; <em>Performance metrics</em> &gt; <em>shiny-web-app</em></p>
+
+<img data-src="discreteEvent.png" class="r-stretch"></section>
 
 <section>
-<section id="method" class="title-slide slide level1 center" data-background-image="rodion-kutsaiev-xkEtD4Stn0I-unsplash.jpg">
+<section id="method" class="title-slide slide level1 center">
 <h1><span> Method </span></h1>
-<p><span>(<em>Stepts I took to set up a model</em>)</span></p>
-<div>
-<ul>
-<li class="fragment">Identified the Key Input Parameters</li>
-<li class="fragment">Defined auxiliary functions</li>
-<li class="fragment">Defined the main stroke function</li>
-<li class="fragment">Ran multiple simulations</li>
-<li class="fragment">Computed performance metrics such as the utilization percentages, percent of patients waiting and maximum queue length</li>
-<li class="fragment">Shiny web-app</li>
-</ul>
-</div>
+<p>(<em>Stepts I took to set up a model</em>)</p>
+<p><span><strong>Identified the Key Input Parameters</strong></span>: arrival rate, total number of patients, stroke level probabilities, bed occupation time</p>
+<p><br></p>
+<p><span><strong>Defined auxiliary functions</strong></span>: assign stroke categories, generates the inter-arrival times &amp; length of stay</p>
+<p><br></p>
+<p><span><strong>Defined the main stroke function</strong></span>: updates length of stay, tracks queue length and assigns avaiable beds</p>
+<p><br></p>
+<p><span><strong>Ran multiple simulations</strong></span>: we ran <span>2000</span> simulations</p>
 </section>
-<section id="section-1" class="slide level2" data-background-image="markus-spiske-3dw6ie9x3Q0-unsplash.jpg">
+<section id="section-1" class="slide level2">
 <h2></h2>
-<div class="r-stack">
-<p><img data-src="keyparameters.png" class="fragment" width="750"></p>
-<p><img data-src="stokeTab.png" class="fragment" width="850"></p>
-<p><img data-src="auxiliary_functions.png" class="fragment" width="1100"></p>
-<p><img data-src="stroke_simulationFunction.png" class="fragment" width="1200"></p>
-<p><img data-src="shinyWebApp.png" class="fragment" width="1200"></p>
-</div>
-</section></section>
-<section id="simulation" class="title-slide slide level1 center" data-background-image="adi-goldstein-EUsVwEOsblE-unsplash.jpg" data-background-size="cover">
-<h1><span> Simulation </span></h1>
-<p><span><em>Method and structure of the Model</em></span></p>
-<div class="r-stack">
-<p><img data-src="arrivalData.png" class="fragment" width="650" height="450"></p>
-<p><img data-src="Mean_lenghtOfStay_byStrokeCat.png" class="fragment" width="700" height="500"></p>
-<p><img data-src="DistOfPatients_inEachStrokeCat.png" class="fragment" width="750" height="550"></p>
-</div>
-</section>
+<p><span><strong>Computed performance metrics</strong></span>: <em>percent of patients waiting</em>, <em>utilization percentage</em> &amp; <em>max. queue length</em>.</p>
+<p><span class="text-center"><strong>Simulation</strong></span></p>
 
-<section id="results" class="title-slide slide level1 center" data-background-image="ken-suarez-4IxPVkFGJGI-unsplash.jpg">
+<img data-src="Stroke_CatTable_sim.png" class="r-stretch quarto-figure-center"><p class="caption">Stroke categories</p></section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+
+<img data-src="DistOfPatients_inEachStrokeCat.png" class="r-stretch"></section></section>
+<section id="results" class="title-slide slide level1 center">
 <h1><span>Results</span></h1>
-<p><span> Key Performance Metrics </span></p>
-<div class="r-stack">
-<p><img data-src="PercentPWaiting_MetricTAB.png" class="fragment" width="650"></p>
-<p><img data-src="percentPWaiting.png" class="fragment" width="650"></p>
-<p><img data-src="MaxQueueLength.png" class="fragment" width="750"></p>
-<p><img data-src="UtilizationPercent.png" class="fragment" width="850"></p>
-</div>
+<p><span> <strong>Key Performance Metrics</strong> </span></p>
+<p><br></p>
+<p>Percent of Patients waiting (<span> 5% threshold </span>)</p>
+<p><br></p>
+<p>Maximum Queue Length (<span> &lt; 5% threshold </span>)</p>
+<p><br></p>
+<p>Utilization Percentage (<span> context dependent </span>)</p>
+<p><a href=" https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/" class="url-style"> https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/</a></p>
 </section>
 
-<section id="sensitivity-analysis" class="title-slide slide level1 center" data-background-image="uriel-sc-11KDtiUWRq4-unsplash.jpg">
-<h1><span> Sensitivity Analysis </span></h1>
-<p><span>The variables tested include: arrival_rate, bed_occupation_time, stroke_level_prob, total_patients, with each variable multiplied by a factor of <strong><span class="math inline">\(1.5\)</span>, <span class="math inline">\(2.5\)</span>, <span class="math inline">\(3.5\)</span>, and <span class="math inline">\(4.5\)</span></strong>, respectively.</span></p>
-<p><span>In conclusion, these findings illustrate the healthcare system’s vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients.</span></p>
-</section>
-
-<section id="conclusion" class="title-slide slide level1 center" data-background-image="d-a-v-i-d-s-o-n-l-u-n-a-KeGToDVN0l4-unsplash.jpg" data-background-size="cover">
+<section id="conclusion" class="title-slide slide level1 center">
 <h1><span> Conclusion </span></h1>
-<p><em>Do or do not. There is no try</em></p>
-<div>
-<ul>
-<li class="fragment"><p><span> <strong>Interplay between different individual components of the System:</strong> Impact of bed count, patient influx, and bed occupancy on patient wait times and bed utilization.</span></p></li>
-<li class="fragment"><p><span> <strong>Model Capabilities:</strong> Our model effectively assesses the impact of bed availability on patient waiting times and bed utilization rates. </span></p></li>
-<li class="fragment"><p><span> <strong>Study Objective:</strong> Enhancing resource allocation, minimizing patient wait times, and optimizing bed utilization for stroke patients.</span></p></li>
-</ul>
-</div>
-</section>
-
-<section id="limitations" class="title-slide slide level1 center">
-<h1><span> Limitations </span></h1>
-<div>
-<ul>
-<li class="fragment"><p>Model limitations: Assumptions on patient arrivals, stroke severity, and bed occupancy.</p></li>
-<li class="fragment"><p>Model does not account for healthcare staff or medical equipment availability.</p></li>
-<li class="fragment"><p>Model simplifies complex reality: Actual situation may differ from assumptions.</p></li>
-</ul>
-</div>
-</section>
-
-<section id="future-enhancements" class="title-slide slide level1 repeated-background-img center" style="background-image: url('david-becker-crs2vlkSe98-unsplash.jpg'); background-size: 100px 150px; background-repeat: repeat;">
-<h1><span> Future Enhancements </span></h1>
-<div>
-<ul>
-<li class="fragment"><p>Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities.</p></li>
-<li class="fragment"><p>Further, iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.</p></li>
-</ul>
-</div>
-</section>
-
-<section>
-<section id="section-2" class="title-slide slide level1 center" data-background-image="collab-media-g5wo-_XOzJI-unsplash.jpg">
-<h1></h1>
-
-</section>
-<h3 id="thank-you"><span> Thank You </span></h3>
-<h3 id="what-questions-do-you-have"><span>What questions do you have?</span></h3>
-<h4 id="you-can-find-my-shiny-app"><span>You can find my shiny app </span></h4>
-<p><span><a href="https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/">here</a></span></p>
+<p><span>Captures</span> the intricate interplay between different individual components of the System.</p>
+<p><br></p>
+<p><span>Effectively </span> assesses the impact of bed availability on patient outcomes.</p>
+<p><br></p>
+<p><span>Enhances</span> resource allocation, <span>minimizing</span> patient wait times, and <span>optimizing</span> bed utilization.</p>
+<p><br></p>
+<p><span> <strong>Limitations</strong> </span></p>
+<p><span>Assumptions</span> on patient arrivals, stroke severity, and bed occupancy.</p>
 <div class="footer footer-default">
 <p>Stroke Ward</p>
-</div></section>
+</div>
+</section>
     </div>
   </div>
 
@@ -654,18 +589,6 @@
         // devices. It is advisable to set this to a lower number than
         // viewDistance in order to save resources.
         mobileViewDistance: 2,
-
-        // Parallax background image
-        parallaxBackgroundImage: 'national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
-
-        // Parallax background size
-        parallaxBackgroundSize: 'cover', // CSS syntax, e.g. "2100px 900px"
-
-        // Amount to move parallax background (horizontal and vertical) on slide change
-        // Number, e.g. 100
-        parallaxBackgroundHorizontal: 400,
-
-        parallaxBackgroundVertical: 100,
 
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be

@@ -1,10 +1,9 @@
 .reveal h1 > span, .reveal h2 > span, .reveal h3 > span, .reveal h4 > span, .reveal h5 > span, .reveal h6 > span {
-    background-color: black;
-    color: white; 
+    color: steelblue; 
 }
 
 .reveal .slides > section p > span {
-    color: white; 
+    color: steelblue; 
 }
 
 .reveal .slides section {
@@ -148,8 +147,7 @@
 }
 
 .url-style {
-    background-color: black;
-    color: white;
+    color: black;
     padding: 5px;
     border-radius: 5px;
     text-decoration: none;

@@ -12,11 +12,11 @@ format:
     incremental: true
     width: 1280
     height: 780
-    theme: dark
-    parallax-background-image: national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg
-    parallax-background-size: "cover"
-    parallax-background-horizontal: 400
-    parallax-background-vertical: 100
+    theme: simple
+    # parallax-background-image: national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg
+    # parallax-background-size: "cover"
+    # parallax-background-horizontal: 400
+    # parallax-background-vertical: 100
 css: styles.css
 execute:
   echo: false
@@ -42,23 +42,23 @@ knitr::opts_chunk$set(
 )
 ```
 
-## <span> `r rmarkdown::metadata$pagetitle`</span>
+## `r rmarkdown::metadata$pagetitle` 
 
 <br>
 
-### <span>`r rmarkdown::metadata$subtitle`</span>
+### <span> `r rmarkdown::metadata$subtitle` </span>
 
 <br>
 
-##### <span>Prepared and presented by: `r rmarkdown::metadata$author`</span>
+##### Prepared and presented by: `r rmarkdown::metadata$author` 
 
-##### <span> `r rmarkdown::metadata$department` </span>
+#####  `r rmarkdown::metadata$department` 
 
 ::: tl
 
 <br>
 
-##### <span>`r rmarkdown::metadata$email`</span> 
+##### `r rmarkdown::metadata$email` 
 
 <br>
 :::
@@ -74,199 +74,128 @@ project_url <-  rmarkdown::metadata[["project-url"]]
 <a href="`r project_url`" class="url-style">`r project_url`</a>
 
 
-:::
 
+# <span> Background </span>
 
-# <span>Background</span> {background-image="elena-mozhvilo-V2hZ1VNsZJE-unsplash.jpg" background-size="cover"}
+<br>
 
+Key Insights - <span> *Economic Impact of Stroke*</span> (Deloitte Australia - 2020)
 
-:::: {.columns}
+<br> 
 
-::: {.column width="100%" .black-background-white-font .fragment fragment-index=1} 
+ <span>445,087</span> individuals were grappling with the aftermath of a Stroke.
 
- Key Insights - Economic Impact of Stroke Report Deloitte 2020 
  
-:::
+ Stroke was the cause of death for <span>8,703</span>
 
-::: {.column width="25%"}
+ A stroke incident occurred every  <span>19 minutes </span>
 
-::: {.fragment fragment-index=2}
- 445,087 
  
-:::
-
-:::
-
-::: {.column width="25%"}
-
-::: {.fragment fragment-index=3}
- 8,703 
- 
-:::
-
-:::
-
-::: {.column width="25%"}
-
-::: {.fragment fragment-index=4}
- Every **19** minutes
-
-:::
-
-:::
-
-::: {.column width="25%"}
-::: {.fragment fragment-index=5}
- 
- Estimated 27,428 
-
-:::
-:::
-
-::::
+ Estimated <span>27,428</span> people encountered a stroke for the first time in their lives
 
 ##
 
-::: {.incremental}
-
-- Geographical stroke units offer effective treatment for ischemic and hemorrhagic stroke patients. 
-- Optimal care is achieved when patients are allocated to these wards. Estimating the optimum number of beds required is a complex task. 
-
-:::
 
 
-
-# <span> Objectives </span> {background-image="joshua-coleman-E_2lA5a9i6I-unsplash.jpg" background-size="cover"}
-
-::: {.r-stack}
-
-
-![](discreteEvent.png){.fragment width="1000" height=450"}
-
-![](OptimalBeds){.fragment width="1050" height="600"}
-
-:::
-
-
-# <span> Method </span>{background-image="rodion-kutsaiev-xkEtD4Stn0I-unsplash.jpg"}
-
-<span>(*Stepts I took to set up a model*)</span>
-
-
-::: {.incremental}
-
- - Identified the Key Input Parameters
- - Defined auxiliary functions
- - Defined the main stroke function
- - Ran multiple simulations
- - Computed performance metrics such as the utilization percentages, percent of patients waiting and 
- maximum queue length
- - Shiny web-app
+ Geographical stroke unit care is a <span>**proven stroke therapy**</span> for ischemic and hemorrhagic stroke patients.
  
-:::
-
-## {background-image="markus-spiske-3dw6ie9x3Q0-unsplash.jpg"}
-
-::: {.r-stack}
-![](keyparameters.png){.fragment width="750"}
-
-![](stokeTab.png){.fragment width="850"}
-
-
-![](auxiliary_functions.png){.fragment width="1100"}
-
-![](stroke_simulationFunction.png){.fragment width="1200"}
-
-![](shinyWebApp.png){.fragment width="1200"}
-
-:::
-
-
-# <span> Simulation </span> {background-image="adi-goldstein-EUsVwEOsblE-unsplash.jpg" background-size="cover"}
-<span>*Method and structure of the Model*</span>
-
-::: {.r-stack}
-![](arrivalData.png){.fragment width="650" height="450"}
-
-![](Mean_lenghtOfStay_byStrokeCat.png){.fragment width="700" height="500"}
-
-![](DistOfPatients_inEachStrokeCat.png){.fragment width="750" height="550"}
-
-:::
-
-
-# <span>Results</span> {background-image="ken-suarez-4IxPVkFGJGI-unsplash.jpg"}
-
-<span> Key Performance Metrics </span>
-
-::: {.r-stack}
-
-![](PercentPWaiting_MetricTAB.png){.fragment width="650"}
-
-![](percentPWaiting.png){.fragment width="650"}
-
-![](MaxQueueLength.png){.fragment width="750"}
-
-![](UtilizationPercent.png){.fragment width="850"}
-
-:::
-
-
-# <span> Sensitivity Analysis </span> {background-image="uriel-sc-11KDtiUWRq4-unsplash.jpg"}
-
-
-<span>The variables tested include: arrival_rate, bed_occupation_time, stroke_level_prob, total_patients, with each variable multiplied by a factor of **$1.5$, $2.5$, $3.5$, and $4.5$**, respectively.</span>
-
-
-<span>In conclusion, these findings illustrate the healthcare system’s vulnerability to high patient arrival rates, extended bed occupation times, and a large total number of patients.</span>
-
-
-# <span> Conclusion </span> {background-image="d-a-v-i-d-s-o-n-l-u-n-a-KeGToDVN0l4-unsplash.jpg" background-size="cover"}
-
-*Do or do not. There is no try*
-
-::: {.incremental}
-
- - <span> **Interplay between different individual components of the System:** Impact of bed count, patient influx, and bed occupancy on patient wait times and bed utilization.</span>
-
-
- - <span> **Model Capabilities:** Our model effectively assesses the impact of bed availability on patient waiting times and bed utilization rates. </span>
-
- - <span> **Study Objective:** Enhancing resource allocation, minimizing patient wait times, and optimizing bed utilization for stroke patients.
-
-:::
-
-# <span> Limitations </span> 
-::: {.incremental}
-
- - Model limitations: Assumptions on patient arrivals, stroke severity, and bed occupancy.
-
-
- - Model does not account for healthcare staff or medical equipment availability. 
-
-
- - Model simplifies complex reality: Actual situation may differ from assumptions.
-
-:::
-
-# <span> Future Enhancements </span> {.repeated-background-img style="background-image: url('david-becker-crs2vlkSe98-unsplash.jpg'); background-size: 100px 150px; background-repeat: repeat;"}
-
-::: {.incremental}
-
- - Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. 
-
- - Further, iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.
+ <br>
  
-:::
-
-# {background-image="collab-media-g5wo-_XOzJI-unsplash.jpg"}
-
-### <span> Thank You </span> 
-
-### <span>What questions do you have?</span>
+ Optimal care is achieved when patients are <span>**allocated to these wards**</span>. 
  
-#### <span>You can find my shiny app </span>
-<span>[here](https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/)</span>
+ <br>
+ 
+<span> **Access to stroke care units** </span> has been attributed to as one of the leading factors for declining death rates    in Australia among stroke patients.
+ 
+ <br>
+ 
+<span> **Estimating the optimal number of beds** </span> in a stroke unit is a critical and challenging task
+
+
+
+
+# <span> Objectives </span>
+
+*Discrete Event Simulation* > *Performance metrics* > *shiny-web-app*
+
+
+
+![](discreteEvent.png)
+
+
+
+# <span> Method </span>
+
+(*Stepts I took to set up a model*)
+
+
+<span>**Identified the Key Input Parameters**</span>: arrival rate, total number of patients, stroke level probabilities, bed occupation time 
+
+<br>
+
+<span>**Defined auxiliary functions**</span>: assign stroke categories, generates the inter-arrival times & length of stay 
+
+<br>
+
+<span>**Defined the main stroke function**</span>: updates length of stay, tracks queue length and assigns avaiable beds
+
+<br>
+
+<span>**Ran multiple simulations**</span>: we ran <span>2000</span> simulations
+
+## 
+
+<span>**Computed performance metrics**</span>: *percent of patients waiting*, *utilization percentage* & *max. queue length*.
+
+<span class="text-center">**Simulation**</span>
+
+
+
+![Stroke categories](Stroke_CatTable_sim.png)
+
+##
+![](DistOfPatients_inEachStrokeCat.png)
+
+# <span>Results</span>
+
+<span> **Key Performance Metrics** </span>
+
+<br>
+
+Percent of Patients waiting (<span> 5% threshold </span>)
+
+<br>
+
+Maximum Queue Length (<span> < 5% threshold </span>)
+
+<br>
+
+Utilization Percentage (<span> context dependent </span>)
+
+
+<a href="`r project_url`" class="url-style">`r project_url`</a>
+
+
+
+# <span> Conclusion </span> 
+
+
+<span>Captures</span> the intricate interplay between different individual components of the System. 
+
+<br>
+
+<span>Effectively </span> assesses the impact of bed availability on patient outcomes. 
+
+<br>
+
+<span>Enhances</span> resource allocation, <span>minimizing</span> patient wait times, and <span>optimizing</span> bed utilization.
+
+<br>
+
+ <span> **Limitations** </span> 
+
+<span>Assumptions</span> on patient arrivals, stroke severity, and bed occupancy.
+
 
 
 

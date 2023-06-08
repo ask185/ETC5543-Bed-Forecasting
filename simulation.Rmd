@@ -2,10 +2,7 @@
 title: "Simulation of the data"
 author: "Aryan Sultan"
 date: "2023-03-29"
-output:
-  pdf_document: 
-    bookdown::pdf_document2
-  html_document: default
+output: html_document
 ---
 
 
@@ -22,14 +19,14 @@ library(bookdown)
 set.seed(2023)
 # Parameters
 
+# total patients
 total_patients <- 350 # assuming there are 350 all around the year
-total_patients_future <- 1250 # assuming the 1250 patients in the future 
-patients_per_month <- 350/12 # patients per month
-arrival_rate <- total_patients/365  # average 6 patients per day
-arrival_rate_future <- total_patients_future/365 # average 7 patients per day
+
+# arrival rate
+arrival_rate <- total_patients/365  # average 1 patients per day
+
 
 # Bed occupation time (in days) for each stroke level
-
 bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29))
 
 
@@ -39,26 +36,6 @@ stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 
 
 ```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(ggplot2)
-library(bookdown)
-
-set.seed(2023)
-# Parameters
-
-total_patients <- 350 # assuming there are 350 all around the year
-total_patients_future <- 1250 # assuming the 1250 patients in the future 
-patients_per_month <- 350/12 # patients per month
-arrival_rate <- total_patients/365  # average 6 patients per day
-arrival_rate_future <- total_patients_future/365 # average 7 patients per day
-
-# Bed occupation time (in days) for each stroke level
-
-bed_occupation_time <- list(c(4.43), c(4.46), c(6.67), c(6.92), c(7.74), c(9.29))
-
-
-# Probability of each stroke level
-stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 
 bed_occupation_time_df <- data.frame(
   stroke_category = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"),
@@ -96,8 +73,6 @@ In this section lets briefly explain the steps taken to create a stroke simulati
 
 ### Auxiliary functions
 
-The length of stay for the patients depends on the stroke category, as can be seen from the plot above, the patients in the severe stroke category need to spend 10 days in the stroke care unit. This information needs to be incorporated into the simulation function.
-
 Below are the functions I have created: 
 
 * `generate_interarrival_times`: This function generates the inter-arrival times for the patients. The inter-arrival times for patients are exponentially distributed. This function takes in two arguments: total number of patients and the arrival rate. 
@@ -107,8 +82,6 @@ Below are the functions I have created:
 * `generate_length_of_stay`: This function generates length of stay for the patients based on the category they belong to. This function takes in three arguments: bed occupation times, stroke level (assigned by the `assign_stroke_levels`) and total number of patients. 
 
 With these functions we can create a data frame for the patient arrivals. 
-
-There are two data frames: one of which contains the inter-arrival times, LOS and the stroke categories for 350 annual load of patients and the other contains all the information for an annual load of 1250 patients. The patient load is expected to rise to 1250 in the coming few years. The two plots summarizes the arrival data sets for 350 and 1250 patients respectively. 
 
 ### Generating the inter-arrival times for Patients
 
@@ -248,59 +221,31 @@ arrivals_data %>% head()
 
 ```
 
-```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
-set.seed(2023)
-# generating the arrival data for the future volume of patients
 
-interarrival_times_future <- generate_interarrival_times(total_patients = total_patients_future,
-                                                         arrival_rate_future)
-stroke_levels_future <- assign_stroke_levels(total_patients = total_patients_future,
-                                             stroke_level_prob = stroke_level_prob)
-length_of_stay_future <- generate_length_of_stay(total_patients_future, bed_occupation_time, stroke_levels_future)
+The plots shows us the mean length of stay for each category of stroke in the arrival data for 350 patients.
 
-arrivals_data_future <- data.frame(interarrival_times_future,stroke_levels_future,
-                                   length_of_stay_future)
-
-arrivals_data_future$stroke_categories <- factor(arrivals_data_future$stroke_levels,
-                                          levels = c(1, 2, 3, 4, 5, 6),
-                                          labels = c("Very Mild", "Mild", "Mild-Moderate", "Moderate", "Moderate-Severe", "Severe"))
-
-ggplot(arrivals_data_future, aes(x = stroke_categories, y = length_of_stay_future, fill = stroke_categories)) +
-  geom_bar(stat = "summary", fun = "mean", position = "dodge") +
-  theme_light() +
-  scale_y_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10))+
-  labs(title = "Mean Length of Stay by Stroke Category",
-       x = "Stroke Category",
-       y = "Mean Length of Stay (days)") +
-  scale_fill_discrete(name = "Stroke Category")
-
-arrivals_data_future %>% head()
-```
-
-The plots shows us the mean length of stay for each category of stroke in the arrival data sets (350 patient load as well as 1250 patient load).
+### Stroke simulation function
 
 In the next step, I have created the stroke simulation function which simulates the patient arrival, keeps track of the available beds and the ones that are still in use, keeps track of the queue, and then assigns beds to the next patient in the queue when the bed is available.
 
 This function returns a list containing the following elements.
 
-beds: This is a numeric vector representing the remaining bed occupation time for each bed in the hospital ward at the end of the simulation. Each element corresponds to a bed, and a value of 0 indicates that the bed is available for use.
+*beds*: This is a numeric vector representing the remaining bed occupation time for each bed in the hospital ward at the end of the simulation. Each element corresponds to a bed, and a value of 0 indicates that the bed is available for use.
 
-queue: This is a list containing the length of stay for patients who couldn't find an available bed during the simulation and had to wait in the queue. The length of the queue list represents the number of patients who were waiting for a bed at the end of the simulation, and the values in the list represent their length of stay.
+*queue*: This is a list containing the length of stay for patients who couldn't find an available bed during the simulation and had to wait in the queue. The length of the queue list represents the number of patients who were waiting for a bed at the end of the simulation, and the values in the list represent their length of stay.
 
-length_of_stay: This is a numeric vector containing the length of stay for each patient in the simulation based on their assigned stroke level. The elements in this vector are generated using the generate_length_of_stay function, which takes into account the bed occupation times for different stroke levels and the assigned stroke levels for each patient.
+*length_of_stay*: This is a numeric vector containing the length of stay for each patient in the simulation based on their assigned stroke level. The elements in this vector are generated using the generate_length_of_stay function, which takes into account the bed occupation times for different stroke levels and the assigned stroke levels for each patient.
 
 In summary, the output of the stroke_simulation function provides information about the bed occupation times, the queue of waiting patients, and the length of stay for each patient at the end of the simulation.
 
 
-### Stroke simulation and visualization of the distribution of length of stay of patients in the ward
+#### Stroke simulation and visualization of the distribution of length of stay of patients in the ward
 
 
 
 ```{r eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
 
 # created the stroke simulation function 
-
-set.seed(2023)
 
 set.seed(2023)
 
@@ -384,66 +329,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
 
-
-
-
 ```
-
-
-
-```{r}
-# Load the ggplot2 library
-library(ggplot2)
-
-# Plot average waiting times against the number of beds
-ggplot(results_df, aes(x = num_beds, y = avg_wait_times)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  labs(title = "Average Waiting Times vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Average Waiting Time (Days)")
-
-# Plot the percent of patients waiting against the number of beds
-ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
-  geom_point(size=1,
-             alpha= 1) +
-  geom_smooth(method = "loess") +
-  theme_minimal() +
-  labs(title = "Percent of Patients Waiting vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Percent of Patients Waiting") +
-  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
-
-
-# Plot utilization against the number of beds
-ggplot(results_df, aes(x = num_beds, y = utilization)) +
-  geom_point(size=0.7) +
-  geom_smooth(method = "loess") +
-  theme_minimal()+
-  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
-  labs(title = "Utilization vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Utilization")
-
-# Plot max queue length against the number of beds
-xintersection = 11
-yintersection = 8
-ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
-  geom_point() +
-  geom_smooth(method = "loess") +
-  scale_x_continuous(breaks = seq(4, 20, by=2))+
-  scale_y_continuous(breaks = seq(5, 155, by = 10))+
-  geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
-  geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
-  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
-  theme_minimal() +
-  labs(title = "Maximum Queue Length vs. Number of Beds",
-       x = "Number of Beds",
-       y = "Maximum Queue Length")
-
-```
-
 
 ### Running multiple simulations and computing the performance statistics
 
@@ -462,7 +348,7 @@ This is the maximum number of patients waiting in the queue for a bed at any giv
 `percent_patients_waiting`: The percentage of patients who had to wait for a bed.
 `avg_length_of_stay`: The average length of stay for patients in the hospital.
 
-The percent of patients waiting to be admitted into the ward should be around 5%. Therefore, in the plot displaying the percent of patients waiting against the number of beds there is a horizontal line at 5%.  
+The percent of patients waiting to be admitted into the ward should be around 5%. Therefore, in the plot displaying the percent of patients waiting against the number of beds there is a horizontal line at 5%.
 
 
 ```{r}
@@ -530,8 +416,6 @@ results <- run_simulation(arrival_rate = arrival_rate,
 
 ```
 
-
-
 ```{r}
 # Combine all the data frames into one
 # 
@@ -539,6 +423,52 @@ results <- run_simulation(arrival_rate = arrival_rate,
 
 
 ```
+
+```{r}
+# Load the ggplot2 library
+library(ggplot2)
+
+# Plot the percent of patients waiting against the number of beds
+ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
+  geom_point(size=1,
+             alpha= 1) +
+  geom_smooth(method = "loess") +
+  theme_minimal() +
+  labs(title = "Percent of Patients Waiting vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Percent of Patients Waiting") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
+  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))
+
+
+# Plot utilization against the number of beds
+ggplot(results_df, aes(x = num_beds, y = utilization)) +
+  geom_point(size=0.7) +
+  geom_smooth(method = "loess") +
+  theme_minimal()+
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red", size = 0.5)+
+  labs(title = "Utilization vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Utilization")
+
+# Plot max queue length against the number of beds
+xintersection = 11
+yintersection = 8
+ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  scale_x_continuous(breaks = seq(4, 20, by=2))+
+  scale_y_continuous(breaks = seq(5, 155, by = 10))+
+  geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
+  geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
+  geom_point(aes(x = xintersection, y = yintersection), color = "red", size = 1.5)+
+  theme_minimal() +
+  labs(title = "Maximum Queue Length vs. Number of Beds",
+       x = "Number of Beds",
+       y = "Maximum Queue Length")
+
+```
+
 
 
 ### Visualising the Performance metrics
