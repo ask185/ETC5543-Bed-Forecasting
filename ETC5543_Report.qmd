@@ -131,7 +131,7 @@ For example the DES model for stroke ward incorporates various stochastic and dy
 
 -   Secondly, the DES represents the individual components and their interaction in the system.
 
-For example our DES simulation model in this study consists of multiple components, including patients, beds, and resources. Each of these components interacts with one another in a complex way, as patients move through the ward, occupy beds, and utilize resources. Traditional analytic methods might simplify these interactions or aggregate them, potentially losing critical information about the system's behavior.
+For example our DES simulation model in this study consists of multiple components, including patients, and beds. Each of these components interacts with one another in a complex way, as patients move through the ward, occupy and utilize bed resource. Traditional analytic methods might simplify these interactions or aggregate them, potentially losing critical information about the system's behavior.
 
 -   Furthermore, one of the key advantages of the DES is the flexibility. DES model allows for changes in the system's behavior to be successfully incorporated into the model, and even test for various scenarios and interventions.
 
@@ -145,11 +145,11 @@ The data used in this project is derived from multiple sources including histori
 
 It is important to note that simulation model as a method presents certain limitations.
 
-One of the key limitations of the simulation model is the validation and calibration of simulation model is a challenging process and can be quite time consuming at times.
+-   One of the key limitations of the simulation model is the validation and calibration of simulation model is a challenging process and can be quite time consuming at times.
 
-One of the other challenges I faced was that the computation times were long. DES can be computationally intensive when running multiple thousand simulation or under multiple scenarios. However, in this simulation model I have run $2000$ simulations to attain the results. This process was time consuming and computationally intensive.
+-   One of the other challenges I faced was that the computation times were long. DES can be computationally intensive when running multiple thousand simulation or under multiple scenarios.
 
-To counter these limitations, we used the relevant data from 2021 records of the stroke patients in the hospital, and most importantly, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan.
+To counter these limitations, we used the relevant data from 2021 records of the stroke patients in the hospital, and most importantly, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan. However, in this simulation model I have run $2000$ simulations to attain the results. This process was time consuming and computationally intensive, but produced reliable results.
 
 #### Method {#sec-method}
 
@@ -169,13 +169,13 @@ To simulate the patient inflow, stay and exit, and compute certain performance m
 
 #### Key parameters
 
-The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ $350$. The performance metrics were computed for $350$ patients as well as for the future estimated number of 2500 patients.
+The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ $350$. The performance metrics were computed for $350$ yearly patients as well as for the an estimated annual load of 2500 patients.
 
-The following parameters were used to lay the foundation of the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
+The following parameters were used to lay the foundation for the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
 
 -   Total annual patients: 350
 
--   Arrival rate: $\frac {350} {365} =\ 0.958\ \sim 1$ patient per day
+-   Arrival rate: $\frac {350} {365} =\ 0.958\ \sim 1$ patient per day on average -- this means on average one patients arriving into the ward each day.
 
 -   Stroke level probabilities & bed occupation times see Table 1:
 
@@ -279,9 +279,7 @@ Mathematically, the inter-arrival time for our model was generated in the follow
 
     This generates a sequence of inter-arrival times: $T_1, T_2, T_3,… T_{350}$ that is exponentially distributed with $\lambda$ = $1$.
 
-    In R, this implementation is shown below:
-
-```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 
 # total patients = 350
 # arrival rate = 6
@@ -322,9 +320,7 @@ $Y_1, Y_2, ..., Y_n$ = sample( $1:k$ , size = $n$ , replace = TRUE, prob = $p$)
 
 The `replace = TRUE` argument ensures that each patient's stroke category is assigned independently, allowing for repeated selections of the same category.
 
-The implementation in R is as follows:
-
-```{r eval=TRUE, echo=TRUE}
+```{r eval=TRUE, echo=FALSE}
 
 # stroke_level_prob <- c(0.0570,0.342, 0.217, 0.136, 0.0971, 0.151)
 
@@ -346,7 +342,15 @@ As discussed (refer to Table 1), the bed occupation times for each category are 
 
 For this simulation model once the inter-arrival times and the stroke categories to the arriving patients have been assigned, the next step was to generate the length of stay of these patients based on their stroke level/category.
 
-```{r eval=TRUE, echo=TRUE}
+Length of stay for patients was based on the stroke category they were assigned by the `assign_stroke_levels` function. This function takes three arguments:
+
+-   total number of patients,
+
+-   bed occupation times, and
+
+-   the stroke categories (stroke levels). Stroke levels/categories are defined by the previous function - `assign_stroke_levels` function as described earlier.
+
+```{r eval=TRUE, echo=FALSE}
 
 generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_levels) {
   set.seed(07052023)
@@ -415,7 +419,7 @@ This table (Table: 2) shows us just the first six rows of the actual data I crea
 
 We can further examine the distribution of the **mean** length of stay of patients in the arrivals data. (refer to Figure: 2)
 
-```{r figtwo, fig.cap="Patients Arrival Data", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE}
+```{r figtwo, fig.cap="Patients Arrival Data", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, fig.pos="H"}
 ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill = `stroke categoryNames`)) +
   geom_bar(stat = "summary", fun = "mean", position = "dodge") +
   geom_text(aes(label = round(`Length of stay`, 1)), vjust = 1, size = 4) +
@@ -429,11 +433,11 @@ ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill
             legend.position = "none")
 ```
 
-In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels. This figure shows us that in the arrivals data the patients that were assigned the severe category stayed the longest in the ward, on average staying more than 9 days in the ward. We can further examine the distribution of patients in each of the stroke category.
+In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels. This figure shows us that in the arrivals data the patients that were assigned the *severe* category of stroke stayed the longest in the ward on average staying more than 9 days. One can examine the distribution of patients in each of the stroke category from the figure.
 
 In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 112 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
 
-```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distribution of the stroke patients", fig.width=6, fig.height=5}
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distribution of the stroke patients", fig.width=6, fig.height=5, fig.pos="H"}
 
 library(dplyr)
 arrivals_summary <- arrivals_data %>%
@@ -472,7 +476,7 @@ stroke_simulation <- function(total_patients, arrival_rate,
   length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
   
   # initializing the beds and queue 
-  beds <- rep(0, num_beds)
+  beds <- numeric(num_beds)
   queue <- list()
   
 
@@ -505,7 +509,8 @@ stroke_simulation <- function(total_patients, arrival_rate,
   
   # for every patient in total patients (1000)
   
-  for (i in 1:total_patients) {
+  i<- 1
+  while(i <= total_patients) {
     set.seed(07052023)
     
     # update the beds variable with the bed occupation times 
@@ -535,17 +540,31 @@ stroke_simulation <- function(total_patients, arrival_rate,
       # if there is no bed available then append the queue list
       queue <- append(queue, length_of_stay[i])
     }
+    
+    i <- i +1 
   }
   
   return(list(beds = beds, queue = queue, length_of_stay =length_of_stay))
 }
 ```
 
-In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.
+In order to simulate the patient inflow, stay and discharge I created the `stroke_simulation` function, which uses the previously created functions to achieve the intended results.[^6]
+
+[^6]: I acknowledge the use of \[1\] ChatGPT (<https://chat.openai.com/>) to \[2\] re-structure my stroke simulation code so that modularity in the code and the intended results could be acheived. I entered the following prompts in April 2023:
+
+    -   \[3\] I have created the following code \[code for update_bed_occupation_times which is used inside the stroke simulation function\]. In this function I am subtracting the inter-arrival time from beds (numeric vector of length of number of beds) but I do not want this to give me negative values, I would like to be zero twhen the subtraction results in negative values.
+
+    -   Now that I have created the update_bed_occupation_time function \[code\] and have created the list of the available beds using \[beds \<- update_bed_occupation_times(beds, interarrival_times)\], and I have also created a vector of available beds using \[available_beds \<- which(beds == 0)\] in a while loop, now how can I assign the bed as well as set the bed equal to the length of patient to whom the bed is assigned \[the entire code\].
+
+    -   I have created the while loop \[code\] to do this but it does not achieve the result as I have explained. How can I set the bed equal to the length of stay of patient? I want the bed to be the remaining time of the bed occupation time of the patient. check my \[code\]
+
+    -   there was some back forth dialogue to make sure that I got the intended results which was to set the bed equal to the length of stay of the assigned patient.
+
+    \[4\] The output from the generative artificial intelligence was adapted and modified for the final response.
 
 *Simulation Process*
 
-The `stroke_simulation` function simulates the arrival of `total_patients` patients at a stroke ward with a limited number of beds (`num_beds`). The inter-arrival times of the patients, their length of stay in the ward, and their stroke categories are used inside the function to begin the simulation process.
+The `stroke_simulation` function simulates the arrival of `total_patients` at a stroke ward with a limited number of beds (`num_beds`). The inter-arrival times of the patients, their length of stay in the ward, and their stroke categories are used inside the function to begin the simulation process.
 
 For each arriving patient, this function first updates the bed occupation times for all beds, taking into account the time that has passed since the last patient arrival. This function keeps track of the available beds, and checks if there are any available beds. Vacant beds are assigned to the patients in case of the bed availability, else the patients are added to the queue, if all the beds are in use by other patients.
 
@@ -575,11 +594,15 @@ In summary, the mathematics behind the `stroke_simulation` function involves gen
 
 #### Running the simulation and computing performance metrics {#sec-runsim}
 
-As discussed in detail in section @sec-ssf the stroke simulation function allows for simulating the patient inflows, their stay in the ward, their eventual exit from the ward and creating a list of the patients queuing up to be admitted.
-
 It is important to run the simulation multiple times to obtain more reliable results. This is to ensure that the results generated from this model are not due to random chance. Each simulation run produces different results due to the inherent randomness in the model. Averaging the outcomes over the several runs produces more stable estimates of the true expected values.
 
-Hence `run_simulation` function was created in the process of simulation to run multiple simulations and compute the performance metrics such as the utilization rates and the percent of patients waiting and others for **different** number of beds -- I have defined a range of beds in the function to run simulations for range of beds (5 to 50) and compute the performance metrics for these range of beds in each individual simulation and then average performance metrics across these simulations.
+Hence `run_simulation` function[^7] was created in the process of simulation to run multiple simulations and compute the performance metrics such as the utilization rates and the percent of patients waiting and others for **different** number of beds -- I have defined a range of beds in the function to run simulations for range of beds (5 to 50) and compute the performance metrics for these range of beds in each individual simulation and then averaged the performance metrics across these simulations.
+
+[^7]: I acknowledge the use of \[1\] ChatGPT (<https://chat.openai.com/>) to \[2\]
+
+    -   \[3\] Write a 50 word summary about the formation of Monash University. Write it in an academic style. Add references and quotations from Sir John Monash.
+
+    \[4\] The output from the generative artificial intelligence was adapted and modified for the final response.
 
 In this `run_simulation` function, I essentially implement a *Monte Carlo* simulation, which is a mathematical technique that allows us to account for risk in quantitative analysis and decision making. Monte Carlo simulation calculates results over and over, each time using a different set of random values from the probability functions.
 
@@ -927,19 +950,21 @@ In conclusion, these findings illustrate the healthcare system's vulnerability t
 
 ### Conclusion
 
-In summary, remarkably, it was observed that the complex interplay between the number of hospital beds, yearly patient influx, and bed occupancy durations, results in substantial effects on both patient wait times and bed utilization ratios.
+In summary, remarkably, it was observed that the complex interplay between the number of hospital beds, annual patient influx, and bed occupation duration, results in substantial effects on both patient wait times and bed utilization ratios.
 
-The key value of individualized resource allocation was underscored by our model, as demonstrated through the adjustable stroke severity levels. This essential feature accentuates the notion that stroke cases differ in their demand for resources, a vital element to be considered in policy development. Additionally, the ability of our model to imitate various availability of hospital beds was instrumental in evaluating their impact on patient waiting periods and bed utilization rates.
+The ability of our model to imitate various availability of hospital beds was instrumental in evaluating their impact on patient waiting periods and bed utilization rates.
 
-The implications of this model in practical scenarios are profound. It offers an intuitive tool to policy makers and hospital management for efficient resource strategy formulation, based on live data and fluctuating patient load. More importantly, the model is inherently connected to the core objective of our study/project, which is to enhance the allocation of hospital resources for stroke patients, focusing on minimizing patient waiting durations and optimizing bed utilization rates.
+The implications of this model in practical scenarios are profound. It offers an intuitive tool to policy makers and hospital management for efficient resource strategy formulation, based on live data and fluctuating patient load.
+
+More importantly, the model is inherently connected to the core objective of our study/project, which is to enhance the allocation of hospital beds for stroke patients, focusing on minimizing patient waiting durations and optimizing bed utilization rates.
 
 Despite its advantages, our model has its inherent limitations.
 
-It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions. Instances like sudden patient surges due to epidemic situations or natural calamities aren't factored into the current model. Also, the model overlooks other potential chokepoints in stroke patient care, like the availability of healthcare staff or medical apparatus.
+It oversimplifies a complex reality, based on assumptions about patient arrival times, stroke severity distributions, and bed occupancy durations. The actual situation may stray from these assumptions. Instances like sudden patient surges aren't factored into the current model. Also, the model overlooks other potential bottlenecks in stroke patient care, like the availability of healthcare staff or medical apparatus.
 
-Future enhancements to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. Including dynamic variables such as time-dependent arrival rates and fluctuating stroke severity levels could provide a more accurate representation of hospital operations. Further, future iterations could investigate the integration of machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.
+**Future enhancements** to this model could include its extension to a broader healthcare simulation, assimilating other elements of hospital resources and facilities. Further, future iterations could investigate the integration of more advanced machine learning methodologies for predicting patient loads and stroke severity distributions, thereby enhancing the decision-making process.
 
-To encapsulate, our stroke simulation model aids in understanding and addressing the complicated task of hospital resource allocation for stroke patients. It paves the way towards more robust, dynamic, and inclusive healthcare simulation models. Despite its constraints, the model demonstrates significant potential to inform and impact hospital management strategies, eventually contributing to better patient care.
+To encapsulate, our stroke simulation model aids in understanding and addressing the complicated task of hospital beds for stroke patients. It paves the way towards more robust, dynamic, and inclusive healthcare simulation models. Despite its constraints, the model demonstrates significant potential to inform and impact hospital management strategies, eventually contributing to better patient care.
 
 ### References
 
