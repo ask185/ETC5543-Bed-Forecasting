@@ -310,7 +310,7 @@ This function takes two arguments:
 
 Mathematically, this process can be explained as follows:
 
-Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n =350$. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ as there are six stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
+Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n =350$. Each $Y_i$ is an independent random variable, meaning the stroke category assigned to one patient does not influence the category assigned to another patient. Each $Y_i$ represents the stroke category for $i^{th}$ patient. It takes values from $1 \to k$, where $k=6$ as there are six stroke categories. The probability of $Y_i$ taking the value $j$ stroke category where $j$ ranges from $(1 ≤ j ≤ 6)$ is given by:
 
 $P(Y_i = j) = p_j$
 
@@ -379,7 +379,7 @@ length_of_stay <- generate_length_of_stay(total_patients,
 
 #### Arrivals data {#sec-arrivalData}
 
-Having defined these functions, the next step is check the distribution of the length of stay of patients in our simulation model and have a look at the patients arrival data.
+Having defined these functions, the next step was to check the distribution of the length of stay of patients in our simulation model and have a look at the patients arrival data.
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 set.seed(07052023)
@@ -431,7 +431,7 @@ ggplot(arrivals_data, aes(x = `stroke categoryNames`, y = `Length of stay`, fill
 
 In Figure: 2 one can see the mean length of the patients' stay in the stoke ward against the stroke categories/levels. This figure shows us that in the arrivals data the patients that were assigned the severe category stayed the longest in the ward, on average staying more than 9 days in the ward. We can further examine the distribution of patients in each of the stroke category.
 
-In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 121 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
+In Figure 3, the distribution of the patients in each category follows the stroke category probabilities and the highest number of patients -- 112 -- were assigned to the *mild* category of stroke --refer to Table 1 for information on the categories and the respective probabilities.
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distribution of the stroke patients", fig.width=6, fig.height=5}
 
