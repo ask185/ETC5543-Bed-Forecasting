@@ -13,11 +13,11 @@ csl: academic-medicine.csl
 
 #### **Introduction**: {#sec-introduction}
 
-Geographical stroke units offer effective treatment for ischemic and hemorrhagic stroke patients. Optimal care is achieved when patients are allocated to these wards.Estimating the optimal number of beds required is a complex task. This study/project leverages discrete-event simulation (DES), grounded in queueing theory, to ascertain the ideal number of beds for optimal care given to patient influx. The study utilized stroke unit data including arrival rates, bed occupation times, and stroke severity probabilities to generate realistic scenarios for the simulation model. The objective of this project was to evaluate the impact of varying bed capacities on the performance of stroke care units such as bed utilization, maximum queue length, and percent of patients waiting.
+Geographical stroke units offer proven stroke therapy for ischemic and hemorrhagic stroke patients. Optimal care is achieved when patients are allocated to these wards. Access to stroke care units has been attributed to as one of the leading causes of declining death rates among stroke patients in Australia. Consequently, estimating the optimal number of beds required is a complex task. This study/project leverages discrete-event simulation (DES), grounded in queuing theory, to ascertain the ideal number of beds for optimal care given to patient influx. The study utilized stroke unit data including arrival rates, bed occupation times, and stroke severity probabilities to generate realistic scenarios for the simulation model. The objective of this project was to evaluate the impact of varying bed capacities on the performance of stroke care units such as bed utilization, maximum queue length, and percent of patients waiting.
 
 #### **Method and Design**: {#sec-methods}
 
-The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 1 patients/day, based on an annual patient load of \~350. The distribution of stroke severity was as follows:
+The simulation model considered factors such as patient arrival rates, stroke severity probabilities, and bed occupation times. Patient arrival rates were estimated to be 1 patients/day (on average), based on an annual patient load of \~350. The distribution of stroke severity was as follows:
 
 -   very mild (probability = 0.0570),
 
@@ -47,7 +47,7 @@ Across the world healthcare systems are under continual pressure to provide acce
 
 Key metrics, such as bed capacity and associated indices such as bed occupancy and the ratio of beds to population are used to determine the availability of inpatient care [@Ravaghi2020].
 
-Under-utilization of beds in the hospitals lead to additional costs, conversely, a shortage of available beds is the primary cause of delays in emergency admission, surgery cancellations, and premature patient discharge [@rechel2010hospital].
+Under-utilization of beds in the hospitals lead to additional costs, while on the other hand, a shortage of available beds is the primary cause of delays in emergency admission, surgery cancellations, and premature patient discharge [@rechel2010hospital].
 
 According to Storey et al. (2010) in their article "Hospital capacity planning: From measuring stocks to modelling flows" published in the Medical Journal of Australia, an 85% bed occupancy rate is a reasonable target for hospitals. However, this target may need adjustment depending on the facility and time periods @martin_storey_2010.
 
@@ -55,54 +55,49 @@ According to Storey et al. (2010) in their article "Hospital capacity planning: 
 
 Stroke is ranked as the second leading cause of death with an annual mortality rate of over $6.5$ million worldwide and $143.23$ million disability-adjusted life years (DALYs) in 2019 according to the *Global stroke fact sheet* released by the [World Stroke Organization](https://www.world-stroke.org/news-and-blog/news/wso-global-stroke-fact-sheet-2022).
 
-In Australia in 2018, an estimated $387,000$ Australians aged 15 and over ( $1.3\%$ of the population) had experienced a stroke at *some point* in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke). As per the same source, in 2020, there were an estimated $39,500$ **stroke events** in Australia--- more than $100$ everyday. The rate of stroke events was $154$ per $100,000$ population. These stroke events include the new and recurrent stroke.[^1]
+In Australia in 2020 an estimated $445,087$ [^1]Australians aged 15 and over were grappling with the aftermath of stroke. In 2018, $1.3\%$ of the Australian population had experienced a stroke at *some point* in their lives, based on self-reported data from the [ABS Survey of Disability, Ageing and Carers (ABS 2019)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/heart-stroke-and-vascular-disease-subtypes/stroke). As per the same source, in 2020, there were an estimated $39,500$ **stroke events** in Australia--- more than $100$ everyday. The rate of stroke events was $154$ per $100,000$ population. These stroke events include the new and recurrent stroke.[^2]
 
-[^1]: There are no direct national data sources on the annual number of strokes. However, a related measure can be used as an estimate---the number of stroke events---developed by the AIHW using unlinked hospital and deaths data (AIHW 2022)
+[^1]: According to the Economic Impact of Stroke (Deloitte Australia - 2020) [The report can be found here.](https://www2.deloitte.com/au/en/pages/economics/articles/economic-impact-stroke-australia.html)
 
-In 2020, stroke was recorded as the underlying cause of $8,200$ deaths, accounting for $5.1\%$ of all deaths in Australia. Stroke was one of the $5$ leading causes of death in Australia -- on average, $22$ Australians died of stroke each day in 2020.[^2]
+[^2]: There are no direct national data sources on the annual number of strokes. However, a related measure can be used as an estimate---the number of stroke events---developed by the AIHW using unlinked hospital and deaths data (AIHW 2022)
 
-[^2]: These figures were obtained from the [Australian Institute of Health & Welfare (AIHW)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/summary-of-coronary-heart-disease-and-stroke/stroke)
+In 2020, stroke was recorded as the underlying cause of $8,200$ deaths, accounting for $5.1\%$ of all deaths in Australia. Stroke was one of the $5$ leading causes of death in Australia -- on average, $22$ Australians died of stroke each day in 2020.[^3]
 
-Since 1980 the death rates for stroke have fallen by three-quarters -- from *110 to 23* per **100,000** population for males, and from *99 to 24* per **100,000** population for females. Access to stroke care units has been attributed to as one of the leading factors for declining death rates in Australia[^3]. Hence adequate access to the stroke care is crucial for the recovery and rehabilitation of the stroke patients as well as in reducing the stroke-related death rates.
+[^3]: These figures were obtained from the [Australian Institute of Health & Welfare (AIHW)](https://www.aihw.gov.au/reports/heart-stroke-vascular-diseases/hsvd-facts/contents/summary-of-coronary-heart-disease-and-stroke/stroke)
 
-[^3]: See 'Chapter 4 Changing patterns of mortality in Australia since 1900' in [*Australia's health 2022: data insight*](https://www.aihw.gov.au/reports/australias-health/australias-health-2022-data-insights).
+Since 1980 the death rates for stroke have fallen by three-quarters -- from *110 to 23* per **100,000** population for males, and from *99 to 24* per **100,000** population for females. Access to stroke care units has been attributed to as one of the leading factors for declining death rates in Australia[^4]. Hence adequate access to the stroke care is crucial for the recovery and rehabilitation of the stroke patients as well as in reducing the stroke-related death rates.
 
-While, according to the *Victorian Population Health Survey* (2016) [^4], the prevalence of stroke among the adult Victorian population was 2.7% of the adult population, in Melbourne, the incidence and prevalence of stroke follow similar trends observed across Australia.
+[^4]: See 'Chapter 4 Changing patterns of mortality in Australia since 1900' in [*Australia's health 2022: data insight*](https://www.aihw.gov.au/reports/australias-health/australias-health-2022-data-insights).
 
-[^4]: 2.7% of the adult Victorian Population self-reported doctor diagnosed stroke [in the survey](https://www.health.vic.gov.au/population-health-systems/victorian-population-health-survey-2016).
+While, according to the *Victorian Population Health Survey* (2016) [^5], the prevalence of stroke among the adult Victorian population was 2.7%, and in Melbourne, the incidence and prevalence of stroke follow similar trends observed across Australia.
+
+[^5]: 2.7% of the adult Victorian Population self-reported doctor diagnosed stroke [in the survey](https://www.health.vic.gov.au/population-health-systems/victorian-population-health-survey-2016).
 
 The growing population and aging demographic contribute to the increasing demand for stroke care in the region. According to the Australian Institute of Health and Welfare, the age-standardized prevalence of stroke in Melbourne has been on the rise, highlighting the need for better access to specialized care for stroke patients.
 
 #### Access to Beds in Stroke Care Units
 
-In a recent international survey, stroke unit care was only available in $91\%$ of High-Income countries @owolabi2021state . With an increasing availability of stroke unit, there is decrease in social inequality of access to stroke unit care in Sweden @glader2013reduced while in North America access remains an issue @yu2021demographic .
+In a recent international survey, stroke unit care was only available in $91\%$ of High-Income countries @owolabi2021state . With an increasing availability of stroke unit, there is decrease in social inequality of access to stroke unit care in Sweden @glader2013reduced while in North America access to stroke care units remains an issue @yu2021demographic .
 
-In Australia, $81\%$ of hospitals have stroke unit care @foundation2021audit . An important issue in access to the stroke unit bed is the capacity of the hospital with stroke unit care to provide the service. A national survey in 2021 showed that $71\%$ of patients were treated in stroke unit while $29\%$ of the patients from the same hospitals were not treated in such location @foundation2021audit . The Stroke Foundation has set a target of $94\%$ access to stroke unit. A related document suggested a minimum of 8 bed for a unit with $350$ admitted patients and $22$ beds for a unit with more than 1000 admitted patients @foundation2019framework .
+In Australia, $81\%$ of hospitals have stroke care units @foundation2021audit . An important issue in access to the stroke unit bed is the capacity of the hospital with stroke unit care to provide the service. A national survey in 2021 showed that $71\%$ of patients were treated in stroke unit while $29\%$ of the patients from the same hospitals were not treated in such location @foundation2021audit . The Stroke Foundation has set a target of $94\%$ access to stroke unit. A related document suggested a minimum of 8 bed for a unit with $350$ admitted patients and $22$ beds for a unit with more than 1000 admitted patients @foundation2019framework .
 
 #### Monash Hospital {#sec-mmri}
 
 In the stroke ward at the Monash Hospital there are a total of 46 beds as used by the neurology, neurosurgery and stroke patients. The objective of this project was to estimate the optimal number of beds specifically for the stroke patients at the Monash Hospital to ensure the optimum care for the stroke patients.
 
-For the purpose of this project at the *Monash Medical Research institute*, I have used the **simulation modelling** grounded in queue theory to represent a queuing system within a hospital setting.
+For the purpose of this project at the *Monash Medical Research institute*, I used the **simulation modelling** grounded in queue theory to represent a queuing system within a hospital setting.
 
 ### *Objectives and Significance*
 
 #### **Objectives** {#sec-objectives}
 
-The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital.
-
-The main objective of DES was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
+The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital. The main objective of DES was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
 
 In order to achieve these objectives an evaluation of different bed capacities on three key performance metrics were considered:
 
 -   Maximum queue length of the given annual load of stroke patients;
-
-```{=html}
-<!-- -->
-```
 -   the percent of the patients waiting to be admitted into the ward and;
-
--    the utilization rates/percentages
+-   the utilization rates/percentages
 
 Further, this model is intended to be used as a decision support tool by the hospital administrators and policymakers in optimizing bed allocation at the stroke ward.
 
@@ -110,7 +105,7 @@ Further, this model is intended to be used as a decision support tool by the hos
 
 In this project, *Discrete Event Simulation* grounded in queue theory accurately captures the complexity and inherent variability of a stroke ward. This model takes into account the stochastic nature of the patient arrivals, stroke severity levels, and length of stay. This enables a comprehensive analysis of the hospital ward's performance under different scenarios.
 
-Key parameters such as the arrival rates, bed occupation times and the stroke level probabilities which were acquired from a combination of historical data, hospital statistics and relevant literature, were incorporated into the model. @green2011queueing By effectively representing the complex interaction between these factors, this DES model is meant to provide valuable insights into the stroke ward's operations at the Monash Hospital.
+By effectively representing the complex interaction between different factors such as the patients arrival, stoke categories, stroke level probabilities and bed occupation times for each of the different categories of stroke, this DES model is meant to provide valuable insights into the stroke ward's operations at the Monash Hospital.
 
 Furthermore, this model enables users to generate performance metrics, such as the percent of patients waiting and utilization percentages for the given number of beds and load of patients in the stroke ward.
 
@@ -118,41 +113,43 @@ Furthermore, this model enables users to generate performance metrics, such as t
 
 While simulation modeling in healthcare is not a novel concept, this project aims to broaden the accessibility of the simulation modelling developed as part of this project by making it available as a support tool to a wider audience through a user-friendly shiny web-app which can be accessed [here.](https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/) (https://aryan-sultan-1120.shinyapps.io/App_for_stroke_simulation/).
 
-The Shiny app enables users to interactively adjust the number of patients, beds as well as the bed occupation times for different categories of the stroke using slider inputs, allowing them to visualize a plot of the percentage of patients waiting based on the selected number of patients and beds as well as a plot of the utilization rates at the selected number of beds.
-
-Furthermore, the users are able to see the optimal number of beds for the selected patient load. By offering this tool in a web-based format, a wider audience can benefit from the insights generated by the simulation model, thereby enhancing decision-making processes in healthcare settings.
+The Shiny app enables users to interactively adjust the number of patients, beds as well as the length of stay (bed occupation times) for each different categories of the stroke using slider inputs, which allows users to visualize a plot of the percentage of patients waiting to be admitted into the ward based on the selected number of patients and beds. In addition the users can also view a plot of the utilization rates at the selected number of beds. Furthermore, the users are able to see the optimal number of beds for the selected patient load. By offering this tool in a web-based format, a wider audience can benefit from the insights generated by our simulation model, thereby enhancing decision-making processes in healthcare settings.
 
 ### *Methodology*
 
-The methodology employed in this analysis is based on Discrete Event Simulation (DES), a widely recognized and effective technique for modeling complex systems with stochastic elements.
+The methodology employed in this analysis is based on Discrete Event Simulation (DES), a widely recognized and effective technique for modeling complex systems with stochastic elements. Discrete Event Simulation (DES) is a computer-based modeling technique that simulates the operation of a system as a sequence of discrete events in time. Each event represents a change in the system's state.
 
 #### **Discrete Event Simulation (DES)** {#sec-des}
 
-Discrete Event Simulation (DES) is a computer-based modeling technique that simulates the operation of a system as a sequence of discrete events in time. Each event represents a change in the system's state.
+Discrete Event Simulation (DES) is a computer-based modeling technique that simulates the operation of a system as a sequence of discrete events in time. Each event represents a change in the system's state. @Robinson2004
 
 DES offers several advantages over traditional analytic methods.
 
-DES can model a variety of systems, including those with the stochastic and dynamic elements that may otherwise prove difficult to be analyzed when using traditional methods such as a deterministic queuing models.
+-   DES can model a variety of systems, including those with the stochastic and dynamic elements that may otherwise prove difficult to be analyzed when using traditional methods such as a deterministic queuing models.
 
-The stroke ward DES model incorporates various stochastic and dynamic elements, such as patient arrivals, stroke severity levels, and length of stay. These elements are inherently unpredictable and can change over time. Traditional analytic methods, such as deterministic queuing models, may not fully capture the randomness and variation in these components. DES, on the other hand, is specifically designed to model such types of the systems.
+For example the DES model for stroke ward incorporates various stochastic and dynamic elements, such as patient arrivals, stroke severity levels, and length of stay. These elements are inherently unpredictable and can change over time. On the other hand, the traditional analytic methods, such as deterministic queuing models, may not fully capture the randomness and variation in these components.
 
-Similarly, the simulation model in this study consists of multiple components, including patients, beds, and resources. Each of these components interacts with one another in a complex way, as patients move through the ward, occupy beds, and utilize resources. Traditional analytic methods might simplify these interactions or aggregate them, potentially losing critical information about the system's behavior. DES, however, represents individual components and their interactions. For example, my model can track each patient as they enter the ward, get assigned to a bed, receive treatment, and eventually get discharged. This level of detail allows the simulation to provide a more accurate representation of the system's behavior.
+-   Secondly, the DES represents the individual components and their interaction in the system.
 
-Furthermore, one of the key advantages of the DES is the flexibility. DES model allows for changes in the system's behavior to be successfully incorporated into the model, and even test for various scenarios and interventions. For example in stroke simulation model, the ***changes*** in patient population (inflow), their length of stay and stroke level probabilities associated with the stroke categories can be accounted for easily and reliably.
+For example our DES simulation model in this study consists of multiple components, including patients, beds, and resources. Each of these components interacts with one another in a complex way, as patients move through the ward, occupy beds, and utilize resources. Traditional analytic methods might simplify these interactions or aggregate them, potentially losing critical information about the system's behavior.
 
-In the case of the stroke ward simulation, DES was a better choice because it allowed for the modeling of complex interactions between patients, beds, and resources in a dynamic and stochastic environment. The simulation was able to capture patient arrivals, bed occupancy, and other factors, providing a more accurate representation of the system's behavior and helping to identify optimal resource allocation. @jacobson2006discrete
+-   Furthermore, one of the key advantages of the DES is the flexibility. DES model allows for changes in the system's behavior to be successfully incorporated into the model, and even test for various scenarios and interventions.
+
+For example in stroke simulation model, the ***changes*** in patient population (inflow), their length of stay and stroke level probabilities associated with the stroke categories can be accounted for easily and reliably.
+
+In light of these advantages, DES simulation was an appropriate choice for modelling the dynamics of the stroke ward in this project. @jacobson2006discrete
 
 #### Data {#sec-data}
 
-The data used in this project is derived from multiple sources including historical records (2021) and hospital statistics, which included arrival rates, bed occupation times, stroke categories and associated probabilities. Furthermore, valuable insights regarding the patient arrivals, annual patient load and the bed occupation times for different categories of stroke patients were obtained from the supervisor for this project, Professor Thanh Phan, Head of Neuroscience Research, Monash Health.
+The data used in this project is derived from multiple sources including historical records (2021) and hospital statistics; furthermore, valuable insights regarding the patient arrivals, annual patient load and the bed occupation times for different categories of stroke were obtained from the supervisor for this project, Professor Thanh Phan, Head of Neuroscience Research, Monash Health.
 
-It is important to note that simulation models as a method presents certain limitations.
+It is important to note that simulation model as a method presents certain limitations.
 
 One of the key limitations of the simulation model is the validation and calibration of simulation model is a challenging process and can be quite time consuming at times.
 
-To ensure the accuracy of the model and critical parameters, the relevant datal was collected from 2021 records of the stroke patients in the hospital. Most importantly, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan.
-
 One of the other challenges I faced was that the computation times were long. DES can be computationally intensive when running multiple thousand simulation or under multiple scenarios. However, in this simulation model I have run $2000$ simulations to attain the results. This process was time consuming and computationally intensive.
+
+To counter these limitations, we used the relevant data from 2021 records of the stroke patients in the hospital, and most importantly, the critical information on patient's length of stay (bed occupation times), stroke category probabilities were supplied by the supervisor for this project at Monash Health, Professor Thanh Phan.
 
 #### Method {#sec-method}
 
@@ -160,9 +157,9 @@ In order to develop this model several auxiliary functions were created to :
 
 -   generate the patient inter-arrival times,
 
--   assign stroke categories to patients in the simulation,
+-   assign stroke categories to incoming patients in the simulation (based on the stroke level probabilities),
 
--   generate their length of stay based on the stroke category they were assigned,
+-   generate their length of stay (based on the stroke category they were assigned),
 
 To simulate the patient inflow, stay and exit, and compute certain performance metrics such as the percent of the patients waiting, utilization rates and maximum queue length, two main functions were created:
 
@@ -261,7 +258,7 @@ In specifying a queuing model, we make assumptions about the probabilistic natur
 
 Assume $N_t$ is the number of arrivals during a time period of duration $t$ and $N_t$ has a Poisson distribution, then:
 
-Probability= $$\{N_t = n\} = \frac {e-λt
+Probability Mass Function of the Poisson is given as = $$\{N_t = n\} = \frac {e-λt
  (λt)n} {n!} $$ where $\lambda$ is called the *rate* and is the expected number of arrivals per unit time. Another way to characterize this Poisson process is that the time between consecutive arrivals, called the *inter-arrival time*, which has an exponential distribution.
 
 Mathematically, the inter-arrival time for our model was generated in the following way:
@@ -313,7 +310,7 @@ This function takes two arguments:
 
 Mathematically, this process can be explained as follows:
 
-Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n =350$. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ is the number of stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
+Let $Y_1, Y_2, ..., Y_n$ be the stroke categories for $n$ patients, where $n =350$. Each $Y_i$ is an independent random variable taking values from $1 \to k$, where $k=6$ as there are six stroke categories . The probability of $Y_i$ taking the value $j$ : $(1 ≤ j ≤ 6)$ is given by:
 
 $P(Y_i = j) = p_j$
 
