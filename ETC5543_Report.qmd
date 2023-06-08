@@ -552,9 +552,9 @@ In order to simulate the patient inflow, stay and discharge I created the `strok
 
 [^6]: I acknowledge the use of \[1\] ChatGPT (<https://chat.openai.com/>) to \[2\] re-structure my stroke simulation code so that modularity in the code and the intended results could be acheived. I entered the following prompts in April 2023:
 
-    -   \[3\] I have created the following code \[code for update_bed_occupation_times which is used inside the stroke simulation function\]. In this function I am subtracting the inter-arrival time from beds (numeric vector of length of number of beds) but I do not want this to give me negative values, I would like to be zero twhen the subtraction results in negative values.
+    -   \[3\] I have created the following code \[code for update_bed_occupation_times which is used inside the stroke simulation function\]. In this function I am subtracting the inter-arrival time from beds (numeric vector of length of number of beds) but I do not want this to give me negative values, I would like it to be zero when the subtraction results in negative values.
 
-    -   Now that I have created the update_bed_occupation_time function \[code\] and have created the list of the available beds using \[beds \<- update_bed_occupation_times(beds, interarrival_times)\], and I have also created a vector of available beds using \[available_beds \<- which(beds == 0)\] in a while loop, now how can I assign the bed as well as set the bed equal to the length of patient to whom the bed is assigned \[the entire code\].
+    -   Now that I have created the update_bed_occupation_time function \[code\] and have created the list of the available beds using \[beds \<- update_bed_occupation_times(beds, interarrival_times\[i\])\], and I have also created a vector of available beds using \[available_beds \<- which(beds == 0)\] in a while loop, now how can I assign the bed as well as set the bed equal to the length of stay of the patient to whom the bed is assigned \[the entire code\].
 
     -   I have created the while loop \[code\] to do this but it does not achieve the result as I have explained. How can I set the bed equal to the length of stay of patient? I want the bed to be the remaining time of the bed occupation time of the patient. check my \[code\]
 
@@ -598,9 +598,9 @@ It is important to run the simulation multiple times to obtain more reliable res
 
 Hence `run_simulation` function[^7] was created in the process of simulation to run multiple simulations and compute the performance metrics such as the utilization rates and the percent of patients waiting and others for **different** number of beds -- I have defined a range of beds in the function to run simulations for range of beds (5 to 50) and compute the performance metrics for these range of beds in each individual simulation and then averaged the performance metrics across these simulations.
 
-[^7]: I acknowledge the use of \[1\] ChatGPT (<https://chat.openai.com/>) to \[2\]
+[^7]: I acknowledge the use of \[1\] ChatGPT (<https://chat.openai.com/>) to \[2\] help structure my code in such a way that the simulation and computation of metrics could be applied across the range of beds and number of simulations.
 
-    -   \[3\] Write a 50 word summary about the formation of Monash University. Write it in an academic style. Add references and quotations from Sir John Monash.
+    -   \[3\] This function \[code of the function\] does not work currently, I want the performance metrics as computed inside the function to be applied to every bed in the range of beds defined in the function as well as the number of simulations.
 
     \[4\] The output from the generative artificial intelligence was adapted and modified for the final response.
 
@@ -722,7 +722,7 @@ ggplot(results_df, aes(x = num_beds, y = percent_patients_waiting)) +
        x = "Number of Beds",
        y = "Percent of Patients Waiting") +
   geom_hline(yintercept = 5, linetype = "dashed", color = "red", size = 0.5)+
-  scale_y_continuous(breaks = c(5,10,15,20,25,30,35))+
+  scale_y_continuous(breaks = c(0, 5,10,15,20,25,30,35,40,45,50))+
   scale_x_continuous(breaks = c(2,4,6,8,10,12,14,16,18,20,22,
                                 24,26,28,30))
 
@@ -741,18 +741,18 @@ In the context of a stroke ward, rapid admission is critical for better patient 
 
 It is important to highlight that many hospitals aim to follow guidelines that advocate for the rapid administration of treatment once a patient arrives at the hospital. For example in the US, The American Heart Association/American Stroke Association (AHA/ASA) guidelines recommend a door-to-needle time (the time from when a patient arrives at the hospital to when they receive intravenous thrombolytic therapy) of 60 minutes or less for at least 50% of acute ischemic stroke patients. @diercks2010prolonged @leifer2011metrics. In Australia guidelines regarding the stroke admissions are laid out by the Stroke Foundation -- Australia.
 
-In Figure 5, we see that utilization percentages at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $80 \% - 85 \%$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital
+In Figure 5, we see that **utilization percentages** at $11$ beds for $350$ patients annually is less than $70 \%$. Typically $80 \% - 85 \%$ is considered an optimal utilization rate for wards; this threshold is often cited as a balance between efficiency (having enough patients to justify the beds used) and capacity (having enough free beds to accommodate influxes of patients). @aiken2002hospital
 
 However, this figure can vary greatly depending on context. In the stroke ward a patient's length of stay is determined by the stroke severity and patient's medical history as well as their health condition at the time of the occurrence of the stroke. Some patients may need to stay for longer periods of time in the ward of up to 21 days to recover, in such instances, the bed remains occupied by a patient for a longer than expected period of time. Thus, it becomes critically important to ensure that there are enough beds available to accommodate patient influxes.
 
-```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE}
+```{r figsix, fig.cap="Max. Queue length vs the number of beds", fig.align= 'center', fig.height=4, fig.width= 6, eval=TRUE, message=FALSE, warning=FALSE, fig.pos="H"}
 
 xintersection = 11
 yintersection = 8
 ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
   geom_point() +
   geom_smooth(method = "gam") +
-  scale_x_continuous(breaks = seq(4, 20, by=2))+
+  scale_x_continuous(breaks = seq(4, 52, by=4))+
   scale_y_continuous(breaks = seq(5, 155, by = 10))+
   # geom_vline(xintercept = 11, linetype="dashed", color = "steelblue", size = 0.5)+
   # geom_hline(yintercept = 8, linetype = "dashed", color = "red", size=0.5)+
@@ -834,7 +834,7 @@ stroke_sim_11 <- stroke_simulation(total_patients= total_patients,
 #        y = "Frequency")
 ```
 
-```{r}
+```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 ggplot(results_df, aes(x = num_beds, y = utilization)) +
   geom_point() +
   geom_smooth(method = "gam") +
@@ -851,7 +851,7 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
 
 #### Sensitivity Analysis
 
-```{r}
+```{r, eval=TRUE, echo=FALSE}
 # Function to run simulation
 run_simulation_sa <- function(params, num_simulations) {
   num_bed_range <- seq(5,20, by=1)
