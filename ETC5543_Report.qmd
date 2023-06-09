@@ -54,9 +54,7 @@ A simulation model showed that the initial 7-bed provision was inadequate for th
 
 #### **Introduction to hospital capacity planning**
 
-Due to growing population, healthcare systems worldwie are under continual pressure to provide accessible and effective health services to patients; consequently, hospital capacity planning has become a critical part of decision-making process of resource allocation for improved patient outcome.
-
-Key metrics, such as bed capacity and associated indices such as bed occupancy and the ratio of beds to population are used to determine the availability of inpatient care [@Ravaghi2020].
+Hospital capacity planning is crucial due to the increasing global population, and the subsequent demand for effective healthcare services. Key metrics, such as bed capacity and associated indices such as bed occupancy and the ratio of beds to population are used to determine the availability of inpatient care [@Ravaghi2020].
 
 Under-utilization of beds in the hospitals lead to additional costs, while on the other hand, a shortage of available beds is the primary cause of delays in emergency admission, surgery cancellations, and premature patient discharge [@rechel2010hospital].
 
@@ -768,11 +766,9 @@ ggplot(results_df, aes(x = num_beds, y = max_queue_length)) +
 
 Often a high maximum queue length indicates a potential bottleneck in the system, while a lower maximum queue length suggests that the system is well-managed and has sufficient resources to handle the patient load, which can result in shorter waiting times and better patient experiences.
 
-The maximum queue length in my simulation represents the highest number of patients waiting to be admitted at any point during the simulation period. In my simulation for $350$ patients per year and $11$ beds in the ward (optimal number of beds per utilization percentages), a maximum queue length of $15$ (as seen in Figure 6) means that at the peak of demand during the year, there were $15$ patients waiting to be admitted. However, it is important to be noted that this doesn't mean that $15$ patients will be waiting at all times. It's a snapshot of the worst-case scenario in terms of demand exceeding the number of available beds.
+The maximum queue length in my simulation represents the highest number of patients waiting to be admitted at any point during the simulation period. In my simulation for $350$ patients per year and $10$ beds in the ward (optimal number of beds per utilization percentages), a maximum queue length of $15$ (as seen in Figure 6) means that at the peak of demand during the year, there were $15$ patients waiting to be admitted. However, it is important to note that this doesn't mean that $15$ patients will be waiting at all times, meaning, this is the peak demand and does not necessarily reflect the average wait time across the year.
 
 As discussed the 5% rule for the percent of patients waiting is an average or overall target for the year. It's possible for the percent of patients waiting to spike above this target at times (as seen in the max queue length), but on average across the year, the goal is to have less than 5% of patients waiting.
-
-However, it's important to remember that this is the peak demand and does not necessarily reflect the average wait time across the year. This means that during our simulation there was a time in the year when up to 15 patients were waiting to be admitted (4.2% of the annual total patients), but this doesn't mean that 15 patients were always waiting.
 
 ```{r echo=FALSE}
 
