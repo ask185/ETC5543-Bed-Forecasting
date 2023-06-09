@@ -62,7 +62,7 @@ According to Storey et al. (2010) in their article "Hospital capacity planning: 
 
 #### Prevalence of stroke in Australia and Victoria
 
-In Australia in 2020 an estimated $445,087$ [^2]Australians aged 15 and over were grappling with the aftermath of stroke. In 2018, $1.3\%$ of the Australian population had experienced a stroke at *some point* in their lives @AIHW2023 As per the same source, in 2020, there were an estimated $39,500$ **stroke events** in Australia--- more than $100$ everyday. In 2020, the stroke incidence occurs every 19 minutes in Australia. @deloitte2023
+In Australia in 2020 an estimated $445,087$ [^2]Australians aged 15 and over were grappling with the aftermath of stroke.@deloitte2023 In 2018, $1.3\%$ of the Australian population had experienced a stroke at *some point* in their lives @AIHW2023 In 2020, the stroke incidence occured every 19 minutes in Australia. @deloitte2023
 
 [^2]: According to the Economic Impact of Stroke (Deloitte Australia - 2020) [The report can be found here.](https://www2.deloitte.com/au/en/pages/economics/articles/economic-impact-stroke-australia.html)
 
@@ -86,7 +86,7 @@ For the purpose of this project at the *Monash Medical Research institute*, I us
 
 #### **Objectives** {#sec-objectives}
 
-The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital. The main objective of DES was to simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
+The primary objective of this project was to develop *discrete event simulation* (DES) model that accurately captures the dynamics of the stroke ward at the Monash hospital. The DES model will simulate the flow of patients as they arrive, wait in line (queue) for an available bed, receive treatment, and exit the resource (making the bed available for the next patient in the queue to use).
 
 In order to achieve these objectives an evaluation of different bed capacities on three key performance metrics were considered:
 
@@ -100,9 +100,7 @@ Further, this model is intended to be used as a decision support tool by the hos
 
 In this project, *Discrete Event Simulation* grounded in queue theory accurately captures the complexity and inherent variability of a stroke ward. This model takes into account the stochastic nature of the patient arrivals, stroke severity levels, and length of stay. This enables a comprehensive analysis of the hospital ward's performance under different scenarios.
 
-By effectively representing the complex interaction between different factors such as the patients arrival, stoke categories, stroke level probabilities and bed occupation times for each of the different categories of stroke, this DES model is meant to provide valuable insights into the stroke ward's operations at the Monash Hospital.
-
-Furthermore, this model enables users to generate performance metrics, such as the percent of patients waiting and utilization percentages for the given number of beds and load of patients in the stroke ward.
+By effectively representing the complex interaction between different factors such as the patients arrival, stoke categories, stroke level probabilities and bed occupation times for each of the different categories of stroke, this DES model is meant to provide valuable insights into the stroke ward's operations at the Monash Hospital by enabling users to generate performance metrics, such as the percent of patients waiting and utilization percentages for the given number of beds and load of patients in the stroke ward.
 
 #### **Novel Features:** {#novelFeatures}
 
@@ -166,7 +164,7 @@ To simulate the patient inflow, stay and exit, and compute certain performance m
 
 #### Key parameters
 
-The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ $350$. The performance metrics were computed for $350$ yearly patients as well as for the an estimated annual load of 2500 patients.
+The stroke categories were assigned based on the stroke level probabilities. The total annual patient load considered for this analysis was \~ $350$. The performance metrics were computed for $350$ yearly patients as well as for the an estimated annual load of 2500 patients for the future.
 
 The following parameters were used to lay the foundation for the stroke simulation model. These parameters were obtained from the historical data of the stroke ward.
 
@@ -241,14 +239,6 @@ v1
 
 With these input parameters, the stroke simulation model was developed to achieve the results; auxiliary functions that generated the inter-arrival times, assigned stroke categories to the patients in the simulation, and generated the bed occupation times for the patients based on their stroke categories were used in the stroke simulation function.
 
-Please refer to the flow chart below to understand the work flow for this model.
-
-```{r}
-knitr::include_graphics("flowchart.png")
-```
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
-
 #### Inter-arrival times {#sec-iat}
 
 In specifying a queuing model, we make assumptions about the probabilistic nature of the arrival and service processes. The most common assumption to make about arrivals is that they follow a *Poisson process. @green2011queueing*
@@ -288,8 +278,6 @@ generate_interarrival_times <- function(total_patients, arrival_rate) {
 }
 
 ```
-
-This function generates the inter-arrival time of the patients.
 
 #### Assigning the stroke categories to Patients {#sec-assign}
 
@@ -770,67 +758,6 @@ The maximum queue length in my simulation represents the highest number of patie
 
 As discussed the 5% rule for the percent of patients waiting is an average or overall target for the year. It's possible for the percent of patients waiting to spike above this target at times (as seen in the max queue length), but on average across the year, the goal is to have less than 5% of patients waiting.
 
-```{r echo=FALSE}
-
-stroke_sim_5 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 5)
-
-stroke_sim_8 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 8)
-
-stroke_sim_11 <- stroke_simulation(total_patients= total_patients, 
-                                   arrival_rate= arrival_rate, 
-                              bed_occupation_time = bed_occupation_time, 
-                              stroke_level_prob= stroke_level_prob, 
-                              num_beds= 11)
-
-
-```
-
-```{r}
-# stroke_sim_25 <- data.frame(stroke_sim_25)
-# 
-# # stroke_sim_30 <- data.frame(stroke_sim_30)
-# 
-# stroke_sim_40 <- data.frame(stroke_sim_40)
-# 
-# 
-# library(ggplot2)
-# stroke_sim_25$length_of_stay <- as.numeric(stroke_sim_25$length_of_stay)
-# 
-# ggplot(stroke_sim_25, aes(y = length_of_stay)) +
-#   geom_histogram(binwidth = 0.5, fill = "steelblue", alpha = 0.8) +
-#   theme_minimal() +
-#   labs(title = "Length of Stay Distribution",
-#        x = "Length of Stay (days)",
-#        y = "Frequency")
-# 
-# # stroke_sim_30$length_of_stay <- as.numeric(stroke_sim_30$length_of_stay)
-# # 
-# # ggplot(stroke_sim_30, aes(y= length_of_stay)) +
-# #   geom_histogram(binwidh=0.5, fill="darkgrey", alpha=0.7 )+
-# #   theme_light()+
-# #   labs(title = "Length of Stay Distribution",
-# #        x = "Length of Stay (days)",
-# #        y = "Frequency")
-# 
-# stroke_sim_40$length_of_stay <- as.numeric(stroke_sim_40$length_of_stay)
-# 
-# stroke_sim_40 <- data.frame(stroke_sim_40)
-# ggplot(stroke_sim_40, aes(y= length_of_stay)) +
-#   geom_histogram(binwidh=0.5, fill="lightblue", alpha=0.7 )+
-#   theme_light()+
-#   labs(title = "Length of Stay Distribution",
-#        x = "Length of Stay (days)",
-#        y = "Frequency")
-```
-
 ```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 ggplot(results_df, aes(x = num_beds, y = utilization)) +
   geom_point() +
@@ -848,7 +775,7 @@ ggplot(results_df, aes(x = num_beds, y = utilization)) +
 
 #### Sensitivity Analysis
 
-```{r, eval=TRUE, echo=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 # Function to run simulation
 run_simulation_sa <- function(params, num_simulations) {
   num_bed_range <- seq(5,20, by=1)
