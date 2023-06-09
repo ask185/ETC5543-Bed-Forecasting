@@ -334,12 +334,12 @@ ui <- fluidPage(
                          selected = 350),
              sliderInput("num_beds", "Number of beds:",
                          min = 5, max = 50, value = 12, step = 1),
-             sliderInput("very_mild", "Very Mild Stroke Occupation Time:", min = 1, max = 7, value = 4),
-             sliderInput("mild", "Mild Stroke Occupation Time:", min = 1, max = 7, value = 4),
-             sliderInput("moderate", "Moderate Stroke Occupation Time:", min = 3, max = 10, value = 7),
-             sliderInput("moderate_severe", "Moderate-Severe Stroke Occupation Time:", min = 3, max = 10, value = 7),
-             sliderInput("severe", "Severe Stroke Occupation Time:", min = 3, max = 10, value = 8),
-             sliderInput("very_severe", "Very Severe Stroke Occupation Time:", min = 3, max = 10, value = 10)
+             sliderInput("very_mild", "Very Mild Stroke (LOS):", min = 1, max = 7, value = 4),
+             sliderInput("mild", "Mild Stroke (LOS):", min = 1, max = 7, value = 4),
+             sliderInput("moderate", "Mild-Moderate Stroke (LOS):", min = 3, max = 10, value = 7),
+             sliderInput("moderate_severe", "Moderate Stroke (LOS):", min = 3, max = 10, value = 7),
+             sliderInput("severe", "Moderate-Severe Stroke (LOS):", min = 3, max = 10, value = 8),
+             sliderInput("very_severe", "Very Severe Stroke (LOS):", min = 3, max = 10, value = 10)
            )
     ),
     column(6,
