@@ -146,11 +146,13 @@ generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_
 
   i <- 1
   while (i <= total_patients) {
+    set.seed(07052023)
     stroke_categories <- stroke_levels[i]
     bed_time <- bed_occupation_time[[stroke_categories]]
     los[i] <- if (length(bed_time) == 1) {
       bed_time[1]
     } else {
+      set.seed(07052023)
       sample(bed_time[1]:bed_time[2], 1)
     }
     i <- i + 1
@@ -158,6 +160,7 @@ generate_length_of_stay <- function(total_patients, bed_occupation_time, stroke_
 
   return(los)
 }
+
 # Generating length_of_stay for each patient
 length_of_stay <- generate_length_of_stay(total_patients, bed_occupation_time, stroke_levels)
 
@@ -291,8 +294,9 @@ stroke_simulation <- function(total_patients, arrival_rate,
 }
   
   # for every patient in total patients (1000)
-  i <- 1
-  while (i <= total_patients) {
+  
+  i<- 1
+  while(i <= total_patients) {
     set.seed(07052023)
     
     # update the beds variable with the bed occupation times 
